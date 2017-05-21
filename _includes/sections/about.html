@@ -22,12 +22,19 @@
             <div class="team-member wow zoomIn">
                 <img src="{{ site.author.avatar | prepend: site.baseurl }}" height="110" width="110" class="img-responsive img-circle" alt="">
                 <h4><span class="navy">{{ site.author.first_name }}</span> {{ site.author.last_name }}</h4>
-                <ul class="list-inline social-icon">
+                <div class="row">
+                    <div class="col-lg-9 col-lg-offset-2 text-center wow zoomIn">
+                        <p><span data-i18n="about_me.des">{{ site.author.desc1 }}</span></p>
+                        <p><span data-i18n="about_me.des">{{ site.author.desc2 }}</span></p>
+                    </div>
+                </div>
+                <ul class="list-inline social-icon m-b-lg">
                     {% if site.author.github_username %}
                     <li><a href="https://github.com/{{ site.author.github_username }}" target="blank"><i class="fa fa-github"></i></a></li>
                     {% endif %}
-                    {% if site.author.linkedin_id %}
-                    <li><a href="https://www.linkedin.com/in/{{ site.author.linkedin_id }}" target="blank"><i class="fa fa-linkedin"></i></a></li>
+                    <li><a href="http://www.imooc.com/u/2006996" target="blank"><i class="fa fa-free-code-camp"></i></a></li>
+                    {% if site.author.lofter_id %}
+                    <li><a href="http://{{ site.author.lofter_id }}.lofter.com/" target="blank"><i class="fa fa-tumblr"></i></a></li>
                     {% endif %}
                     {% if site.author.facebook_username %}
                     <li><a href="https://www.facebook.com/{{ site.author.facebook_username }}" target="blank"><i class="fa fa-facebook"></i></a></li>
@@ -36,7 +43,7 @@
                     <li><a href="https://twitter.com/{{ site.author.twitter_username }}" target="blank"><i class="fa fa-twitter"></i></a></li>
                     {% endif %}
                     {% if site.author.email %}
-                    <li><a href="mailto:{{ site.author.email }}"><i class="fa fa-envelope-o"></i></a></li>
+                    <li><a href="mailto:{{ site.author.email }}"><i class="fa fa-envelope"></i></a></li>
                     {% endif %}
                     <li><a href="{{ site.baseurl }}/feed.xml" target="blank"><i class="fa fa-rss"></i></a></li>
                     {% if site.author.cv %}
@@ -55,10 +62,12 @@
             </div>
         </div>
         {% endfor %}
+        <!-- <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 text-center m-t-lg m-b-lg wow zoomIn">
+                <p><span data-i18n="about_me.des">{{ site.author.desc1 }}</span></p>
+                <p><span data-i18n="about_me.des">{{ site.author.desc2 }}</span></p>
+            </div>
+        </div> -->
     </div>
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 text-center m-t-lg m-b-lg wow zoomIn">
-            <p><span data-i18n="about_me.des">{{ site.author.desc }}</span></p>
-        </div>
-    </div>
+    
 </div>
