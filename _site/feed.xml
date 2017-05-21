@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 21 May 2017 17:54:03 +0800</pubDate>
-    <lastBuildDate>Sun, 21 May 2017 17:54:03 +0800</lastBuildDate>
+    <pubDate>Sun, 21 May 2017 17:58:38 +0800</pubDate>
+    <lastBuildDate>Sun, 21 May 2017 17:58:38 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -27,7 +27,7 @@
 
 &lt;p&gt;Java堆中只会产生OutOfMemoryError异常。&lt;/p&gt;
 
-&lt;p&gt;先搞清楚Java堆内存放的是什么，还不清楚的可以回顾下这篇文章&lt;a href=&quot;&quot;&gt;《死磕JVM-Java内存模型》&lt;/a&gt;，从这篇文章里我们知道Java堆内存存放的是对象实例，所以原理上只要我们不断创建对象，并且保证GC Roots到对象之间有可达路径来避免垃圾回收机制清楚这些对象，也就是说当Eden区满的时候，GC被触发时，让GC误以为内存中的对象还存活着，那么在对象数量达到最大堆容量限制的时候就会产生内存溢出的异常。如下代码就会产生内存溢出的异常：&lt;/p&gt;
+&lt;p&gt;先搞清楚Java堆内存放的是什么，还不清楚的可以回顾下这篇文章&lt;a href=&quot;https://zhoum1118.github.io/java/2017/05/16/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.html&quot;&gt;《死磕JVM-Java内存模型》&lt;/a&gt;，从这篇文章里我们知道Java堆内存存放的是对象实例，所以原理上只要我们不断创建对象，并且保证GC Roots到对象之间有可达路径来避免垃圾回收机制清楚这些对象，也就是说当Eden区满的时候，GC被触发时，让GC误以为内存中的对象还存活着，那么在对象数量达到最大堆容量限制的时候就会产生内存溢出的异常。如下代码就会产生内存溢出的异常：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;&lt;code&gt;&lt;span class=&quot;kwd&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;堆溢出&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
 
