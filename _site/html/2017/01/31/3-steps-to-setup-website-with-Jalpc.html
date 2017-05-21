@@ -16,17 +16,17 @@
 
   <title>
     
-        Jalpc|3 Steps (2 minutes) to Setup Your Personal Website with Jalpc
+        周明的技术博客|3 Steps (2 minutes) to Setup Your Personal Website with Jalpc
     
   </title>
   <!-- favicon -->
-  <link rel="shortcut icon" href="/Jalpc/static/assets/img/favicon.ico">
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
 
   <!-- Main CSS -->
-  <link href="/Jalpc/static/assets/app-20170307.min.css" rel="stylesheet">
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
 
   <!-- Main Scripts -->
-  <script src="/Jalpc/static/assets/app-20170307.min.js"></script>
+  <script src="/static/assets/app-20170521.min.js"></script>
 
   <script type="text/javascript">
     $(document).ready(function () {
@@ -72,7 +72,7 @@
         toggleSearch(true);
       });
 
-      $.getJSON("/Jalpc/search/cb-search.json")
+      $.getJSON("/search/cb-search.json")
         .done(function (data) {
           if (data.code == 0) {
             $("#search-content").typeahead({
@@ -103,12 +103,12 @@
     <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
 
     <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
-        <img src="/Jalpc/search/img/cb-close.png" id="close-btn"/>
+        <img src="/search/img/cb-close.png" id="close-btn"/>
     </div>
 </div>
 
 <div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
-    <img src="/Jalpc/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
 </div>
 
 <div class="navbar-wrapper">
@@ -121,66 +121,66 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/Jalpc/">Jalpc</a>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a class="page-scroll" href="/Jalpcblog/"></a></li>
+                    <li><a class="page-scroll" href="blog/"></a></li>
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/blog/">Blog</a></li>
-                        
-                    
-                        
-                        
-                        <li>
-                        
-                        <a class="page-scroll" href="/Jalpc/python/">Python</a></li>
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
                         
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/linux/">Linux</a></li>
+                        <a class="page-scroll" href="/python/">Python</a></li>
                         
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/html/">HTML</a></li>
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
                         
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/database/">Database</a></li>
+                        <a class="page-scroll" href="/html/">HTML</a></li>
                         
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/mac/">Mac</a></li>
+                        <a class="page-scroll" href="/database/">Database</a></li>
                         
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/life/">Life</a></li>
+                        <a class="page-scroll" href="/mac/">Mac</a></li>
                         
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/donate/">Donate</a></li>
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
                         
                     
                 </ul>
@@ -251,8 +251,8 @@
   <li>
     <p>Fork <a href="https://github.com/jarrekk/Jalpc">this project – Jalpc</a> at <a href="https://github.com">GitHub</a>. If you want to edit website at github, do it as following gif or clone forked repository. <code class="highlighter-rouge">git clone git@github.com:github_username/Jalpc.git</code>.</p>
 
-    <p><!-- ![edit](/Jalpc/static/assets/img/blog/3steps/edit.gif) -->
- <img src="/Jalpc/static/assets/img/blog/3steps/edit.gif" width="75%" /></p>
+    <p><!-- ![edit](/static/assets/img/blog/3steps/edit.gif) -->
+ <img src="/static/assets/img/blog/3steps/edit.gif" width="75%" /></p>
   </li>
   <li>
     <p>Enter into repository directory and edit following file list:</p>
@@ -303,8 +303,6 @@
                                 <div>
                                 
                                 
-                                <i class="fa fa-comments-o"> </i> <span class='disqus-comment-count' data-disqus-url="http://jarrekk.github.io/Jalpc/html/2017/01/31/3-steps-to-setup-website-with-Jalpc.html">0</span> comments
-                                
                                 </div>
                             </div>
                         </div>
@@ -315,7 +313,7 @@
                             <!-- donate -->
                             
                             <div class="text-center">
-<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/Jalpc/donate/"><i class="fa fa-smile-o"></i></a>
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
 </div>
 
                             
@@ -344,23 +342,6 @@ a2a_config.color_link_text_hover = "333333";
                             <br>
                             <!-- comment -->
                             
-<div id="disqus_thread"></div>
-<script>
-/** * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS. * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables */
-	/*
-	var disqus_config = function () { this.page.url = PAGE_URL;
-	// Replace PAGE_URL with your page's canonical URL variable this.page.identifier = PAGE_IDENTIFIER;
-	// Replace PAGE_IDENTIFIER with your page's unique identifier variable };
-	*/
-	(function() { // DON'T EDIT BELOW THIS LINE
-			var d = document, s = d.createElement('script');
-			s.src = '//jalpc.disqus.com/embed.js';
-			s.setAttribute('data-timestamp', +new Date());
-			(d.head || d.body).appendChild(s);
-		})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-
 
                         </div>
                     </div>
@@ -380,34 +361,6 @@ a2a_config.color_link_text_hover = "333333";
 
 
 
-
-  <script id="dsq-count-scr" src="//jalpc.disqus.com/count.js" async></script>
-  <script type="text/javascript">
-    var disqusShortName = "jalpc";
-
-    var disqusPublicKey = "tj2MPaNlHMONwTH5bGDNSXyaBpW7q282MeUzh5CwcjJerNhK8Kxk3aWo7IckzTX7";
-
-    var urlArray = [];
-    $('.disqus-comment-count').each(function () {
-      var url = $(this).attr('data-disqus-url');
-      urlArray.push('link:' + url);
-    });
-    $.ajax({
-      type: 'GET',
-      url: "https://disqus.com/api/3.0/threads/set.jsonp",
-      data: { api_key: disqusPublicKey, forum : disqusShortName, thread : urlArray },
-      cache: false,
-      dataType: "jsonp",
-      success: function (result) {
-        for (var i in result.response) {
-          var count = result.response[i].posts;
-          if ( count ) {
-            $('.disqus-comment-count[data-disqus-url="' + result.response[i].link + '"]').html(count);
-          }
-        }
-      }
-    });
-</script>
 
 
 	

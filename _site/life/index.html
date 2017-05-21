@@ -12,17 +12,17 @@
 
   <title>
     
-        Jalpc|Life
+        周明的技术博客|Life
     
   </title>
   <!-- favicon -->
-  <link rel="shortcut icon" href="/Jalpc/static/assets/img/favicon.ico">
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
 
   <!-- Main CSS -->
-  <link href="/Jalpc/static/assets/app-20170307.min.css" rel="stylesheet">
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
 
   <!-- Main Scripts -->
-  <script src="/Jalpc/static/assets/app-20170307.min.js"></script>
+  <script src="/static/assets/app-20170521.min.js"></script>
 
   <script type="text/javascript">
     $(document).ready(function () {
@@ -68,7 +68,7 @@
         toggleSearch(true);
       });
 
-      $.getJSON("/Jalpc/search/cb-search.json")
+      $.getJSON("/search/cb-search.json")
         .done(function (data) {
           if (data.code == 0) {
             $("#search-content").typeahead({
@@ -99,12 +99,12 @@
     <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
 
     <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
-        <img src="/Jalpc/search/img/cb-close.png" id="close-btn"/>
+        <img src="/search/img/cb-close.png" id="close-btn"/>
     </div>
 </div>
 
 <div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
-    <img src="/Jalpc/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
 </div>
 
 <div class="navbar-wrapper">
@@ -117,66 +117,66 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/Jalpc/">Jalpc</a>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a class="page-scroll" href="/Jalpcblog/"></a></li>
+                    <li><a class="page-scroll" href="blog/"></a></li>
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/blog/">Blog</a></li>
-                        
-                    
-                        
-                        
-                        <li>
-                        
-                        <a class="page-scroll" href="/Jalpc/python/">Python</a></li>
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
                         
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/linux/">Linux</a></li>
+                        <a class="page-scroll" href="/python/">Python</a></li>
                         
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/html/">HTML</a></li>
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
                         
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/database/">Database</a></li>
+                        <a class="page-scroll" href="/html/">HTML</a></li>
                         
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/mac/">Mac</a></li>
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/mac/">Mac</a></li>
                         
                     
                         
                         
                         <li class="active">
                         
-                        <a class="page-scroll" href="/Jalpc/life/">Life</a></li>
+                        <a class="page-scroll" href="/life/">Life</a></li>
                         
                     
                         
                         
                         <li>
                         
-                        <a class="page-scroll" href="/Jalpc/donate/">Donate</a></li>
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
                         
                     
                 </ul>
@@ -224,7 +224,7 @@
 	
 
         <!-- jPages -->
-<script src="/Jalpc/static/assets/jPage-20170307.min.js"></script>
+<script src="/static/assets/jPage-20170521.min.js"></script>
 <script type="text/javascript">
 $(function(){
   /* initiate the plugin */
@@ -274,34 +274,6 @@ $(function(){
 
 
 
-
-  <script id="dsq-count-scr" src="//jalpc.disqus.com/count.js" async></script>
-  <script type="text/javascript">
-    var disqusShortName = "jalpc";
-
-    var disqusPublicKey = "tj2MPaNlHMONwTH5bGDNSXyaBpW7q282MeUzh5CwcjJerNhK8Kxk3aWo7IckzTX7";
-
-    var urlArray = [];
-    $('.disqus-comment-count').each(function () {
-      var url = $(this).attr('data-disqus-url');
-      urlArray.push('link:' + url);
-    });
-    $.ajax({
-      type: 'GET',
-      url: "https://disqus.com/api/3.0/threads/set.jsonp",
-      data: { api_key: disqusPublicKey, forum : disqusShortName, thread : urlArray },
-      cache: false,
-      dataType: "jsonp",
-      success: function (result) {
-        for (var i in result.response) {
-          var count = result.response[i].posts;
-          if ( count ) {
-            $('.disqus-comment-count[data-disqus-url="' + result.response[i].link + '"]').html(count);
-          }
-        }
-      }
-    });
-</script>
 
 
 	
