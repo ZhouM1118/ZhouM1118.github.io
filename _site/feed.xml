@@ -5,9 +5,458 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 21 May 2017 15:17:59 +0800</pubDate>
-    <lastBuildDate>Sun, 21 May 2017 15:17:59 +0800</lastBuildDate>
+    <pubDate>Sun, 21 May 2017 17:54:03 +0800</pubDate>
+    <lastBuildDate>Sun, 21 May 2017 17:54:03 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>死磕JVM-如何构造JVM内存溢出和栈溢出</title>
+        <description>&lt;p&gt;为什么要写这个题目？我记得我在面试阿里的时候面试官问了我这个问题，当时没能答得很好，只说了些概念的东西，很是心虚，于是下定决心要把这个问题搞懂，现在终于把这个问题怼清楚了，分享给大家，希望你们以后面试问到这种问题能有所准备。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Java虚拟机中描述了两种异常：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;1、如果线程请求的栈深度大于虚拟机所允许的最大深度，将抛出StackOverflowError异常；&lt;/p&gt;
+
+&lt;p&gt;2、如果在虚拟机中无法申请到足够多的内存空间，将抛出OutOfMemoryError异常。&lt;/p&gt;
+
+&lt;p&gt;我们都知道Java虚拟机各个内存区域（除了程序计数器）都有发生内存溢出的可能，但到底什么样的操作或程序才会导致内存溢出或栈溢出的异常呢？&lt;/p&gt;
+
+&lt;p&gt;我们分不同的内存区域来解释这个问题。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;一、对于Java堆内存区域&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Java堆中只会产生OutOfMemoryError异常。&lt;/p&gt;
+
+&lt;p&gt;先搞清楚Java堆内存放的是什么，还不清楚的可以回顾下这篇文章&lt;a href=&quot;&quot;&gt;《死磕JVM-Java内存模型》&lt;/a&gt;，从这篇文章里我们知道Java堆内存存放的是对象实例，所以原理上只要我们不断创建对象，并且保证GC Roots到对象之间有可达路径来避免垃圾回收机制清楚这些对象，也就是说当Eden区满的时候，GC被触发时，让GC误以为内存中的对象还存活着，那么在对象数量达到最大堆容量限制的时候就会产生内存溢出的异常。如下代码就会产生内存溢出的异常：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;code&gt;&lt;span class=&quot;kwd&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;堆溢出&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+
+     &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;static&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;OOMError&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;{}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+
+     &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;static&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; main&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;[]&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; args&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;OOMError&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; list &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;ArrayList&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;OOMError&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;&amp;gt;();&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+               list&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;OOMError&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;());&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+     &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行结果：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Exception in thread “main” java.lang.OutOfMemoryError: Java heap space&lt;/p&gt;
+
+  &lt;p&gt;at java.util.Arrays.copyOf(Arrays.java:3210)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;at java.util.Arrays.copyOf(Arrays.java:3181)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;at java.util.ArrayList.grow(ArrayList.java:261)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;at java.util.ArrayList.ensureExplicitCapacity(ArrayList.java:235)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;at java.util.ArrayList.ensureCapacityInternal(ArrayList.java:227)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;at java.util.ArrayList.add(ArrayList.java:458)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;at com.intelligentler.jvm.堆溢出.main(堆溢出.java:13)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;“Java heap space”提示着产生OutOfMemoryError异常的Java虚拟机的内存区域，也就是Java堆内存。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;如何解决发生在Java堆内存的OutOfMemoryError异常呢？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;首先我们要分清楚产生OutOfMemoryError异常的原因是内存泄露还是内存溢出，如果内存中的对象确实都必须存活着而不像上面那样不断地创建对象实例却不使用该对象，则是内存溢出，而像上面代码中的情况则是内存泄露。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;如果是内存泄露&lt;/strong&gt;，我们可以通过一些内存查看工具来查看泄露对象到GC Roots的引用链，找到泄露对象是通过怎样的路径与GC Roots相关联并导致GC无法自动回收这些泄露对象，掌握了这些信息，我们就能比较准确地定位出泄露代码的位置。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;如果不是内存泄露&lt;/strong&gt;，也就是说内存中的对象确实都还必须存活，那么应该检查虚拟机的堆参数，看看是否还可以将机器物理内存调大，同时在代码上检查是否存在某些对象生命周期过长、持有状态时间过长的情况。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;二、对于虚拟机栈和本地方法栈&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在这一部分内存区域，可能产生OutOfMemoryError异常和StackOverflowError异常。&lt;/p&gt;
+
+&lt;p&gt;如果定义大量的本地变量，增大此方法帧中本地变量表的长度或者设置-Xss参数减少栈内存容量，这两种操作都会抛出StackOverflowError异常。&lt;/p&gt;
+
+&lt;p&gt;如下面的代码：&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;code&gt;&lt;span class=&quot;kwd&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;栈溢出&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;private&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; stackLength &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;lit&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; addStackLength&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(){&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          stackLength&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;++;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          addStackLength&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;();&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+     &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;static&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; main&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;[]&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; args&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;throws&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;Throwable&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;栈溢出&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; oom &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;栈溢出();&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+               oom&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;addStackLength&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;();&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;catch&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;Throwable&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; e&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+               &lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;str&quot;&gt;&quot;stack length:&quot;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; oom&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;stackLength&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+               &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;throw&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; e&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+     &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行结果：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;stack length:18388&lt;/p&gt;
+
+  &lt;p&gt;Exception in thread “main” java.lang.StackOverflowError&lt;/p&gt;
+
+  &lt;p&gt;at com.intelligentler.jvm.栈溢出.addStackLength(栈溢出.java:9)&lt;/p&gt;
+
+  &lt;p&gt;at com.intelligentler.jvm.栈溢出.addStackLength(栈溢出.java:9)&lt;/p&gt;
+
+  &lt;p&gt;at com.intelligentler.jvm.栈溢出.addStackLength(栈溢出.java:9)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;所以，如果在单线程的情况下，无论是栈帧太大还是虚拟机栈容量太小，当内存无法再分配的时候，虚拟机抛出的是StackOverflowError异常。&lt;/p&gt;
+
+&lt;p&gt;如果在多线程下，不断地建立线程可能会产生OutOfMemoryError异常。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;三、对于方法区&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;方法区中只会产生OutOfMemoryError异常。&lt;/p&gt;
+
+&lt;p&gt;由于运行时常量池是方法区的一部分，我们可以通过String.intern()方法来构建一个运行时常量池的OutOfMemoryError异常。&lt;/p&gt;
+
+&lt;p&gt;String.intern()是一个Native方法，它的作用是：如果字符串常量池中已经包含了一个等于该String对象的字符串，则返回这个String对象，否则，将此String对象包含的字符串添加到常量池中，并返回这个字符串的String对象的引用。如下面代码：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;code&gt;&lt;span class=&quot;kwd&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;方法区溢出&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+
+     &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;static&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; main&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;[]&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; args&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; list &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;ArrayList&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;&amp;gt;();&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; i &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;lit&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+               list&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;valueOf&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;++).&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;intern&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;());&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+     &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行结果：&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Exception in thread “main” java.lang.OutOfMemoryError: PermGen space&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;at java.lang.String.intern(Native Method)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;PermGen space的全称是Permanent Generation space，是指内存的永久保存区域，也就是说运行时常量池属于方法区（也就是虚拟机永久代）中的一部分。&lt;/p&gt;
+
+&lt;p&gt;另外，方法区是存放Class的相关信息的，运行时如果有大量的类来填满方法区，就会产生OutOfMemoryError异常。&lt;/p&gt;
+</description>
+        <pubDate>Fri, 19 May 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/java/2017/05/19/%E5%A6%82%E4%BD%95%E6%9E%84%E9%80%A0JVM%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%92%8C%E6%A0%88%E6%BA%A2%E5%87%BA.html</link>
+        <guid isPermaLink="true">http://localhost:4000/java/2017/05/19/%E5%A6%82%E4%BD%95%E6%9E%84%E9%80%A0JVM%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%92%8C%E6%A0%88%E6%BA%A2%E5%87%BA.html</guid>
+        
+        <category>java</category>
+        
+        <category>JVM</category>
+        
+        <category>溢出</category>
+        
+        
+        <category>Java</category>
+        
+      </item>
+    
+      <item>
+        <title>死磕JavaScript-垃圾收集机制</title>
+        <description>&lt;p&gt;JavaScript和Java一样具有自动垃圾收集机制。JavaScript的垃圾收集你机制的原理很简单：找出那些不再继续使用的变量，然后释放其占用的内存。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;标记清除：&lt;/strong&gt;这是最常用的垃圾收集方式。原理是：垃圾收集器在运行的时候会给存储在内存中的所有变量都加上标记—&amp;gt;然后，它会去掉环境中的变量以及被环境中的变量引用的变量的标记—&amp;gt;在此之后再被加上标记的变量将被视为准备删除的变量—&amp;gt;最后，垃圾收集器完成内存清除工作，销毁那些带标记的变量并回收它们所占用的内存空间。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;引用计数：&lt;/strong&gt;这是一种不太常见的垃圾收集方式，IE用的就是这种。引用计数是指追踪记录每个值被引用的次数，原理是：当声明一个变量并将一个引用类型值赋给该变量时，则这个值得引用次数初始化为1—&amp;gt;如果同一个值又被赋值给另一个变量，则该值的引用次数加1—&amp;gt;相反，如果包含对这个值引用的变量又取得了另外一个值，则这个值得引用次数减1—&amp;gt;当这个值得引用次数变为0时，说明无需再访问这个变量，可以被垃圾回收机制回收。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://img.mukewang.com/591d135e0001701703930115.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;但引用计数存在循环引用的风险，循环引用指的是对象A包含一个指向对象B的指针，而对象B中也包含一个指向对象A的引用。比如：&lt;/p&gt;
+
+&lt;p&gt;这里例子中，objectA和objectB通过各自的属性相互引用，也就是说，两个对象的引用次数都是2，尽管函数执行完毕后，objectA和objectB还将继续存在，因为它们的引用次数永远都不为0。&lt;/p&gt;
+
+&lt;p&gt;IE因为采用了引用计数的垃圾收集而性能低下。&lt;/p&gt;
+
+&lt;p&gt;当然，我们也可以通过解除变量的引用（解除引用）来消除循环引用现象，比如：objectA = null;和objectB = null。&lt;/p&gt;
+</description>
+        <pubDate>Thu, 18 May 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/javascript/2017/05/18/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E6%9C%BA%E5%88%B6.html</link>
+        <guid isPermaLink="true">http://localhost:4000/javascript/2017/05/18/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E6%9C%BA%E5%88%B6.html</guid>
+        
+        <category>JavaScript</category>
+        
+        <category>垃圾收集</category>
+        
+        
+        <category>Javascript</category>
+        
+      </item>
+    
+      <item>
+        <title>死磕JVM-Java虚拟机对象</title>
+        <description>&lt;p&gt;上篇文章我们了解了Java虚拟机的内存模型，也知道不同区域的内存都存储的是什么，现在我们进一步来探究内存上存储的数据是怎么创建的，内存大小又是怎么分配的，数据创建成功后怎么被访问的。我们以Java虚拟机中最大的内存块Java堆为例子来探究上面的三个问题。&lt;/p&gt;
+
+&lt;h2 id=&quot;java堆上对象的创建&quot;&gt;&lt;strong&gt;Java堆上对象的创建&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;Java虚拟机遇到一条new指令后，首先会去检查要创建的对象能否在常量池中定位到其对应类的符号引用，并且检查这个引用代表的类是否已经被加载、解析和初始化过，如果没有则先进行类加载过程。&lt;/p&gt;
+
+&lt;p&gt;然后就是为这个对象分配内存，最后执行init方法，这样一个可用的对象创建完毕。&lt;/p&gt;
+&lt;h2 id=&quot;java堆对象的内存分配&quot;&gt;&lt;strong&gt;Java堆对象的内存分配&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;在类加载检查通过之后，虚拟机就会为新生对象分配内存，分配方式因取决于Java堆中内存是否规整而分为“指针碰撞”和“空闲列表”。在Java堆中的内存是规整的情况下，内存分配方式采用“指针碰撞”，反之采用“空闲列表”。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;假设Java堆中的内存是绝对规整的&lt;/strong&gt;，所有用过的内存都放在一边，空闲的内存放在另一边，中间放着一个指针作为分界点的指示器，分配内存的方式就是将这个指针往指向空闲空间那边挪动一段与对象大小相等的距离。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;假设Java堆中的内存不是规整的&lt;/strong&gt;，已使用的内存和空闲的内存相互交错，这样就无法进行简单地指针碰撞了，这时候虚拟机会维护一张列表，列表中记录哪些内存块是可用的，在分配内存的时候就从列表中找到一块足够大的空间划分给对象实例，同时更新列表上的记录，这种内存分配的方式叫做“空闲列表”。&lt;/p&gt;
+
+&lt;p&gt;由此我们知道Java堆对象的内存分配策略是由Java堆内存是否规整来决定的，那么Java堆内存是否规整则由GC是否带有压缩整理功能决定的，所以一般在使用Serial、ParNew等带有压缩整理过程的收集器时，系统采用的是“指针碰撞”的分配策略，在使用CMS这种基于Mark-Sweep算法的收集器时，采用的是“空闲列表”的方式。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;由于Java堆是线程共享的，那么内存的分配在线程并发的情况下如何保证线程安全呢？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;不管采用哪种内存分配策略，在多线程下进行Java堆内存分配的时候，可能存在正在给A对象分配内存，但指针还没来得及修改而对象B又使用了原来的指针来分配内存的这种情况。&lt;/p&gt;
+
+&lt;p&gt;有两种解决方案：第一是对分配内存空间的动作进行同步处理以保证操作的原子性，也就是说同一时刻只有一个线程能进行分配内存的操作；第二是把内存分配的操作按照线程划分在不同的空间中进行，即每个线程在Java堆中预先分配一小块内存，称为本地线程分配缓冲（Thread Local Allocation Buffer, TLAB）,线程在自己的TLAB中分配内存，只有在TLAB用完了，在分配新的TLAB时才需要同步锁定。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;讲完了Java堆对象的内存分配策略，那存储的对象到底存储的是什么呢？对象中都包含哪些内容呢？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;对象在内存中主要存储这三个信息：对象头（Header）、实例数据（Instance Data）和对齐填充（Padding）。&lt;/p&gt;
+
+&lt;p&gt;对象头，存储对象自身的运行时数据：哈希码，GC分代年龄，锁状态标志等。&lt;/p&gt;
+
+&lt;p&gt;实例数据，存储对象真正有效的信息。&lt;/p&gt;
+
+&lt;p&gt;对齐填充，起到占位符的作用，当实例数据部分没有对齐时，就需要对齐填充来补全。&lt;/p&gt;
+
+&lt;h2 id=&quot;java堆对象的访问定位&quot;&gt;&lt;strong&gt;Java堆对象的访问定位&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;对象创建并分配好了内存，那么接下来就可以访问对象了，Java程序是通过栈中的reference数据来操作堆上的具体对象，虚拟机提供了两种机制来访问堆中的实例对象：句柄和直接指针。
+使用句柄：Java堆中会划分一块区域作为句柄池，Java栈中的本地变量表中的reference数据存储的就是对象的句柄地址，而句柄中则包含的是到对象实例数据的指针和对象类型数据的指针。
+&lt;img title=&quot;死磕JVM-Java虚拟机对象_&quot; 图片1=&quot;&quot; src=&quot;http://img.mukewang.com/591d078d0001d19915940584.png&quot; style=&quot;width:100%&quot; alt=&quot;图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;直接指针：reference数据存储是的对象的实例数据的引用地址和到对象类型数据的指针。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;死磕JVM-Java虚拟机对象_&quot; 图片1=&quot;&quot; src=&quot;http://img.mukewang.com/591d079d0001210016240586.png&quot; style=&quot;width:100%&quot; alt=&quot;图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;使用句柄的好处是Java栈中的本地变量表中的reference数据是相对稳定的，不需要经常变动，比如在执行GC操作时移动对象，这个时候需要改变对象在堆中的地址，在句柄机制中，只需要改动句柄池中的实例数据的指针，而不需要修改reference数据。但缺点是增加了一次指针定位的开销，对于对象访问比较频繁的时候，这种开销累计起来也是很大的，所以对于HotSpot而言，使用的是直接指针的方式。&lt;/p&gt;
+</description>
+        <pubDate>Thu, 18 May 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/java/2017/05/18/Java%E5%A0%86%E4%B8%8A%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA.html</link>
+        <guid isPermaLink="true">http://localhost:4000/java/2017/05/18/Java%E5%A0%86%E4%B8%8A%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA.html</guid>
+        
+        <category>java</category>
+        
+        <category>JVM</category>
+        
+        <category>虚拟机对象</category>
+        
+        
+        <category>Java</category>
+        
+      </item>
+    
+      <item>
+        <title>死磕JVM-Java内存模型</title>
+        <description>&lt;p&gt;Java虚拟机是Java工程师必学的进阶功课，这段时间开始死磕JVM。今天把JVM的基础知识点Java的内存模型怼清楚，废话不多说，干货走起！&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://img.mukewang.com/591a5ed500016f8704170268.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;程序计数器&quot;&gt;&lt;strong&gt;程序计数器&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;是什么&lt;/strong&gt;：程序计数器是很小的一块内存空间，它是当前线程所执行的字节码的行号指示器。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;有什么用：&lt;/strong&gt;解释器通过这个计数器来选取下一条需要执行的字节码指令。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;存储什么内容：&lt;/strong&gt;如果线程执行的是Java方法，存储的是正在执行的虚拟机字节码指令的地址；如果是native方法，计数器值为空（undefined）。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么是线程私有的：&lt;/strong&gt;多线程是线程轮流切换并分配处理器执行时间片的方式来实现的，在任何确定的时刻，一个处理器（对于多核处理器来说就是一个内核）都只会执行一条线程，所以，为了线程在切换后能恢复到正确的执行位置，每个线程应该独立拥有一个程序计数器。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;会出现什么异常情况：&lt;/strong&gt;唯一一个无内存溢出异常的区域。&lt;/p&gt;
+&lt;h2 id=&quot;java虚拟机栈&quot;&gt;&lt;strong&gt;Java虚拟机栈&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;是什么：&lt;/strong&gt;虚拟机栈是Java方法的内存模型，每一个Java方法从调用到执行完成就对应着一个栈帧在虚拟机栈中的入栈和出栈。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;存储什么内容：&lt;/strong&gt;每个方法的执行就会创建一个栈帧，这个栈帧会存储这个Java方法的局部变量表，操作数栈，动态链接，方法出口等信息。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么是线程私有的：&lt;/strong&gt;每个线程所执行的方法可能是不一样的。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;会出现什么异常情况：&lt;/strong&gt;如果线程请求的栈深度&amp;gt;虚拟机允许的深度，抛出栈溢出异常；如果扩展时无法申请到足够的内存，抛出内存溢出异常。&lt;/p&gt;
+&lt;h2 id=&quot;本地方法栈&quot;&gt;&lt;strong&gt;本地方法栈&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;是什么：&lt;/strong&gt;本地方法栈的作用和虚拟机栈非常像是，只不过本地方法栈是native方法的内存模型，每一个native方法从调用到执行完成就对应着一个栈帧在本地方法栈中的入栈和出栈。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;存储什么内容：&lt;/strong&gt;同虚拟机栈。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么是线程私有的：&lt;/strong&gt;同虚拟机栈。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;会出现什么异常情况：&lt;/strong&gt;同虚拟机栈。&lt;/p&gt;
+&lt;h2 id=&quot;java堆&quot;&gt;&lt;strong&gt;Java堆&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;是什么：J&lt;/strong&gt;ava堆是Java虚拟机管理的内存中最大的一块，Java堆是在虚拟机启动的时候创建的。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;存储什么内容：&lt;/strong&gt;存放对象实例，几乎所有的对象实例都在这个内存区域分配内存。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么是线程共享的：&lt;/strong&gt;所有的线程都可以访问不同的对象。其实从内存分配的角度来看，线程共享的Java堆可能其实是多个线程私有的分配缓冲区，不同的线程将各自的对象实例放在看似共享的Java堆的各自的缓冲区上，这样划分可以更好的回收内存，也可以更好点分配内存。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;会出现什么异常情况：&lt;/strong&gt;Java堆可以处于物理上不连续的内存空间上，但逻辑上一定是连续的，在堆中没有内存可以完成对象实例的分配，且无法再扩展时，会抛出内存溢出异常。&lt;/p&gt;
+&lt;h2 id=&quot;方法区&quot;&gt;&lt;strong&gt;方法区&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;是什么：&lt;/strong&gt;和堆一样，是各个线程共享的内存区域。很多人把方法区称为永久代，但是本质上这两个不等价，Java虚拟机将GC分代收集扩展至方法区，使用永久代来实现方法区，这样GC收集器就能像管理Java堆一样管理方法区而不需要再写一套GC收集来管理方法区。当然在方法区里也可以设置不进行GC收集。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;存储什么内容：&lt;/strong&gt;已被虚拟机加载的类信息，类常量，类的静态变量，即时编译器编译后的代码等。运行时常量池也是方法区的一部分。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么是线程共享的：&lt;/strong&gt;各个线程都可以访问虚拟机加载的类。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;会出现什么异常情况：&lt;/strong&gt;内存溢出异常。&lt;/p&gt;
+&lt;h2 id=&quot;直接内存&quot;&gt;&lt;strong&gt;直接内存&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;是什么：&lt;/strong&gt;直接内存并不是虚拟机运行时数据区的一部分，也不是Java虚拟机定义的内存区域，但也经常被使用。JDK1.4加入了NIO类，一种基于通道与缓冲区的新I/O方式，NIO可以使用native函数库直接分配堆外内存，然后通过一个存储在Java堆中的DirectByteBuffer对象作为直接内存的引用来操作直接内存，这样可以避免在Java堆和native堆来回复制数据，从而提高了性能。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;会出现什么异常情况：&lt;/strong&gt;受机器总内存的影响，会出现内存溢出异常。&lt;/p&gt;
+</description>
+        <pubDate>Tue, 16 May 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/java/2017/05/16/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.html</link>
+        <guid isPermaLink="true">http://localhost:4000/java/2017/05/16/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.html</guid>
+        
+        <category>java</category>
+        
+        <category>JVM</category>
+        
+        <category>内存模型</category>
+        
+        
+        <category>Java</category>
+        
+      </item>
+    
+      <item>
+        <title>死磕JavaScript-函数按值传递参数</title>
+        <description>&lt;p&gt;早起打卡，今天死磕函数按值传递参数，干货走起……&lt;/p&gt;
+
+&lt;p&gt;基本类型的变量传递是将值A复制一份给被传递的变量B，两个变量值得变化是互不干扰的；而引用类型的变量传递是将引用类型变量A的引用传递给被传递的变量B，这个B的变化会反映到A上。例如：&lt;/p&gt;
+
+&lt;p&gt;例1：&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;code&gt;&lt;span class=&quot;kwd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; addTen&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+     num &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;+=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;lit&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+     &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; num&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; count &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;lit&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; result &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; addTen&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+console&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;com&quot;&gt;//20&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+console&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;com&quot;&gt;//30&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;例2：&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;code&gt;&lt;span class=&quot;kwd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; setName&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+     obj&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;name &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;str&quot;&gt;&quot;javaScript&quot;&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; language &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;();&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+setName&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+console&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;com&quot;&gt;//javaScript&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这两种函数的值传递是比较好理解的，在例1中，num其实是addTen的局部变量，在调用addTen函数的时候，count将值复制给了局部变量num，虽然函数内部num的值加了10，但是这一变化不会影响给函数外部的count变量。复制前后栈的变化图如下：
+&lt;img title=&quot;死磕JavaScript-函数按值传递参数_&quot; 图片1=&quot;&quot; src=&quot;http://img.mukewang.com/59165ced00011b7f19201338.jpg&quot; alt=&quot;图片描述&quot; style=&quot;width:100%&quot; /&gt;
+在例2中你可能有所疑惑，因为这看起来就像是引用传递啊，不像是标题所说的函数按值传递，这里language的引用复制传递给了obj局部变量，所以是引用传递呀。那我们来看下一个例子：&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;code&gt;&lt;span class=&quot;kwd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; setName&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+     obj&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;name &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;str&quot;&gt;&quot;javaScript&quot;&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+     obj &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;();&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+     obj&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;name &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;str&quot;&gt;&quot;new JavaScript&quot;&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; language &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;();&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+setName&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+console&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;com&quot;&gt;//javaScript&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果说language是按引用传递的，那么language就会自动被修改为指向其name属性值为“new JavaScript”的新对象，但结果确实“javaScript”，我们看下复制前后的栈和堆的变化图就能更清楚了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;死磕JavaScript-函数按值传递参数_&quot; 图片1=&quot;&quot; src=&quot;http://img.mukewang.com/59165d240001d2e019201756.jpg&quot; alt=&quot;图片描述&quot; style=&quot;width:100%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这下应该能明白了，也就是说这里的函数按值传递中的“值”指的是栈中的值，所以对于引用类型，是将栈中的language的值复制到obj中，也就是说这两个值对应的堆地址是一样的，其在堆中对应的对象是一样的，对obj中的改变对反映到language中，但如果改变了obj的堆地址那么obj和language就没什么关系了。&lt;/p&gt;
+
+</description>
+        <pubDate>Sun, 14 May 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/javascript/2017/05/14/%E5%87%BD%E6%95%B0%E6%8C%89%E5%80%BC%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0.html</link>
+        <guid isPermaLink="true">http://localhost:4000/javascript/2017/05/14/%E5%87%BD%E6%95%B0%E6%8C%89%E5%80%BC%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0.html</guid>
+        
+        <category>JavaScript</category>
+        
+        <category>函数</category>
+        
+        <category>传递参数</category>
+        
+        
+        <category>Javascript</category>
+        
+      </item>
+    
+      <item>
+        <title>死磕JavaScript-松散类型、js变量存储模型、变量提升</title>
+        <description>&lt;p&gt;好久没来慕课网学习了，上研究生之后，发现突然又变回学生后对自己的要求也松很多，开始到处旅游，做些没计划的事情，也很少写技术博客了，最近静下心来开始研究底层的东西，以后就在这写了，希望能死磕自己，坚持下去。好了，干货走起……&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;什么是松散类型&lt;/li&gt;
+  &lt;li&gt;JavaScript两种变量类型的内存模型&lt;/li&gt;
+  &lt;li&gt;预加载&lt;/li&gt;
+  &lt;li&gt;变量提升&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;javascript里的变量和其他语言有很大的不同，javascript的变量是一个松散的类型，松散类型变量的特点是变量定义时候不需要指定变量的类型，变量在运行时候可以随便改变数据的类型，但是这种特性并不代表javascript变量没有类型，当变量类型被确定后javascript的变量也是有类型的。&lt;/p&gt;
+
+&lt;p&gt;但是在现实中，很多程序员把javascript松散类型理解为了javascript变量是可以随意定义即你可以不用var定义，也可以使用var定义，其实在javascript语言里变量定义没有使用var，变量必须有赋值操作，只有赋值操作的变量是赋予给window，这其实是javascript语言设计者提升javascript安全性的一个做法。&lt;/p&gt;
+
+&lt;p&gt;此外javascript语言的松散类型的特点以及运行时候随时更改变量类型的特点，很多程序员会认为javascript变量的定义是在运行期进行的，更有甚者有些人认为javascript代码只有运行期，其实这种理解是错误的，javascript代码在运行前还有一个过程就是：预加载，预加载的目的是要事先构造运行环境例如全局环境，函数运行环境，还要构造作用域链，而环境和作用域的构造的核心内容就是指定好变量属于哪个范畴，因此在javascript语言里变量的定义是在预加载完成而非在运行时期。&lt;/p&gt;
+
+&lt;p&gt;讲一个例子来讲解：&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;code&gt;&lt;span class=&quot;kwd&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; a &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;lit&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; test&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(){&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+    console&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;com&quot;&gt;//undefined&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; a &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;lit&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+    console&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;com&quot;&gt;//2&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+test&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这是一个令人诧异的结果，为什么第一个弹出框显示的是undefined，而不是1呢？这种疑惑的原理我描述如下：&lt;/p&gt;
+
+&lt;p&gt;一个页面里直接定义在script标签下的变量是全局变量即属于window对象的变量，按照javascript作用域链的原理，当一个变量在当前作用域下找不到该变量的定义，那么javascript引擎就会沿着作用域链往上找直到在全局作用域里查找，按上面的代码所示，虽然函数内部重新定义了变量的值，但是内部定义之前函数使用了该变量，那么按照作用域链的原理在函数内部变量定义之前使用该变量，javascript引擎应该会在全局作用域里找到变量定义，而实际情况却是变量未定义，这到底是怎么回事呢？&lt;/p&gt;
+
+&lt;p&gt;这里我要先讲一个知识点，就是&lt;strong&gt;JavaScript的变量存储模型&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;javascript语言和java语言一样变量是分为两种类型：基本数据类型和引用类型。基本类型是指：Undefined、Null、Boolean、Number和String；而引用类型是指对象，所以javascript的对象指的是引用类型。但是实际开发里如果我们对基本类型和引用类型的区别不是很清晰，就会碰到我们很多不能理解的问题，下面我们来看看下面的代码：&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;code&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; str &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;“&lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;Sharpxiajun&lt;/span&gt;&lt;span class=&quot;str&quot;&gt;&quot;;
+ var num = 1;
+ var xxx;
+ console.log(str);//运行结果：sharpxiajun
+ console.log(num);//运行结果：1
+ console.log(xxx);//运行结果：undefined&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当我们使用引用类型时候，结果就和上面完全不同了，大家请看下面的代码：&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;code&gt;&lt;span class=&quot;kwd&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; obj1 &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kwd&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;typ&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;();&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;
+obj1&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt;name &lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;pln&quot;&gt; &lt;/span&gt;&lt;span class=&quot;str&quot;&gt;&quot;obj1 name”;
+console.log(obj1.name);// 运行结果：obj1 name&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Javascript里的基本变量是存放在栈区的（栈区指内存里的栈内存），它的存储结构如下图所示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://img.mukewang.com/591552cf0001746703950149.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;javascript里引用变量的存储就比基本类型存储要复杂多，引用类型的存储需要内存的栈区和堆区（堆区是指内存里的堆内存）共同完成，如下图所示：
+&lt;img src=&quot;http://img.mukewang.com/591552f20001700e05650292.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;理解基本类型变量和引用类型变量的存储结构后，结合上面开始讲的预加载的知识点，我们就能分析出开始那个例子的深层原因了。&lt;/p&gt;
+
+&lt;p&gt;引子里的代码在函数的局部作用域下变量a被重新定义了，在预加载时候a的作用域范围也就被框定了，a变量不再属于全局变量，而是属于函数作用域，只不过赋值操作是在运行期执行（这就是为什么javascript语言在运行时候会改变变量的类型，因为赋值操作是在运行期进行的），所以第一次使用a变量时候，a变量在局部作用域里没有被赋值，只有栈区的标示名称，因此结果就是undefined了。（这也就是js里的变量提升的原理）&lt;/p&gt;
+
+&lt;p&gt;不过赋值操作也不是完全不对预加载产生影响，预加载时候javascript引擎会扫描所有代码，但不会运行它，当预加载扫描到了赋值操作，但是赋值操作的变量有没有被var定义，那么该变量就会被赋予全局变量即window对象。&lt;/p&gt;
+</description>
+        <pubDate>Fri, 12 May 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/javascript/2017/05/12/%E6%9D%BE%E6%95%A3%E7%B1%BB%E5%9E%8B-js%E5%8F%98%E9%87%8F%E5%AD%98%E5%82%A8%E6%A8%A1%E5%9E%8B-%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87.html</link>
+        <guid isPermaLink="true">http://localhost:4000/javascript/2017/05/12/%E6%9D%BE%E6%95%A3%E7%B1%BB%E5%9E%8B-js%E5%8F%98%E9%87%8F%E5%AD%98%E5%82%A8%E6%A8%A1%E5%9E%8B-%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87.html</guid>
+        
+        <category>JavaScript</category>
+        
+        <category>松散类型</category>
+        
+        <category>变量存储模型</category>
+        
+        <category>变量提升</category>
+        
+        
+        <category>Javascript</category>
+        
+      </item>
     
       <item>
         <title>3 Steps (2 minutes) to Setup Your Personal Website with Jalpc</title>

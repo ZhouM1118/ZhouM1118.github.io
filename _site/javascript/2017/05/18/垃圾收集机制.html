@@ -7,12 +7,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
+    <meta content="死磕JavaScript-垃圾收集机制" name="description">
+  
+  
+    <meta name="keywords" content="JavaScript,垃圾收集">
   
   <meta name="author" content="周明">
 
   <title>
     
-        周明的技术博客|Blog
+        周明的技术博客|死磕JavaScript-垃圾收集机制
     
   </title>
   <!-- favicon -->
@@ -125,7 +129,7 @@
                     
                         
                         
-                        <li class="active">
+                        <li>
                         
                         <a class="page-scroll" href="/blog/">Blog</a></li>
                         
@@ -237,186 +241,102 @@
 
 	
 
-        <div class="row">
-    <div class="col-lg-12 text-center">
-        <div class="navy-line"></div>
-        <h1>Latest Blog</h1>
-    </div>
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Javascript</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 18 May 2017</span>
+                        <h1>
+                            死磕JavaScript-垃圾收集机制
+                        </h1>
+                    </div>
+                    	<p>JavaScript和Java一样具有自动垃圾收集机制。JavaScript的垃圾收集你机制的原理很简单：找出那些不再继续使用的变量，然后释放其占用的内存。</p>
+
+<p><strong>标记清除：</strong>这是最常用的垃圾收集方式。原理是：垃圾收集器在运行的时候会给存储在内存中的所有变量都加上标记—&gt;然后，它会去掉环境中的变量以及被环境中的变量引用的变量的标记—&gt;在此之后再被加上标记的变量将被视为准备删除的变量—&gt;最后，垃圾收集器完成内存清除工作，销毁那些带标记的变量并回收它们所占用的内存空间。</p>
+
+<p><strong>引用计数：</strong>这是一种不太常见的垃圾收集方式，IE用的就是这种。引用计数是指追踪记录每个值被引用的次数，原理是：当声明一个变量并将一个引用类型值赋给该变量时，则这个值得引用次数初始化为1—&gt;如果同一个值又被赋值给另一个变量，则该值的引用次数加1—&gt;相反，如果包含对这个值引用的变量又取得了另外一个值，则这个值得引用次数减1—&gt;当这个值得引用次数变为0时，说明无需再访问这个变量，可以被垃圾回收机制回收。</p>
+
+<p><img src="http://img.mukewang.com/591d135e0001701703930115.png" alt="" /></p>
+
+<p>但引用计数存在循环引用的风险，循环引用指的是对象A包含一个指向对象B的指针，而对象B中也包含一个指向对象A的引用。比如：</p>
+
+<p>这里例子中，objectA和objectB通过各自的属性相互引用，也就是说，两个对象的引用次数都是2，尽管函数执行完毕后，objectA和objectB还将继续存在，因为它们的引用次数永远都不为0。</p>
+
+<p>IE因为采用了引用计数的垃圾收集而性能低下。</p>
+
+<p>当然，我们也可以通过解除变量的引用（解除引用）来消除循环引用现象，比如：objectA = null;和objectB = null。</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">JavaScript</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">垃圾收集</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
 </div>
 
-<div class="row">
-    <div class="col-lg-8 col-lg-offset-2">
-        <div class="wrapper wrapper-content animated fadeInRight">
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
 
-            <!-- latest 10 blog -->
-			
-            <div class="vote-item">
-                <div class="row">
-                    <div class="col-md-10">
-                        <div class="vote-actions">
-                        </div>
-                        <a href="/java/2017/05/19/%E5%A6%82%E4%BD%95%E6%9E%84%E9%80%A0JVM%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%92%8C%E6%A0%88%E6%BA%A2%E5%87%BA.html" class="vote-title">
-                            死磕JVM-如何构造JVM内存溢出和栈溢出
-                        </a>
-                        <div class="vote-info">
-                        
-                        
-                            <i class="fa fa-clock-o"></i> <a>19 May 2017</a>
-                            <i class="fa fa-user"></i> <a>周明</a>
-                        </div>
-                    </div>
-                    <div class="col-md-2 ">
-                        <div class="vote-icon">
-                            <i class="fa icon-html"> </i>
+                            <br>
+                            <!-- comment -->
+                            
+
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="vote-item">
-                <div class="row">
-                    <div class="col-md-10">
-                        <div class="vote-actions">
-                        </div>
-                        <a href="/javascript/2017/05/18/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E6%9C%BA%E5%88%B6.html" class="vote-title">
-                            死磕JavaScript-垃圾收集机制
-                        </a>
-                        <div class="vote-info">
-                        
-                        
-                            <i class="fa fa-clock-o"></i> <a>18 May 2017</a>
-                            <i class="fa fa-user"></i> <a>周明</a>
-                        </div>
-                    </div>
-                    <div class="col-md-2 ">
-                        <div class="vote-icon">
-                            <i class="fa icon-html"> </i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="vote-item">
-                <div class="row">
-                    <div class="col-md-10">
-                        <div class="vote-actions">
-                        </div>
-                        <a href="/java/2017/05/18/Java%E5%A0%86%E4%B8%8A%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA.html" class="vote-title">
-                            死磕JVM-Java虚拟机对象
-                        </a>
-                        <div class="vote-info">
-                        
-                        
-                            <i class="fa fa-clock-o"></i> <a>18 May 2017</a>
-                            <i class="fa fa-user"></i> <a>周明</a>
-                        </div>
-                    </div>
-                    <div class="col-md-2 ">
-                        <div class="vote-icon">
-                            <i class="fa icon-html"> </i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="vote-item">
-                <div class="row">
-                    <div class="col-md-10">
-                        <div class="vote-actions">
-                        </div>
-                        <a href="/java/2017/05/16/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.html" class="vote-title">
-                            死磕JVM-Java内存模型
-                        </a>
-                        <div class="vote-info">
-                        
-                        
-                            <i class="fa fa-clock-o"></i> <a>16 May 2017</a>
-                            <i class="fa fa-user"></i> <a>周明</a>
-                        </div>
-                    </div>
-                    <div class="col-md-2 ">
-                        <div class="vote-icon">
-                            <i class="fa icon-html"> </i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="vote-item">
-                <div class="row">
-                    <div class="col-md-10">
-                        <div class="vote-actions">
-                        </div>
-                        <a href="/javascript/2017/05/14/%E5%87%BD%E6%95%B0%E6%8C%89%E5%80%BC%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0.html" class="vote-title">
-                            死磕JavaScript-函数按值传递参数
-                        </a>
-                        <div class="vote-info">
-                        
-                        
-                            <i class="fa fa-clock-o"></i> <a>14 May 2017</a>
-                            <i class="fa fa-user"></i> <a>周明</a>
-                        </div>
-                    </div>
-                    <div class="col-md-2 ">
-                        <div class="vote-icon">
-                            <i class="fa icon-html"> </i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="vote-item">
-                <div class="row">
-                    <div class="col-md-10">
-                        <div class="vote-actions">
-                        </div>
-                        <a href="/javascript/2017/05/12/%E6%9D%BE%E6%95%A3%E7%B1%BB%E5%9E%8B-js%E5%8F%98%E9%87%8F%E5%AD%98%E5%82%A8%E6%A8%A1%E5%9E%8B-%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87.html" class="vote-title">
-                            死磕JavaScript-松散类型、js变量存储模型、变量提升
-                        </a>
-                        <div class="vote-info">
-                        
-                        
-                            <i class="fa fa-clock-o"></i> <a>12 May 2017</a>
-                            <i class="fa fa-user"></i> <a>周明</a>
-                        </div>
-                    </div>
-                    <div class="col-md-2 ">
-                        <div class="vote-icon">
-                            <i class="fa icon-html"> </i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="vote-item">
-                <div class="row">
-                    <div class="col-md-10">
-                        <div class="vote-actions">
-                        </div>
-                        <a href="/html/2017/01/31/3-steps-to-setup-website-with-Jalpc.html" class="vote-title">
-                            3 Steps (2 minutes) to Setup Your Personal Website with Jalpc
-                        </a>
-                        <div class="vote-info">
-                        
-                        
-                            <i class="fa fa-clock-o"></i> <a>31 Jan 2017</a>
-                            <i class="fa fa-user"></i> <a>周明</a>
-                        </div>
-                    </div>
-                    <div class="col-md-2 ">
-                        <div class="vote-icon">
-                            <i class="fa icon-html"> </i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
         </div>
     </div>
 
 </div>
-
-
 
 
 	

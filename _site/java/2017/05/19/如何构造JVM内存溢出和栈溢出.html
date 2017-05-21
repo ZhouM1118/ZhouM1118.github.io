@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="死磕JVM-如何构造JVM内存溢出和栈溢出" name="description">
+  
+  
+    <meta name="keywords" content="java,JVM,溢出">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|死磕JVM-如何构造JVM内存溢出和栈溢出
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/mac/">Mac</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Java</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 19 May 2017</span>
+                        <h1>
+                            死磕JVM-如何构造JVM内存溢出和栈溢出
+                        </h1>
+                    </div>
+                    	<p>为什么要写这个题目？我记得我在面试阿里的时候面试官问了我这个问题，当时没能答得很好，只说了些概念的东西，很是心虚，于是下定决心要把这个问题搞懂，现在终于把这个问题怼清楚了，分享给大家，希望你们以后面试问到这种问题能有所准备。</p>
+
+<p><strong>Java虚拟机中描述了两种异常：</strong></p>
+
+<p>1、如果线程请求的栈深度大于虚拟机所允许的最大深度，将抛出StackOverflowError异常；</p>
+
+<p>2、如果在虚拟机中无法申请到足够多的内存空间，将抛出OutOfMemoryError异常。</p>
+
+<p>我们都知道Java虚拟机各个内存区域（除了程序计数器）都有发生内存溢出的可能，但到底什么样的操作或程序才会导致内存溢出或栈溢出的异常呢？</p>
+
+<p>我们分不同的内存区域来解释这个问题。</p>
+
+<p><strong>一、对于Java堆内存区域</strong></p>
+
+<p>Java堆中只会产生OutOfMemoryError异常。</p>
+
+<p>先搞清楚Java堆内存放的是什么，还不清楚的可以回顾下这篇文章<a href="">《死磕JVM-Java内存模型》</a>，从这篇文章里我们知道Java堆内存存放的是对象实例，所以原理上只要我们不断创建对象，并且保证GC Roots到对象之间有可达路径来避免垃圾回收机制清楚这些对象，也就是说当Eden区满的时候，GC被触发时，让GC误以为内存中的对象还存活着，那么在对象数量达到最大堆容量限制的时候就会产生内存溢出的异常。如下代码就会产生内存溢出的异常：</p>
+
+<pre class="prettyprint"><code><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="pun">堆溢出</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+     </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">OOMError</span><span class="pun">{}</span><span class="pln">
+
+     </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> main</span><span class="pun">(</span><span class="typ">String</span><span class="pun">[]</span><span class="pln"> args</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+          </span><span class="typ">List</span><span class="pun">&lt;</span><span class="typ">OOMError</span><span class="pun">&gt;</span><span class="pln"> list </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">ArrayList</span><span class="pun">&lt;</span><span class="typ">OOMError</span><span class="pun">&gt;();</span><span class="pln">
+          </span><span class="kwd">while</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">true</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+               list</span><span class="pun">.</span><span class="pln">add</span><span class="pun">(</span><span class="kwd">new</span><span class="pln"> </span><span class="typ">OOMError</span><span class="pun">());</span><span class="pln">
+          </span><span class="pun">}</span><span class="pln">
+     </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+<p>运行结果：</p>
+
+<blockquote>
+  <p>Exception in thread “main” java.lang.OutOfMemoryError: Java heap space</p>
+
+  <p>at java.util.Arrays.copyOf(Arrays.java:3210)</p>
+</blockquote>
+
+<blockquote>
+  <p>at java.util.Arrays.copyOf(Arrays.java:3181)</p>
+</blockquote>
+
+<blockquote>
+  <p>at java.util.ArrayList.grow(ArrayList.java:261)</p>
+</blockquote>
+
+<blockquote>
+  <p>at java.util.ArrayList.ensureExplicitCapacity(ArrayList.java:235)</p>
+</blockquote>
+
+<blockquote>
+  <p>at java.util.ArrayList.ensureCapacityInternal(ArrayList.java:227)</p>
+</blockquote>
+
+<blockquote>
+  <p>at java.util.ArrayList.add(ArrayList.java:458)</p>
+</blockquote>
+
+<blockquote>
+  <p>at com.intelligentler.jvm.堆溢出.main(堆溢出.java:13)</p>
+</blockquote>
+
+<p>“Java heap space”提示着产生OutOfMemoryError异常的Java虚拟机的内存区域，也就是Java堆内存。</p>
+
+<p><strong>如何解决发生在Java堆内存的OutOfMemoryError异常呢？</strong></p>
+
+<p>首先我们要分清楚产生OutOfMemoryError异常的原因是内存泄露还是内存溢出，如果内存中的对象确实都必须存活着而不像上面那样不断地创建对象实例却不使用该对象，则是内存溢出，而像上面代码中的情况则是内存泄露。</p>
+
+<p><strong>如果是内存泄露</strong>，我们可以通过一些内存查看工具来查看泄露对象到GC Roots的引用链，找到泄露对象是通过怎样的路径与GC Roots相关联并导致GC无法自动回收这些泄露对象，掌握了这些信息，我们就能比较准确地定位出泄露代码的位置。</p>
+
+<p><strong>如果不是内存泄露</strong>，也就是说内存中的对象确实都还必须存活，那么应该检查虚拟机的堆参数，看看是否还可以将机器物理内存调大，同时在代码上检查是否存在某些对象生命周期过长、持有状态时间过长的情况。</p>
+
+<p><strong>二、对于虚拟机栈和本地方法栈</strong></p>
+
+<p>在这一部分内存区域，可能产生OutOfMemoryError异常和StackOverflowError异常。</p>
+
+<p>如果定义大量的本地变量，增大此方法帧中本地变量表的长度或者设置-Xss参数减少栈内存容量，这两种操作都会抛出StackOverflowError异常。</p>
+
+<p>如下面的代码：</p>
+<pre class="prettyprint"><code><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="pun">栈溢出</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+</span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> stackLength </span><span class="pun">=</span><span class="pln"> </span><span class="lit">1</span><span class="pun">;</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> addStackLength</span><span class="pun">(){</span><span class="pln">
+          stackLength</span><span class="pun">++;</span><span class="pln">
+          addStackLength</span><span class="pun">();</span><span class="pln">
+     </span><span class="pun">}</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> main</span><span class="pun">(</span><span class="typ">String</span><span class="pun">[]</span><span class="pln"> args</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">Throwable</span><span class="pun">{</span><span class="pln">
+          </span><span class="pun">栈溢出</span><span class="pln"> oom </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="pun">栈溢出();</span><span class="pln">
+          </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+               oom</span><span class="pun">.</span><span class="pln">addStackLength</span><span class="pun">();</span><span class="pln">
+          </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="typ">Throwable</span><span class="pln"> e</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+               </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"stack length:"</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> oom</span><span class="pun">.</span><span class="pln">stackLength</span><span class="pun">);</span><span class="pln">
+               </span><span class="kwd">throw</span><span class="pln"> e</span><span class="pun">;</span><span class="pln">
+          </span><span class="pun">}</span><span class="pln">
+     </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+<p>运行结果：</p>
+
+<blockquote>
+  <p>stack length:18388</p>
+
+  <p>Exception in thread “main” java.lang.StackOverflowError</p>
+
+  <p>at com.intelligentler.jvm.栈溢出.addStackLength(栈溢出.java:9)</p>
+
+  <p>at com.intelligentler.jvm.栈溢出.addStackLength(栈溢出.java:9)</p>
+
+  <p>at com.intelligentler.jvm.栈溢出.addStackLength(栈溢出.java:9)</p>
+</blockquote>
+
+<p>所以，如果在单线程的情况下，无论是栈帧太大还是虚拟机栈容量太小，当内存无法再分配的时候，虚拟机抛出的是StackOverflowError异常。</p>
+
+<p>如果在多线程下，不断地建立线程可能会产生OutOfMemoryError异常。</p>
+
+<p><strong>三、对于方法区</strong></p>
+
+<p>方法区中只会产生OutOfMemoryError异常。</p>
+
+<p>由于运行时常量池是方法区的一部分，我们可以通过String.intern()方法来构建一个运行时常量池的OutOfMemoryError异常。</p>
+
+<p>String.intern()是一个Native方法，它的作用是：如果字符串常量池中已经包含了一个等于该String对象的字符串，则返回这个String对象，否则，将此String对象包含的字符串添加到常量池中，并返回这个字符串的String对象的引用。如下面代码：</p>
+
+<pre class="prettyprint"><code><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="pun">方法区溢出</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+     </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> main</span><span class="pun">(</span><span class="typ">String</span><span class="pun">[]</span><span class="pln"> args</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+          </span><span class="typ">List</span><span class="pun">&lt;</span><span class="typ">String</span><span class="pun">&gt;</span><span class="pln"> list </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">ArrayList</span><span class="pun">&lt;</span><span class="typ">String</span><span class="pun">&gt;();</span><span class="pln">
+          </span><span class="kwd">int</span><span class="pln"> i </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+          </span><span class="kwd">while</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">true</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+               list</span><span class="pun">.</span><span class="pln">add</span><span class="pun">(</span><span class="typ">String</span><span class="pun">.</span><span class="pln">valueOf</span><span class="pun">(</span><span class="pln">i</span><span class="pun">++).</span><span class="pln">intern</span><span class="pun">());</span><span class="pln">
+          </span><span class="pun">}</span><span class="pln">
+     </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+<p>运行结果：</p>
+<blockquote>
+  <p>Exception in thread “main” java.lang.OutOfMemoryError: PermGen space</p>
+</blockquote>
+
+<blockquote>
+  <p>at java.lang.String.intern(Native Method)</p>
+</blockquote>
+
+<p>PermGen space的全称是Permanent Generation space，是指内存的永久保存区域，也就是说运行时常量池属于方法区（也就是虚拟机永久代）中的一部分。</p>
+
+<p>另外，方法区是存放Class的相关信息的，运行时如果有大量的类来填满方法区，就会产生OutOfMemoryError异常。</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">java</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">JVM</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">溢出</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>

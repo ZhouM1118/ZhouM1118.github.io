@@ -7,16 +7,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-    <meta content="3 Steps (2 minutes) to Setup Your Personal Website with Jalpc" name="description">
+    <meta content="死磕JVM-Java内存模型" name="description">
   
   
-    <meta name="keywords" content="Jalpc,Jekyll,gh-pages,website,blog,easy">
+    <meta name="keywords" content="java,JVM,内存模型">
   
   <meta name="author" content="周明">
 
   <title>
     
-        周明的技术博客|3 Steps (2 minutes) to Setup Your Personal Website with Jalpc
+        周明的技术博客|死磕JVM-Java内存模型
     
   </title>
   <!-- favicon -->
@@ -248,67 +248,76 @@
                 <div class="ibox-content">
                     <div class="pull-right">
                     	
-                        	<button class="btn btn-white btn-xs" type="button">HTML</button>
+                        	<button class="btn btn-white btn-xs" type="button">Java</button>
                         
                     </div>
                     <div class="text-center article-title">
-                    <span class="text-muted"><i class="fa fa-clock-o"></i> 31 Jan 2017</span>
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 16 May 2017</span>
                         <h1>
-                            3 Steps (2 minutes) to Setup Your Personal Website with Jalpc
+                            死磕JVM-Java内存模型
                         </h1>
                     </div>
-                    	<p>Everyone wants to have a personal website, you can display your infomation to public, post blogs and make friends. If you are CS engineer, haveing a self website will benefit your interview.</p>
+                    	<p>Java虚拟机是Java工程师必学的进阶功课，这段时间开始死磕JVM。今天把JVM的基础知识点Java的内存模型怼清楚，废话不多说，干货走起！</p>
 
-<p>So, if you like this website <a href="https://jarrekk.github.io/Jalpc/">https://jarrekk.github.io/Jalpc/</a> or <a href="http://www.jarrekk.com">http://www.jarrekk.com</a> and are willing to have a website, here is a way to build your website in 3 steps(2 minutes). Following are steps to setup your website(make sure you have basic knowledge of <a href="https://jekyllrb.com/">Jekyll</a> and <a href="https://pages.github.com/">GitHub Pages</a>, if you want to custom css/js <a href="https://github.com/npm/npm">NPM</a> is needed):</p>
+<p><img src="http://img.mukewang.com/591a5ed500016f8704170268.jpg" alt="" /></p>
 
-<ol>
-  <li>
-    <p>Fork <a href="https://github.com/jarrekk/Jalpc">this project – Jalpc</a> at <a href="https://github.com">GitHub</a>. If you want to edit website at github, do it as following gif or clone forked repository. <code class="highlighter-rouge">git clone git@github.com:github_username/Jalpc.git</code>.</p>
+<h2 id="程序计数器"><strong>程序计数器</strong></h2>
+<p><strong>是什么</strong>：程序计数器是很小的一块内存空间，它是当前线程所执行的字节码的行号指示器。</p>
 
-    <p><!-- ![edit](/static/assets/img/blog/3steps/edit.gif) -->
- <img src="/static/assets/img/blog/3steps/edit.gif" width="75%" /></p>
-  </li>
-  <li>
-    <p>Enter into repository directory and edit following file list:</p>
+<p><strong>有什么用：</strong>解释器通过这个计数器来选取下一条需要执行的字节码指令。</p>
 
-    <ul>
-      <li>
-        <p><strong>_config.yml</strong>: edit ‘Website settings’, ‘author’, ‘comment’ and ‘analytics’ items.</p>
-      </li>
-      <li>
-        <p><strong>_data/landing.yml</strong>: custom sections of index page.</p>
-      </li>
-      <li>
-        <p><strong>_data/index/</strong>: edit sections’ data to yours at index page, please notice comment at each file.</p>
-      </li>
-      <li>
-        <p><strong>_data/blog.yml</strong>: edit navbar(categories) of blog page, if you have different/more blog page, copy <code class="highlighter-rouge">blog/python.html</code> and change it to your category HTML file, and edit <strong>Python</strong>, <strong>/python/</strong> to your category name at items <strong>title</strong> and <strong>permalink</strong>, make sure title is the same as permalink but capitalized first letter(except HTML).</p>
-      </li>
-      <li>
-        <p><strong>CNAME</strong>: If you wanna release website at your own domain name: edit it and create <code class="highlighter-rouge">gh-pages</code> branch; if you want to use <em>github_username.github.io</em>: leave it blank.</p>
-      </li>
-      <li>
-        <p>Go to repo’s settings panel, config <strong>GitHub Pages</strong> section to make sure website is released.</p>
-      </li>
-    </ul>
-  </li>
-  <li>
-    <p>Push changes to your github repository and view your website, done!</p>
-  </li>
-</ol>
+<p><strong>存储什么内容：</strong>如果线程执行的是Java方法，存储的是正在执行的虚拟机字节码指令的地址；如果是native方法，计数器值为空（undefined）。</p>
 
-<p>From now on, you can post your blog to this website by creating md files at <code class="highlighter-rouge">post/</code> directory and push it to GitHub, you can clear files at this directory before you post blogs.</p>
+<p><strong>为什么是线程私有的：</strong>多线程是线程轮流切换并分配处理器执行时间片的方式来实现的，在任何确定的时刻，一个处理器（对于多核处理器来说就是一个内核）都只会执行一条线程，所以，为了线程在切换后能恢复到正确的执行位置，每个线程应该独立拥有一个程序计数器。</p>
 
-<p>If you like this repository, I appreciate you star this repository. Please don’t hesitate to mail me or post issues on GitHub if you have any questions. Hope you have a happy blog time!😊</p>
+<p><strong>会出现什么异常情况：</strong>唯一一个无内存溢出异常的区域。</p>
+<h2 id="java虚拟机栈"><strong>Java虚拟机栈</strong></h2>
+<p><strong>是什么：</strong>虚拟机栈是Java方法的内存模型，每一个Java方法从调用到执行完成就对应着一个栈帧在虚拟机栈中的入栈和出栈。</p>
+
+<p><strong>存储什么内容：</strong>每个方法的执行就会创建一个栈帧，这个栈帧会存储这个Java方法的局部变量表，操作数栈，动态链接，方法出口等信息。</p>
+
+<p><strong>为什么是线程私有的：</strong>每个线程所执行的方法可能是不一样的。</p>
+
+<p><strong>会出现什么异常情况：</strong>如果线程请求的栈深度&gt;虚拟机允许的深度，抛出栈溢出异常；如果扩展时无法申请到足够的内存，抛出内存溢出异常。</p>
+<h2 id="本地方法栈"><strong>本地方法栈</strong></h2>
+<p><strong>是什么：</strong>本地方法栈的作用和虚拟机栈非常像是，只不过本地方法栈是native方法的内存模型，每一个native方法从调用到执行完成就对应着一个栈帧在本地方法栈中的入栈和出栈。</p>
+
+<p><strong>存储什么内容：</strong>同虚拟机栈。</p>
+
+<p><strong>为什么是线程私有的：</strong>同虚拟机栈。</p>
+
+<p><strong>会出现什么异常情况：</strong>同虚拟机栈。</p>
+<h2 id="java堆"><strong>Java堆</strong></h2>
+<p><strong>是什么：J</strong>ava堆是Java虚拟机管理的内存中最大的一块，Java堆是在虚拟机启动的时候创建的。</p>
+
+<p><strong>存储什么内容：</strong>存放对象实例，几乎所有的对象实例都在这个内存区域分配内存。</p>
+
+<p><strong>为什么是线程共享的：</strong>所有的线程都可以访问不同的对象。其实从内存分配的角度来看，线程共享的Java堆可能其实是多个线程私有的分配缓冲区，不同的线程将各自的对象实例放在看似共享的Java堆的各自的缓冲区上，这样划分可以更好的回收内存，也可以更好点分配内存。</p>
+
+<p><strong>会出现什么异常情况：</strong>Java堆可以处于物理上不连续的内存空间上，但逻辑上一定是连续的，在堆中没有内存可以完成对象实例的分配，且无法再扩展时，会抛出内存溢出异常。</p>
+<h2 id="方法区"><strong>方法区</strong></h2>
+<p><strong>是什么：</strong>和堆一样，是各个线程共享的内存区域。很多人把方法区称为永久代，但是本质上这两个不等价，Java虚拟机将GC分代收集扩展至方法区，使用永久代来实现方法区，这样GC收集器就能像管理Java堆一样管理方法区而不需要再写一套GC收集来管理方法区。当然在方法区里也可以设置不进行GC收集。</p>
+
+<p><strong>存储什么内容：</strong>已被虚拟机加载的类信息，类常量，类的静态变量，即时编译器编译后的代码等。运行时常量池也是方法区的一部分。</p>
+
+<p><strong>为什么是线程共享的：</strong>各个线程都可以访问虚拟机加载的类。</p>
+
+<p><strong>会出现什么异常情况：</strong>内存溢出异常。</p>
+<h2 id="直接内存"><strong>直接内存</strong></h2>
+<p><strong>是什么：</strong>直接内存并不是虚拟机运行时数据区的一部分，也不是Java虚拟机定义的内存区域，但也经常被使用。JDK1.4加入了NIO类，一种基于通道与缓冲区的新I/O方式，NIO可以使用native函数库直接分配堆外内存，然后通过一个存储在Java堆中的DirectByteBuffer对象作为直接内存的引用来操作直接内存，这样可以避免在Java堆和native堆来回复制数据，从而提高了性能。</p>
+
+<p><strong>会出现什么异常情况：</strong>受机器总内存的影响，会出现内存溢出异常。</p>
 
                     <hr>
                     <div class="row">
                         <div class="col-md-6">
                                 <h5 style="display: inline;">Tags:</h5>
                                 
-                                    <button class="btn btn-white btn-xs" type="button">Jalpc</button>
+                                    <button class="btn btn-white btn-xs" type="button">java</button>
                                 
-                                    <button class="btn btn-white btn-xs" type="button">Jekyll</button>
+                                    <button class="btn btn-white btn-xs" type="button">JVM</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">内存模型</button>
                                 
                         </div>
                         <div class="col-md-6">
