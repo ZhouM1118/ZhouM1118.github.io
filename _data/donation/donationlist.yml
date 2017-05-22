@@ -1,18 +1,18 @@
 # donation list
-- name: Kun Liu
-  account: 187****6486
+- name: Dreamy
+  account: 188****5004
   github:
   website:
   type: rmb
-  value: 50
-  date: 2017-02-25
+  value: 10
+  date: 2017-05-21
 
 - name: Celine Yu
   account: 80*****94@qq.com
   github: YUJING1993
   website: http://angular.jack003.com
   type: rmb
-  value: 50
+  value: 10
   date: 2016-11-20
 
 - name: Wenwei Zhou
@@ -36,5 +36,5 @@
   github: flylixiaolong
   website:
   type: rmb
-  value: 50
+  value: 10
   date: 2016-01-03
