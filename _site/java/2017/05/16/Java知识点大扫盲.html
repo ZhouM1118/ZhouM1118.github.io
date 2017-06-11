@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="Java知识点大扫盲" name="description">
+  
+  
+    <meta name="keywords" content="java,知识点">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|Java知识点大扫盲
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/mac/">Mac</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Java</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 16 May 2017</span>
+                        <h1>
+                            Java知识点大扫盲
+                        </h1>
+                    </div>
+                    	<p>在Java的学习过程中，多多少少会遗漏掉一些基本的知识点，而这些基本的知识点往往是奠定Java基础很重要的部分，里面的很多知识点我们编程中往往用不到，但理解它们能帮助我们更好地掌握Java，本文是一个长期贴，会不定时更新。</p>
+
+<p><strong>1、函数的形参到底获取的是实参的值还是实参的引用地址？</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public class Main17{     
+     String str = "start";
+     char ch[] = {'a','b','c'};
+     Integer a = 1;
+     float f = 1.0f;
+     double d = 1.0;     
+     public void change(String str,char[] ch){
+          str = "end";
+          ch[0] = 'e';
+     }     
+     public void change(Integer a){
+          a = 2;
+     }     
+     public void change(float f){
+          f = 2.0f;
+     }
+     public void change(double d){
+          d = 2.0;
+     }     
+     public static void main(String[] args) {
+          Main17 m17 = new Main17();
+          m17.change(m17.str, m17.ch);
+          System.out.print(m17.str + " and ");
+          System.out.println(m17.ch);
+          m17.change(m17.a);
+          System.out.println(m17.a);
+          m17.change(m17.f);
+          System.out.println(m17.f);
+          m17.change(m17.d);
+          System.out.println(m17.d);
+     }
+}
+result：
+start and ebc
+1
+1.0
+1.0
+</code></pre>
+</div>
+
+<p>我们可以发现String，float，double，这些值changea后都没变，但是char的值改变了，也就是说String，float，double给形参传入的是实参的值，因为这些类都是final类（还有：Integer，Long，Short）；而char给形参传入的是实参的引用地址，所以change中改变了char的值会反映到类的全局变量。</p>
+
+<p><strong>2、Java中&amp;&amp;和&amp;以及||和|的区别</strong></p>
+
+<p>&amp;&amp;和&amp;都是表示与，区别是&amp;&amp;只要第一个条件为false，后面条件就不再判断。而&amp;要对所有的条件都进行判断。</p>
+
+<p>但是||和|都是表示“或”，区别是||只要第一个条件为true，后面的条件就不再判断，而|要对所有的条件进行判断。</p>
+
+<p><strong>3、==与equals</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>String s = "hello"；
+String t = “hello”；
+char c [] = {'h','e','l','l','o'}；
+
+s == t //true
+s.equals(c)//false
+</code></pre>
+</div>
+
+<p>首先==与equals是有明显区别的。</p>
+
+<p>==强调栈中的比较，可以理解为地址比较</p>
+
+<p>equals强调对象的内容比较</p>
+
+<p>String s=“hello”；会在栈中生成hello字符串，并存入字符串常量池中。</p>
+
+<p>String t=“hello” ；创建时，会在字符串常量池中寻找，当找到需要的hello时，不进行字符串的创建，引用已有的。 所以，s==t返回true，s.equals(t)也是true。</p>
+
+<p>char c[]={‘h’,’e’,’l’,’l’,’o’}; c==s这个是不存在的，==两边类型不同，t.equals(c)这个语句在anObject instanceof String这步判断不会通过，也就是cha[] 压根不能与String相比较，类型不是相同的。返回false。</p>
+
+<p><strong>4、静态成员变量或静态代码块&gt;mian方法&gt;非静态成员变量或非静态代码块&gt;构造方法</strong></p>
+
+<p>静态方法或静态块会比构造方法（包括父类的构造函数）先加载，且只加载一次。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>class Test{
+     public Test(){
+          System.out.println("I'm 构造器");
+     }
+     static{
+          System.out.println("I'm static");
+     }
+}
+result：
+I'm static
+I'm 构造器
+</code></pre>
+</div>
+
+<p><strong>5、String的replaceAll方法</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>String classFile = "com.jd.". replaceAll(".", "/") 
+	+ "MyClass.class";
+System.out.println(classFile);
+result：
+/////////MyClass.class
+</code></pre>
+</div>
+
+<p>由于replaceAll方法的第一个参数是一个正则表达式，而”.”在正则表达式中表示任何字符，所以会把前面字符串的所有字符都替换成”/”。如果想替换的只是”.”，那么要写成”\.”。</p>
+
+<p><strong>6、ry-catch-finally</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public static int func (){
+    try{
+        return 1;
+    }catch (Exception e){
+        return 2;
+    }finally{
+        return 3;
+    }
+}
+result：
+3
+</code></pre>
+</div>
+
+<p>Try catch finally获取异常错误的结构，try中没有异常时，但是有return等跳转语句，这样会引发程序控制流离开当前的try，即在return语句执行之后返回之前去完成finally中资源的释放。 由于代码中的finally中有return语句，将try中的return语句覆盖，程序直接跳出。</p>
+
+<p><strong>7、匿名内部类</strong></p>
+
+<p>匿名内部类也就是没有名字的内部类。</p>
+
+<p>正因为没有名字，所以匿名内部类只能使用一次，它通常用来简化代码编写
+但使用匿名内部类还有个前提条件：必须继承一个父类或实现一个接口。</p>
+
+<p>实例1:不使用匿名内部类来实现抽象方法</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>abstract class Person {
+    public abstract void eat();
+}
+class Child extends Person {
+    public void eat() {
+        System.out.println("eat something");
+    }
+}
+public class Demo {
+    public static void main(String[] args) {
+        Person p = new Child();
+        p.eat();
+    }
+}
+运行结果：eat something
+</code></pre>
+</div>
+
+<p>可以看到，我们用Child继承了Person类，然后实现了Child的一个实例，将其向上转型为Person类的引用。</p>
+
+<p>但是，如果此处的Child类只使用一次，那么将其编写为独立的一个类岂不是很麻烦？</p>
+
+<p>这个时候就引入了匿名内部类。</p>
+
+<p>实例2：匿名内部类的基本实现</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>abstract class Person {
+    public abstract void eat();
+}
+public class Demo {
+    public static void main(String[] args) {
+        Person p = new Person() {
+            public void eat() {
+                System.out.println("eat something");
+            }
+        };
+        p.eat();
+    }
+}
+运行结果：eat something
+</code></pre>
+</div>
+
+<p>可以看到，我们直接将抽象类Person中的方法在大括号中实现了。</p>
+
+<p>这样便可以省略一个类的书写。</p>
+
+<p>并且，匿名内部类还能用于接口上。</p>
+
+<p>实例3：在接口上使用匿名内部类</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>interface Person {
+    public void eat();
+}
+public class Demo {
+    public static void main(String[] args) {
+        Person p = new Person() {
+            public void eat() {
+                System.out.println("eat something");
+            }
+        };
+        p.eat();
+    }
+}
+运行结果：eat something
+</code></pre>
+</div>
+
+<p>由上面的例子可以看出，只要一个类是抽象的或是一个接口，那么其子类中的方法都可以使用匿名内部类来实现。</p>
+
+<p>最常用的情况就是在多线程的实现上，因为要实现多线程必须继承Thread类或是继承Runnable接口。</p>
+
+<p>实例4：Thread类的匿名内部类实现</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public class Demo {
+    public static void main(String[] args) {
+        Thread t = new Thread() {
+            public void run() {
+                for (int i = 1; i &lt;= 5; i++) {
+                    System.out.print(i + " ");
+                }
+            }
+        };
+        t.start();
+    }
+}
+运行结果：1 2 3 4 5
+</code></pre>
+</div>
+
+<p>实例5：Runnable接口的匿名内部类实现</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public class Demo {
+    public static void main(String[] args) {
+        Runnable r = new Runnable() {
+            public void run() {
+                for (int i = 1; i &lt;= 5; i++) {
+                    System.out.print(i + " ");
+                }
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
+    }
+}
+运行结果：1 2 3 4 5
+</code></pre>
+</div>
+
+<p><strong>8、Integer等的比较</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Integer i01 = 59;
+int i02 = 59;
+Integer i03 = Integer.valueof(59);
+Integer i04 = new Integer(59);
+
+i01 == i02//true
+i01 == i03//true
+i03 == i04//false
+i03 == i04//true
+</code></pre>
+</div>
+
+<p>Byte,Short,Integer,Long,Character这5种整型的包装类在对应值小于等于127并且大于等于-128时会使用常量池，因为他们至占用一个字节(-128~127);超出这个范围将会返回一个新的包装类对象。</p>
+
+<p>比如</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public static Integer valueOf(int i) {
+    if (i &gt;= IntegerCache.low &amp;&amp; i &lt;= IntegerCache.high)
+        return IntegerCache.cache[i + (-IntegerCache.low)];
+    return new Integer(i);
+}
+
+public static Long valueOf(long l) {
+    final int offset = 128;
+    if (l &gt;= -128 &amp;&amp; l &lt;= 127) { // will cache
+        return LongCache.cache[(int)l + offset];
+    }
+    return new Long(l);
+}
+
+public static Short valueOf(short s) {
+    final int offset = 128;
+    int sAsInt = s;
+    if (sAsInt &gt;= -128 &amp;&amp; sAsInt &lt;= 127) { // must cache
+        return ShortCache.cache[sAsInt + offset];
+    }
+    return new Short(s);
+}
+</code></pre>
+</div>
+
+<p>所以</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public static void main(String[] args) {
+
+    Integer a = 127;
+    Integer b = 127;
+
+    Integer c = 128;
+    Integer d = 128;
+
+    System.out.println(a == b);//true
+    System.out.println(c == d);//false
+}
+</code></pre>
+</div>
+
+<p>注意：int和Integer(只要值相等，无论new否)比，都为true，因为会把Integer自动拆箱为int再去比。</p>
+
+<p><strong>9、Spring的事务传播特性</strong></p>
+
+<p>PROPAGATION_required–支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。</p>
+
+<p>PROPAGATION_supports–支持当前事务，如果当前没有事务，就以非事务方式执行。</p>
+
+<p>PROPAGATION_mandatory–支持当前事务，如果当前没有事务，就抛出异常。</p>
+
+<p>PROPAGATION_requires _new–新建事务，如果当前存在事务，把当前事务挂起。</p>
+
+<p>PROPAGATION_not _supported–以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。</p>
+
+<p>PROPAGATION_never–以非事务方式执行，如果当前存在事务，则抛出异常。</p>
+
+<p><strong>10、i++与++i</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public class Inc {
+    public static void main(String[] args) {
+       Inc inc = new Inc();
+       int i = 0;
+       inc.fermin(i); //查看知识点1
+       i= i ++;
+       System.out.println(i);  //0，这个结果是不是很意外
+    }
+    void fermin(int i){
+       i++;
+    }
+}
+</code></pre>
+</div>
+
+<p>Java使用了中间缓存变量机制：</p>
+
+<p>i=i++;等同于：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>temp=i； (等号右边的i)
+i=i+1;      (等号右边的i)
+i=temp;   (等号左边的i)
+</code></pre>
+</div>
+
+<p>而i=++i;则等同于：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>i=i+1;
+temp=i;
+i=temp;
+</code></pre>
+</div>
+
+<p>但如果把“i= i ++; ”改为“i++”，结果会是1。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public class Spike
+{
+    public static void main(String[] args)
+    {
+        Counter a = new Counter();
+        System.out.println(a.increment());
+        System.out.println(a.anotherIncrement());
+        Counter b = new Counter();
+        System.out.println(b.increment());
+    }
+}
+class Counter
+{
+    private static int count = 0;
+    public int increment()
+    {
+        return count++;
+    }
+    public int anotherIncrement()
+    {
+        return ++count;
+    }
+}
+result：
+0 2 2
+</code></pre>
+</div>
+
+<p>increment()方法返回当前count值，然后count增加1</p>
+
+<p>antoherIncrement()方法让count增加1，然后返回count值</p>
+
+<p><strong>11、null</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public class Main17{
+  private static void testMethod(){
+        System.out.println("testMethod");
+   }
+    public static void main(String args[]) {
+      ((Main17)null).testMethod();
+    }
+}
+result：
+testMethod
+</code></pre>
+</div>
+
+<p>Java中，null是一个关键字，不是对象，也不是Objcet的实例，它用来标识一个不确定的对象。因此可以将null赋给引用类型变量，但不可以将null赋给基本类型变量。</p>
+
+<p>比如：int a = null;是错误的。Ojbect o = null是正确的。</p>
+
+<p><strong>12、类方法、类变量和实例方法、实例变量</strong></p>
+
+<p>用static修饰的方法和变量是类方法、类变量，可以直接用类名.的方法来调用；</p>
+
+<p>没有用static修饰的方法和变量就属于实例方法、实例变量，必须实例化类之后用实例化对象才能调用。在类方法中调用实例变量会报错，在实例方法中调用实例变量则没有问题。</p>
+
+<p>由于类方法是属于整个类的，并不属于类的哪个对象，所以类方法的方法体中不能有与类的对象有关的内容。即类方法体有如下限制：</p>
+
+<ol>
+  <li>类方法中不能引用对象变量；</li>
+  <li>类方法中不能调用类的对象方法；</li>
+  <li>在类方法中不能使用super、this关键字。</li>
+  <li>类方法不能被覆盖。</li>
+</ol>
+
+<p>如果违反这些限制，就会导致程序编译错误。</p>
+
+<p>与类方法相比，对象方法几乎没有什么限制：</p>
+
+<ol>
+  <li>对象方法中可以引用对象变量，也可以引用类变量；</li>
+  <li>对象方法中可以调用类方法；</li>
+  <li>对象方法中可以使用super、this关键字。</li>
+</ol>
+
+<p><strong>13、Collection与Collections的区别</strong></p>
+
+<p>java.util.Collection 是一个集合接口。它提供了对集合对象进行基本操作的通用接口方法。Collection接口在Java 类库中有很多具体的实现。Collection接口的意义是为各种具体的集合提供了最大化的统一操作方式。</p>
+
+<p>Collection <br />
+├List <br />
+│├LinkedList <br />
+│├ArrayList <br />
+│└Vector <br />
+│　└Stack <br />
+└Set<br />
+│　└HashSet</p>
+
+<p>└Queue</p>
+
+<p>java.util.Collections 是一个包装类。它包含有各种有关集合操作的静态多态方法。此类不能实例化，因为内部的构造函数被私有化了就像一个工具类，服务于Java的Collection框架。</p>
+
+<p><strong>14、super()与this()</strong></p>
+
+<p>1）调用super()必须写在子类构造方法的第一行，否则编译不通过。每个子类构造方法的第一条语句，都是隐含地调用super()，如果父类没有这种形式的构造函数，那么在编译的时候就会报错。</p>
+
+<p>2）super()和this()类似,区别是，super从子类中调用父类的构造方法，this()在同一类内调用其它方法。</p>
+
+<p>3）super()和this()均需放在构造方法内第一行，既然两个都要放在第一行，那么两个就不可能同时存在一个构造函数里。</p>
+
+<p>4）尽管可以用this调用一个构造器，但却不能调用两个。</p>
+
+<p>5）this()和super()都指的是对象，所以，均不可以在static环境中使用。包括：static变量,static方法，static语句块。</p>
+
+<p>6）从本质上讲，this是一个指向本对象的指针, 然而super是一个Java关键字。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public class Main17{
+    public Main17(){
+        super();
+        System.out.println("1");
+    }
+    public Main17(int a){
+        this();
+        System.out.println(a);
+    }
+    public Main17(int a, String s){
+        this(a);
+        System.out.println(s+a);
+    }
+    public static void main(String[] args) {
+        Main17 main17 = new Main17(2,"end:");
+    }
+}
+result：
+1
+2
+end:2
+</code></pre>
+</div>
+
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">java</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">知识点</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
