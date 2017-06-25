@@ -4,16 +4,16 @@
     detail: 水土保持数据上报系统
     i18n: shuitu
   desc1:
-    detail: 系统框架搭建以及数据库设计
+    detail: 项目简介：
     i18n: shuitu_desc1
   desc2:
-    detail: 数据上报工作流设计与实现
+    detail: 系统主要用于湖北省各个水利监测站点的数据上报工作，采用SSM框架，前端开发采用基于Bootstrap的AdminLTE 2框架以及JavaScript，jQuery，Ajax，JSP等技术。
     i18n: shuitu_desc2
   desc3:
-    detail: 数据录入、校对、审核和任务分发设计与实现；数据pdf导出
+    detail: 主要负责：
     i18n: shuitu_desc3
   desc4:
-    detail: 系统采用Spring+Spring MVC+Mybatis框架，使用Git版本控制和Maven代码管理
+    detail: 我主要负责系统架构设计与框架搭建，数据库设计，数据上报工作流设计与实现数据录入、校对、审核和任务分发设计与实现；数据pdf导出。
     i18n: shuitu_desc4
   date:
     detail: 2017.04-至今
@@ -27,14 +27,17 @@
     detail: 湛艺堂大赛平台
     i18n: zhanyitang
   desc1:
-    detail: 负责湛艺堂大赛平台开发，包含大赛信息展示，大赛作品上传以及大赛报名与预约等
+    detail: 项目简介：
     i18n: zhanyitang_desc1
   desc2:
-    detail: 负责湛艺堂大赛后台管理平台开发，包括新建大赛以及大赛相关作品、评委等前后端
+    detail: 大赛平台分为用户前台和管理后台，用户前台主要用于湛艺堂大赛信息展示，用户报名注册等，管理后台主要包括用户账号、大赛以及大赛作品的管理，采用SSM框架，前端开发采用基于Bootstrap的AdminLTE 2框架以及JavaScript，jQuery，Ajax，JSP等技术。
     i18n: zhanyitang_desc2
   desc3:
-    detail: 系统采用Spring+Spring MVC+Mybatis框架，使用Git版本控制和Maven代码管理
+    detail: 主要负责：
     i18n: zhanyitang_desc3
+  desc4:
+    detail: 我主要负责用户前台开发，包含大赛展示，大赛作品上传以及大赛报名与预约等；同时负责后台管理平台开发，包括大赛、作品管理的前后端。
+    i18n: zhanyitang_desc4
   date:
     detail: 2016.11-2017.03
     i18n: zhanyitang_date
@@ -47,7 +50,7 @@
     detail: 研究深度学习
     i18n: deepLearning
   desc1:
-    detail: 基于BP算法和遗传算法建立武汉市空气质量指数的预测模型，至今已看过15篇以上的神经网络优秀论文，目前对武汉市8个监测站的一年的空气质量数据为训练数据进行神经网络的建模，一个月的数据作为测试数据进行模型的准确性测试，平均准确率在75%左右
+    detail: 至今已看过15篇以上的神经网络优秀论文和多篇技术博客，以武汉市8个监测站的1年空气质量数据作为训练数据，1个月的数据作为测试数据进行模型的准确性测试，用Java实现建模，平均准确率在75%左右。
     i18n: deepLearning_desc1
   date:
     detail: 2016.09-至今
@@ -58,17 +61,14 @@
   icon: fa-plus-square
 
 - name:
-    detail:  亦非云官网开发和内容平台开发
+    detail:  亦非云(上海)互联网技术有限公司-实习
     i18n: otvcloud
   desc1:
-    detail: 亦非云官网开发采用JFinal框架，包含云产品、云服务以及新闻展示等模块
+    detail: 主要负责：
     i18n: otvcloud_desc1
   desc2:
-    detail: 亦非云官网采用jsp不限层次继承页面，简约前端页面
+    detail: 我主要负责内容平台重构，手机官网H5开发。内容平台采用JFinal框架，使用Bootstrap-table展示表格，使用Highcharts展示图表，官网开发采用JFinal框架，包含云产品、云服务以及新闻展示等模块，前端采用jsp不限层次继承页面，简约前端页面。
     i18n: otvcloud_desc2
-  desc3:
-    detail: 亦非云内容平台采用JFinal框架，使用Bootstrap-table展示表格，使用Highcharts展示图表
-    i18n: otvcloud_desc3
   date:
     detail: 2016.01-2016.09
     i18n: otvcloud_date
