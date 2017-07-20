@@ -5,9 +5,187 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 18 Jul 2017 20:55:26 +0800</pubDate>
-    <lastBuildDate>Tue, 18 Jul 2017 20:55:26 +0800</lastBuildDate>
+    <pubDate>Thu, 20 Jul 2017 18:10:30 +0800</pubDate>
+    <lastBuildDate>Thu, 20 Jul 2017 18:10:30 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>死磕设计模式</title>
+        <description>&lt;p&gt;&lt;strong&gt;一、观察者模式&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;是什么：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;观察者模式是在维护多个对象之间的一对多的依赖关系，也就是说，当一个对象的状态发生了改变时会通知所有依赖于它的对象，好让这些对象对新的变化做出反应。观察者模式既可以有效的维护对象的一致性，又能最大限度的降低对象之间的耦合度。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;长什么样：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/Users/ming.zhou/Java/设计模式-观察者模式.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从上面的UML类图可以看出：有两个接口，一个是主体对象接口，一个是观察者接口。主体对象接口定义了通知的方法，实现它的类Boss中有新增/删除观察者的方法；观察者接口定义了更新的方法，当boss的状态改变后，boss会notify所有的观察者来执行update方法做相应的更新操作。这么说可能还有点抽象，下面直接上代码demo。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;怎么做：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public interface BossInterface
+{
+    void notify();
+}
+
+public interface Observer
+{
+    void update();
+}
+
+public class Boss implements BossInterface
+{
+    private String bossSay;
+
+    private List&amp;lt;Observer&amp;gt; observers = new ArrayList&amp;lt;Observer&amp;gt;();
+
+    // 增加观察者
+    public void addObserver(Observer observer)
+    {
+        this.observers.add(observer);
+    }
+
+    // 移除观察者
+    public void deleteObserver(Observer observer)
+    {
+        this.observers.remove(observer);
+    }
+
+    //获取Boss状态
+    public String getBossSay()
+    {
+        return bossSay;
+    }
+
+    //设置Boss状态
+    public void setBossSay(String bossSay)
+    {
+        this.bossSay = bossSay;
+    }
+
+    //通知所有的观察者工作
+    public void notify()
+    {
+        foreach (Observer observer in observers)
+        {
+            observer.update();
+        }
+    }
+}
+
+public class Coder implements Observer
+{
+    private Boss boss;
+
+    public Coder(Boss boss)
+    {
+        this.boss = boss;
+    }
+
+    // 更新状态
+    public void update()
+    {
+        if (boss.getBossSay() == &quot;兄弟们，为了世界和平，一起Hello,world吧！&quot;)
+        {
+            //开始写代码
+        }
+    }
+}
+
+public class UI extends Observer
+{
+    private Boss boss;
+
+    public UI(Boss boss)
+    {
+        this.boss = boss;
+    }
+
+    // 更新状态
+    public void update()
+    {
+        if (boss.getBossSay() == &quot;兄弟们，为了世界和平，一起Hello,world吧！&quot;)
+        {
+            //开始写UI
+        }
+    }
+}
+
+public class PM extends Observer
+{
+    private Boss boss;
+
+    public PM(Boss boss)
+    {
+        this.boss = boss;
+    }
+
+    // 更新状态
+    public void update()
+    {
+        if (boss.getBossSay() == &quot;兄弟们，为了世界和平，一起Hello,world吧！&quot;)
+        {
+            //开始写项目的各种文档，请程序员、测试、运维、美工吃饭
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;二、适配器模式&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;是什么：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;适配器模式就是将那些原本由于接口不兼容而不能一起工作的类适配成可以在一起工作的类，适配器是一种增强或转换的工具，将那些不符合我们的需求但已经存在的类的接口，在不修改这类接口本身的情况下适配成我们想要的类。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;长什么样：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/Users/ming.zhou/Java/设计模式-适配器模式.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;怎么做：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 已存在的、具有特殊功能、但不符合我们既有的标准接口的类
+class ExistingClass {
+    public void enhanceMethod() {
+        System.out.println(&quot;被适配类具有 特殊功能...&quot;);
+    }
+}
+
+// 目标接口，或称为标准接口
+interface RequiredInterface {
+    public void requiredMethod();
+}
+
+// 原本存在的类，只提供普通功能
+class OriginalClass implements RequiredInterface {
+    public void requiredMethod() {
+        System.out.println(&quot;普通类 具有 普通功能...&quot;);
+    }
+}
+
+// 适配器类，继承了被适配类，同时实现标准接口
+class Adapter extends RequiredInterface implements RequiredInterface{
+    public void requiredMethod() {
+        super.enhanceMethod();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Thu, 22 Jun 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/java/2017/06/22/%E6%AD%BB%E7%A3%95%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html</link>
+        <guid isPermaLink="true">http://localhost:4000/java/2017/06/22/%E6%AD%BB%E7%A3%95%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html</guid>
+        
+        <category>java</category>
+        
+        <category>设计模式</category>
+        
+        
+        <category>Java</category>
+        
+      </item>
     
       <item>
         <title>Java知识点大扫盲</title>
