@@ -257,7 +257,9 @@
                             死磕设计模式
                         </h1>
                     </div>
-                    	<p><strong>一、观察者模式</strong></p>
+                    	<p>最近看spring源码的时候会看到很多经典的设计模式，索性就把几个常用的经典的设计模式再复习总结遍，这是常更新帖。</p>
+
+<p><strong>一、观察者模式</strong></p>
 
 <p><strong>是什么：</strong></p>
 
@@ -265,7 +267,7 @@
 
 <p><strong>长什么样：</strong></p>
 
-<p><img src="/Users/ming.zhou/Java/设计模式-观察者模式.png" alt="" /></p>
+<p><img title="死磕设计模式" src="http://img.mukewang.com/597098400001ecc520880750.png" style="width:100%" alt="死磕设计模式" /></p>
 
 <p>从上面的UML类图可以看出：有两个接口，一个是主体对象接口，一个是观察者接口。主体对象接口定义了通知的方法，实现它的类Boss中有新增/删除观察者的方法；观察者接口定义了更新的方法，当boss的状态改变后，boss会notify所有的观察者来执行update方法做相应的更新操作。这么说可能还有点抽象，下面直接上代码demo。</p>
 
@@ -388,7 +390,7 @@ public class PM extends Observer
 
 <p><strong>长什么样：</strong></p>
 
-<p><img src="/Users/ming.zhou/Java/设计模式-适配器模式.png" alt="" /></p>
+<p><img title="死磕设计模式" src="http://img.mukewang.com/5970988f000189c215220838.png" style="width:100%" alt="死磕设计模式" /></p>
 
 <p><strong>怎么做：</strong></p>
 

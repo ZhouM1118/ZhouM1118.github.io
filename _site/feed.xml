@@ -5,13 +5,15 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 20 Jul 2017 18:10:30 +0800</pubDate>
-    <lastBuildDate>Thu, 20 Jul 2017 18:10:30 +0800</lastBuildDate>
+    <pubDate>Thu, 20 Jul 2017 19:53:24 +0800</pubDate>
+    <lastBuildDate>Thu, 20 Jul 2017 19:53:24 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
         <title>死磕设计模式</title>
-        <description>&lt;p&gt;&lt;strong&gt;一、观察者模式&lt;/strong&gt;&lt;/p&gt;
+        <description>&lt;p&gt;最近看spring源码的时候会看到很多经典的设计模式，索性就把几个常用的经典的设计模式再复习总结遍，这是常更新帖。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;一、观察者模式&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;是什么：&lt;/strong&gt;&lt;/p&gt;
 
@@ -19,7 +21,7 @@
 
 &lt;p&gt;&lt;strong&gt;长什么样：&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/Users/ming.zhou/Java/设计模式-观察者模式.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img title=&quot;死磕设计模式&quot; src=&quot;http://img.mukewang.com/597098400001ecc520880750.png&quot; style=&quot;width:100%&quot; alt=&quot;死磕设计模式&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;从上面的UML类图可以看出：有两个接口，一个是主体对象接口，一个是观察者接口。主体对象接口定义了通知的方法，实现它的类Boss中有新增/删除观察者的方法；观察者接口定义了更新的方法，当boss的状态改变后，boss会notify所有的观察者来执行update方法做相应的更新操作。这么说可能还有点抽象，下面直接上代码demo。&lt;/p&gt;
 
@@ -142,7 +144,7 @@ public class PM extends Observer
 
 &lt;p&gt;&lt;strong&gt;长什么样：&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/Users/ming.zhou/Java/设计模式-适配器模式.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img title=&quot;死磕设计模式&quot; src=&quot;http://img.mukewang.com/5970988f000189c215220838.png&quot; style=&quot;width:100%&quot; alt=&quot;死磕设计模式&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;怎么做：&lt;/strong&gt;&lt;/p&gt;
 
