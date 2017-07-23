@@ -766,8 +766,15 @@ public void registerBeanDefinition(String beanName, BeanDefinition beanDefinitio
 </code></pre>
 </div>
 
-<p>注册过程会检查是不是有同名字的BeanDefinition已经在IoC容器中注册了，如果存在且不允许覆盖则抛出异常，注册过程需要synchronized，保证数据的一致性。
-完成了BeanDefinition的注册，IOC容器的初始化过程就结束了，在这个IOC容器中已经有了整个Bean的配置信息。</p>
+<p>注册过程会检查是不是有同名字的BeanDefinition已经在IoC容器中注册了，如果存在且不允许覆盖则抛出异常，注册过程需要synchronized，保证数据的一致性。</p>
+
+<p>完成了BeanDefinition的注册，IOC容器的初始化过程就结束了，在这个IOC容器中已经有了整个Bean的配置信息。</p>
+
+<p>参考：</p>
+
+<p>1、Spring 4.3.3源码</p>
+
+<p>2、Spring 技术内幕（深入解析Spring架构与设计原理）</p>
 
 
                     <hr>

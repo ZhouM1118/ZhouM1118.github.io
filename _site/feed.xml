@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 23 Jul 2017 17:23:48 +0800</pubDate>
-    <lastBuildDate>Sun, 23 Jul 2017 17:23:48 +0800</lastBuildDate>
+    <pubDate>Sun, 23 Jul 2017 19:21:38 +0800</pubDate>
+    <lastBuildDate>Sun, 23 Jul 2017 19:21:38 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -520,8 +520,15 @@ public void registerBeanDefinition(String beanName, BeanDefinition beanDefinitio
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;注册过程会检查是不是有同名字的BeanDefinition已经在IoC容器中注册了，如果存在且不允许覆盖则抛出异常，注册过程需要synchronized，保证数据的一致性。
-完成了BeanDefinition的注册，IOC容器的初始化过程就结束了，在这个IOC容器中已经有了整个Bean的配置信息。&lt;/p&gt;
+&lt;p&gt;注册过程会检查是不是有同名字的BeanDefinition已经在IoC容器中注册了，如果存在且不允许覆盖则抛出异常，注册过程需要synchronized，保证数据的一致性。&lt;/p&gt;
+
+&lt;p&gt;完成了BeanDefinition的注册，IOC容器的初始化过程就结束了，在这个IOC容器中已经有了整个Bean的配置信息。&lt;/p&gt;
+
+&lt;p&gt;参考：&lt;/p&gt;
+
+&lt;p&gt;1、Spring 4.3.3源码&lt;/p&gt;
+
+&lt;p&gt;2、Spring 技术内幕（深入解析Spring架构与设计原理）&lt;/p&gt;
 
 </description>
         <pubDate>Sun, 02 Jul 2017 00:00:00 +0800</pubDate>
