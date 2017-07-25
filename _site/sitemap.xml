@@ -51,6 +51,10 @@
     </url>
 
     <url>
+        <loc>http://localhost:4000/DeepLearning/</loc>
+    </url>
+
+    <url>
         <loc>http://localhost:4000/blog/</loc>
     </url>
 
@@ -92,10 +96,6 @@
 
     <url>
         <loc>http://localhost:4000/linux/</loc>
-    </url>
-
-    <url>
-        <loc>http://localhost:4000/mac/</loc>
     </url>
 
     <url>
