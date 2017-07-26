@@ -5,12 +5,12 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 26 Jul 2017 18:16:47 +0800</pubDate>
-    <lastBuildDate>Wed, 26 Jul 2017 18:16:47 +0800</lastBuildDate>
+    <pubDate>Wed, 26 Jul 2017 20:16:04 +0800</pubDate>
+    <lastBuildDate>Wed, 26 Jul 2017 20:16:04 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
-        <title>死磕设计模式之工厂模式</title>
+        <title>死磕设计模式-工厂模式</title>
         <description>&lt;p&gt;上篇我们讲了观察者模式、适配器模式和代理模式，在Java中应用很多的还有一个工厂模式，工厂模式分很多种，所以我们单列一篇文章来总结。&lt;/p&gt;
 
 &lt;p&gt;工厂模式&lt;/p&gt;
@@ -1157,7 +1157,7 @@ public void registerBeanDefinition(String beanName, BeanDefinition beanDefinitio
       </item>
     
       <item>
-        <title>死磕设计模式之观适代</title>
+        <title>死磕设计模式-观适代</title>
         <description>&lt;p&gt;最近看spring源码的时候会看到很多经典的设计模式，索性就把几个常用的经典的设计模式再复习总结遍。&lt;/p&gt;
 
 &lt;ul&gt;
