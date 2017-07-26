@@ -5,9 +5,252 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 25 Jul 2017 21:00:47 +0800</pubDate>
-    <lastBuildDate>Tue, 25 Jul 2017 21:00:47 +0800</lastBuildDate>
+    <pubDate>Wed, 26 Jul 2017 18:16:47 +0800</pubDate>
+    <lastBuildDate>Wed, 26 Jul 2017 18:16:47 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>死磕设计模式之工厂模式</title>
+        <description>&lt;p&gt;上篇我们讲了观察者模式、适配器模式和代理模式，在Java中应用很多的还有一个工厂模式，工厂模式分很多种，所以我们单列一篇文章来总结。&lt;/p&gt;
+
+&lt;p&gt;工厂模式&lt;/p&gt;
+
+&lt;p&gt;1、 传统方式&lt;/p&gt;
+
+&lt;p&gt;传统要获取一个类的对象，通常的方法是在本类中通过一个new操作符产生一个指定类的对象实例。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Produce1 {  
+    public Produce1(){  
+        //Produce1的构造函数
+    }  
+}  
+
+public class Produce2 {  
+    public Produce2(){  
+        //Produce2的构造函数
+    }  
+}  
+
+public class Client {  
+    public static void main(String[] args) {  
+        Produce1 p1 = new Produce1();  
+        Produce2 p2 = new Produce2();  
+    }  
+} 很显然如果用上面的方式获取少数的Produce的对象是可行的，但多了就不行了，而且会导致类与类之间的耦合度非常高，于是出现了工厂模式，工厂模式就是屏蔽创建对象的具体过程，用户只需要调用工厂方法就可以得到对象的实例。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;工厂模式按其复杂程度分为三类：简单工厂、工厂、抽象工厂模式。&lt;/p&gt;
+
+&lt;p&gt;2、  简单工厂模式&lt;/p&gt;
+
+&lt;p&gt;特点：&lt;/p&gt;
+
+&lt;p&gt;一个抽象产品类，可以派生出多个具体产品类。&lt;/p&gt;
+
+&lt;p&gt;一个具体工厂类，用于生产产品。&lt;/p&gt;
+
+&lt;p&gt;简单工厂模式的类图如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;死磕设计模式-工厂模式&quot; 图片1=&quot;&quot; src=&quot;http://img.mukewang.com/597869370001b2f717940376.png&quot; style=&quot;width:100%&quot; alt=&quot;简单工厂模式的类图&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Java代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;abstract class Produce {  
+    public create();
+}  
+
+public class Produce1 extends Produce {  
+    public create() {  
+        System.out.println(&quot;生产Produce1&quot;);  
+    }  
+}  
+public class Produce2 extends Produce{  
+    public create(){  
+        System.out.println(&quot;生产Produce2&quot;);  
+    }  
+}  
+
+public class Factory {  
+    public Produce createProduce(int type) {  
+        switch (type) {  
+
+        case 1:  
+            return new Produce1().create();  
+
+        case 2:  
+            return new Produce2().create();  
+
+        default:  
+            break;  
+        }  
+        return null;  
+    }  
+}  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;3、 工厂模式&lt;/p&gt;
+
+&lt;p&gt;特点：&lt;/p&gt;
+
+&lt;p&gt;一个抽象产品类，可以派生出多个具体产品类。&lt;/p&gt;
+
+&lt;p&gt;一个抽象工厂类，可以派生出多个具体工厂类。&lt;/p&gt;
+
+&lt;p&gt;每个具体工厂类只能创建一个具体产品类的实例。&lt;/p&gt;
+
+&lt;p&gt;工厂模式的类图如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;死磕设计模式-工厂模式&quot; 图片2=&quot;&quot; src=&quot;http://img.mukewang.com/5978697c00011f5820700340.png&quot; style=&quot;width:100%&quot; alt=&quot;工厂模式的类图&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Java代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;abstract class Produce {  
+    public create();
+}  
+public class Produce1 extends Produce {  
+    public create() {  
+        System.out.println(&quot;生产Produce1&quot;);  
+    }  
+}  
+public class Produce2 extends Produce{  
+    public create(){  
+        System.out.println(&quot;生产Produce2&quot;);  
+    }  
+}  
+interface Factory {  
+    Produce createProduce();  
+}  
+
+public class Factory1 implements Factory{  
+
+    public void createProduce() {  
+        return new Produce1().create();  
+    }  
+
+}  
+public class Factory2 implements Factory {  
+
+    public void createProduce() {  
+        return new Produce2().create();  
+    }  
+} 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;4、 抽象工厂模式&lt;/p&gt;
+
+&lt;p&gt;特点：&lt;/p&gt;
+
+&lt;p&gt;多个抽象产品类，每个抽象产品类可以派生出多个具体产品类。&lt;/p&gt;
+
+&lt;p&gt;一个抽象工厂类，可以派生出多个具体工厂类。&lt;/p&gt;
+
+&lt;p&gt;每个具体工厂类可以创建多个具体产品类的实例。&lt;/p&gt;
+
+&lt;p&gt;抽象工厂模式的类图如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;死磕设计模式-工厂模式&quot; 图片3=&quot;&quot; src=&quot;http://img.mukewang.com/597869ae000133b021240638.png&quot; style=&quot;width:100%&quot; alt=&quot;抽象工厂模式的类图&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Java代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;interface ProductA {
+
+    void create();
+}
+
+interface ProductB {
+
+    void create();
+}
+
+class ProductA1 implements ProductA{
+
+    public void create() {
+        System.out.println(&quot;生产ProductA1&quot;);
+    }
+
+}
+
+class ProductA2 implements ProductA{
+
+    public void create() {
+        System.out.println(&quot;生产ProductA2&quot;);
+    }
+
+}
+
+class ProductB1 implements ProductB{
+
+    public void create() {
+        System.out.println(&quot;生产ProductB1&quot;);
+    }
+
+}
+
+class ProductB2 implements ProductB{
+
+    public void create() {
+        System.out.println(&quot;生产ProductB2&quot;);
+    }
+
+}
+public interface Factory {
+
+    ProductA createProductA();
+
+    ProductB createProductB();
+
+}
+public class Factory1 implements Factory{
+
+    public ProductA createProductA() {
+        return new ProductA1();
+    }
+
+    public ProductB createProductB() {
+        return new ProductB1();
+    }
+
+}
+
+public class Factory2 implements Factory{
+
+    public ProductA createProductA() {
+        return new ProductA2();
+    }
+
+    public ProductB createProductB() {
+        return new ProductB2();
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在Java的JDK中，我们能找到一个很典型的抽象工厂模型：迭代器。在Java JDK 1.2 引进了一个容器类接口，其中包含了一个iterator()方法，所有容器类均实现了该方法，iterator方法是一个工厂方法，它使得调用者不知道iterator对象是由哪个类实例化的。&lt;/p&gt;
+
+&lt;p&gt;比如list.iterator()；set.iterator()；我们不必关心iterator方法返回值是什么，只需要知道迭代器支持什么样的容器接口，才能遍历出集合中的元素。&lt;/p&gt;
+
+&lt;p&gt;List的Iterator的抽象工厂模式类图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;死磕设计模式-工厂模式&quot; 图片4=&quot;&quot; src=&quot;http://img.mukewang.com/597869df0001fc1019820516.png&quot; style=&quot;width:100%&quot; alt=&quot;List的Iterator的抽象工厂模式类图&quot; /&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 18 Jul 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/java/2017/07/18/%E6%AD%BB%E7%A3%95%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F.html</link>
+        <guid isPermaLink="true">http://localhost:4000/java/2017/07/18/%E6%AD%BB%E7%A3%95%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F.html</guid>
+        
+        <category>java</category>
+        
+        <category>设计模式</category>
+        
+        <category>工厂模式</category>
+        
+        
+        <category>Java</category>
+        
+      </item>
     
       <item>
         <title>死磕Spring源码-依赖注入</title>
@@ -914,8 +1157,14 @@ public void registerBeanDefinition(String beanName, BeanDefinition beanDefinitio
       </item>
     
       <item>
-        <title>死磕设计模式</title>
-        <description>&lt;p&gt;最近看spring源码的时候会看到很多经典的设计模式，索性就把几个常用的经典的设计模式再复习总结遍，这是常更新帖。&lt;/p&gt;
+        <title>死磕设计模式之观适代</title>
+        <description>&lt;p&gt;最近看spring源码的时候会看到很多经典的设计模式，索性就把几个常用的经典的设计模式再复习总结遍。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;观察者模式&lt;/li&gt;
+  &lt;li&gt;适配器模式&lt;/li&gt;
+  &lt;li&gt;代理模式&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;&lt;strong&gt;一、观察者模式&lt;/strong&gt;&lt;/p&gt;
 
@@ -1327,6 +1576,12 @@ public class Customer {
         <category>java</category>
         
         <category>设计模式</category>
+        
+        <category>观察者</category>
+        
+        <category>适配器</category>
+        
+        <category>代理模式</category>
         
         
         <category>Java</category>

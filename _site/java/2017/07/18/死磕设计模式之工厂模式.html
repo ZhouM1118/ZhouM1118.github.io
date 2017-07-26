@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="死磕设计模式,工厂模式" name="description">
+  
+  
+    <meta name="keywords" content="java,设计模式,工厂模式">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|死磕设计模式之工厂模式
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Java</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 18 Jul 2017</span>
+                        <h1>
+                            死磕设计模式之工厂模式
+                        </h1>
+                    </div>
+                    	<p>上篇我们讲了观察者模式、适配器模式和代理模式，在Java中应用很多的还有一个工厂模式，工厂模式分很多种，所以我们单列一篇文章来总结。</p>
+
+<p>工厂模式</p>
+
+<p>1、 传统方式</p>
+
+<p>传统要获取一个类的对象，通常的方法是在本类中通过一个new操作符产生一个指定类的对象实例。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public class Produce1 {  
+    public Produce1(){  
+        //Produce1的构造函数
+    }  
+}  
+
+public class Produce2 {  
+    public Produce2(){  
+        //Produce2的构造函数
+    }  
+}  
+
+public class Client {  
+    public static void main(String[] args) {  
+        Produce1 p1 = new Produce1();  
+        Produce2 p2 = new Produce2();  
+    }  
+} 很显然如果用上面的方式获取少数的Produce的对象是可行的，但多了就不行了，而且会导致类与类之间的耦合度非常高，于是出现了工厂模式，工厂模式就是屏蔽创建对象的具体过程，用户只需要调用工厂方法就可以得到对象的实例。
+</code></pre>
+</div>
+
+<p>工厂模式按其复杂程度分为三类：简单工厂、工厂、抽象工厂模式。</p>
+
+<p>2、  简单工厂模式</p>
+
+<p>特点：</p>
+
+<p>一个抽象产品类，可以派生出多个具体产品类。</p>
+
+<p>一个具体工厂类，用于生产产品。</p>
+
+<p>简单工厂模式的类图如下：</p>
+
+<p><img title="死磕设计模式-工厂模式" 图片1="" src="http://img.mukewang.com/597869370001b2f717940376.png" style="width:100%" alt="简单工厂模式的类图" /></p>
+
+<p>Java代码如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>abstract class Produce {  
+    public create();
+}  
+
+public class Produce1 extends Produce {  
+    public create() {  
+        System.out.println("生产Produce1");  
+    }  
+}  
+public class Produce2 extends Produce{  
+    public create(){  
+        System.out.println("生产Produce2");  
+    }  
+}  
+
+public class Factory {  
+    public Produce createProduce(int type) {  
+        switch (type) {  
+
+        case 1:  
+            return new Produce1().create();  
+
+        case 2:  
+            return new Produce2().create();  
+
+        default:  
+            break;  
+        }  
+        return null;  
+    }  
+}  
+</code></pre>
+</div>
+
+<p>3、 工厂模式</p>
+
+<p>特点：</p>
+
+<p>一个抽象产品类，可以派生出多个具体产品类。</p>
+
+<p>一个抽象工厂类，可以派生出多个具体工厂类。</p>
+
+<p>每个具体工厂类只能创建一个具体产品类的实例。</p>
+
+<p>工厂模式的类图如下：</p>
+
+<p><img title="死磕设计模式-工厂模式" 图片2="" src="http://img.mukewang.com/5978697c00011f5820700340.png" style="width:100%" alt="工厂模式的类图" /></p>
+
+<p>Java代码如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>abstract class Produce {  
+    public create();
+}  
+public class Produce1 extends Produce {  
+    public create() {  
+        System.out.println("生产Produce1");  
+    }  
+}  
+public class Produce2 extends Produce{  
+    public create(){  
+        System.out.println("生产Produce2");  
+    }  
+}  
+interface Factory {  
+    Produce createProduce();  
+}  
+
+public class Factory1 implements Factory{  
+
+    public void createProduce() {  
+        return new Produce1().create();  
+    }  
+
+}  
+public class Factory2 implements Factory {  
+
+    public void createProduce() {  
+        return new Produce2().create();  
+    }  
+} 
+</code></pre>
+</div>
+
+<p>4、 抽象工厂模式</p>
+
+<p>特点：</p>
+
+<p>多个抽象产品类，每个抽象产品类可以派生出多个具体产品类。</p>
+
+<p>一个抽象工厂类，可以派生出多个具体工厂类。</p>
+
+<p>每个具体工厂类可以创建多个具体产品类的实例。</p>
+
+<p>抽象工厂模式的类图如下：</p>
+
+<p><img title="死磕设计模式-工厂模式" 图片3="" src="http://img.mukewang.com/597869ae000133b021240638.png" style="width:100%" alt="抽象工厂模式的类图" /></p>
+
+<p>Java代码如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>interface ProductA {
+
+    void create();
+}
+
+interface ProductB {
+
+    void create();
+}
+
+class ProductA1 implements ProductA{
+
+    public void create() {
+        System.out.println("生产ProductA1");
+    }
+
+}
+
+class ProductA2 implements ProductA{
+
+    public void create() {
+        System.out.println("生产ProductA2");
+    }
+
+}
+
+class ProductB1 implements ProductB{
+
+    public void create() {
+        System.out.println("生产ProductB1");
+    }
+
+}
+
+class ProductB2 implements ProductB{
+
+    public void create() {
+        System.out.println("生产ProductB2");
+    }
+
+}
+public interface Factory {
+
+    ProductA createProductA();
+
+    ProductB createProductB();
+
+}
+public class Factory1 implements Factory{
+
+    public ProductA createProductA() {
+        return new ProductA1();
+    }
+
+    public ProductB createProductB() {
+        return new ProductB1();
+    }
+
+}
+
+public class Factory2 implements Factory{
+
+    public ProductA createProductA() {
+        return new ProductA2();
+    }
+
+    public ProductB createProductB() {
+        return new ProductB2();
+    }
+
+}
+</code></pre>
+</div>
+
+<p>在Java的JDK中，我们能找到一个很典型的抽象工厂模型：迭代器。在Java JDK 1.2 引进了一个容器类接口，其中包含了一个iterator()方法，所有容器类均实现了该方法，iterator方法是一个工厂方法，它使得调用者不知道iterator对象是由哪个类实例化的。</p>
+
+<p>比如list.iterator()；set.iterator()；我们不必关心iterator方法返回值是什么，只需要知道迭代器支持什么样的容器接口，才能遍历出集合中的元素。</p>
+
+<p>List的Iterator的抽象工厂模式类图：</p>
+
+<p><img title="死磕设计模式-工厂模式" 图片4="" src="http://img.mukewang.com/597869df0001fc1019820516.png" style="width:100%" alt="List的Iterator的抽象工厂模式类图" /></p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">java</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">设计模式</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">工厂模式</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
