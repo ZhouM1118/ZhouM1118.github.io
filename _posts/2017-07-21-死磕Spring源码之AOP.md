@@ -110,6 +110,8 @@ Spring的AspectJproxyFactory、ProxyFactoryBean和ProxyFactory封装了代理对
 
 应该注意到，Advice通知不是直接对目标对象作用来完成增强的，而是对不同种类的通知通过AdviceAdapter适配器来实现的。
 
+参考文献：
 
+《Spring实战》
 
 
