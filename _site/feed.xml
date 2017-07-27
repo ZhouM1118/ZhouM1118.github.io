@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 26 Jul 2017 20:16:04 +0800</pubDate>
-    <lastBuildDate>Wed, 26 Jul 2017 20:16:04 +0800</lastBuildDate>
+    <pubDate>Thu, 27 Jul 2017 16:48:24 +0800</pubDate>
+    <lastBuildDate>Thu, 27 Jul 2017 16:48:24 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -631,7 +631,7 @@ protected void applyPropertyValues(String beanName, BeanDefinition mbd, BeanWrap
 
 &lt;p&gt;接口类BeanFactory提供了Spring中所有IOC容器的最基本的功能规范，来看看&lt;strong&gt;BeanFactory的组织结构图&lt;/strong&gt;：&lt;/p&gt;
 
-&lt;p&gt;&lt;img title=&quot;死磕Spring源码-IoC源码&quot; 图片2=&quot;&quot; src=&quot;http://img.mukewang.com/597444f50001bb0106261194.png&quot; style=&quot;width:100%&quot; alt=&quot;死磕Spring源码-IoC源码&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img title=&quot;死磕Spring源码-IoC源码&quot; 图片2=&quot;&quot; src=&quot;http://img.mukewang.com/597444f50001bb0106261194.png&quot; style=&quot;width:50%&quot; alt=&quot;死磕Spring源码-IoC源码&quot; /&gt;&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public interface BeanFactory {
     //如果我们加了这个转义字符，则得到的是这个IOC容器本身，否则得到的是IOC容器的实例
@@ -656,7 +656,7 @@ protected void applyPropertyValues(String beanName, BeanDefinition mbd, BeanWrap
 
 &lt;p&gt;&lt;strong&gt;BeanDefinition的组织结构如下图：&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img title=&quot;死磕Spring源码-IoC源码&quot; 图片3=&quot;&quot; src=&quot;http://img.mukewang.com/59744544000144cd06161220.png&quot; style=&quot;width:100%&quot; alt=&quot;死磕Spring源码-IoC源码&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img title=&quot;死磕Spring源码-IoC源码&quot; 图片3=&quot;&quot; src=&quot;http://img.mukewang.com/59744544000144cd06161220.png&quot; style=&quot;width:50%&quot; alt=&quot;死磕Spring源码-IoC源码&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;BeanFactory是一个接口类，我们来看看一个BeanFactory的具体实现类XmlBeanFactory，从名字上就能看出来这是一个与xml相关的BeanFactory，它是一个可以读取以XML文件方式定义的BeanDefinition的IoC容器。&lt;/p&gt;
 
@@ -722,13 +722,13 @@ Resource定位过程－－BeanDefinition的载入－－向IoC容器注册BeanDef
 
 &lt;p&gt;&lt;strong&gt;Resource接口设计图：&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img title=&quot;死磕Spring源码-IoC源码&quot; 图片5=&quot;&quot; src=&quot;http://img.mukewang.com/597450100001ace507340894.png&quot; style=&quot;width:100%&quot; alt=&quot;死磕Spring源码-IoC源码&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img title=&quot;死磕Spring源码-IoC源码&quot; 图片5=&quot;&quot; src=&quot;http://img.mukewang.com/597450100001ace507340894.png&quot; style=&quot;width:50%&quot; alt=&quot;死磕Spring源码-IoC源码&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;FileSystemApplicationContext，支持XML定义的BeanDefinition的ApplicationContext，可指定以文件形式的BeanDefinition的读入，文件放在本地文件系统中。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;FileSystemApplicationContext的继承关系图:&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img title=&quot;死磕Spring源码-IoC源码&quot; 图片6=&quot;&quot; src=&quot;http://img.mukewang.com/597447b90001efaa07380916.png&quot; style=&quot;width:100%&quot; alt=&quot;死磕Spring源码-IoC源码&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img title=&quot;死磕Spring源码-IoC源码&quot; 图片6=&quot;&quot; src=&quot;http://img.mukewang.com/597447b90001efaa07380916.png&quot; style=&quot;width:50%&quot; alt=&quot;死磕Spring源码-IoC源码&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;getResourceByPath()的调用栈：&lt;/strong&gt;&lt;/p&gt;
 
@@ -1157,13 +1157,14 @@ public void registerBeanDefinition(String beanName, BeanDefinition beanDefinitio
       </item>
     
       <item>
-        <title>死磕设计模式-观适代</title>
+        <title>死磕设计模式-观适代装</title>
         <description>&lt;p&gt;最近看spring源码的时候会看到很多经典的设计模式，索性就把几个常用的经典的设计模式再复习总结遍。&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;观察者模式&lt;/li&gt;
   &lt;li&gt;适配器模式&lt;/li&gt;
   &lt;li&gt;代理模式&lt;/li&gt;
+  &lt;li&gt;装饰器模式&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;&lt;strong&gt;一、观察者模式&lt;/strong&gt;&lt;/p&gt;
@@ -1565,9 +1566,102 @@ public class Customer {
 
 &lt;p&gt;如果目标对象没有实现接口,用Cglib代理&lt;/p&gt;
 
+&lt;p&gt;&lt;strong&gt;四、装饰器模式&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;装饰器模式可以在运行时增强或改变对象的功能。通常给对象增强功能，有三种方式：&lt;/p&gt;
+
+&lt;p&gt;1、直接修改对象添加相应的功能&lt;/p&gt;
+
+&lt;p&gt;2、派生对应的子类来扩展&lt;/p&gt;
+
+&lt;p&gt;3、使用对象组合的方式&lt;/p&gt;
+
+&lt;p&gt;显然，直接修改对应的类这种方式并不可取，它需要我们去修改以前的代码，这是程序猿的大忌。适配器模式就是派生对应的子类来扩展对象的功能。在面向对象的设计中，我们应该尽量使用对象组合，而不是对象继承来扩展和复用功能。装饰器模式就是基于对象组合的方式，可以很灵活的给对象添加所需要的功能。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;装饰器模式类图：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;死磕设计模式-观适代装模式&quot; 图片4=&quot;&quot; src=&quot;http://img.mukewang.com/5979a7b50001c76b16540970.png&quot; width=&quot;100%&quot; alt=&quot;装饰器模式类图&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Component：待装饰对象的接口&lt;/p&gt;
+
+&lt;p&gt;ConcreteComponent：待装饰对象的具体实现类&lt;/p&gt;
+
+&lt;p&gt;Decorator：所有装饰器的父类，它也可以继承Component类，以便可以自己增强自己。&lt;/p&gt;
+
+&lt;p&gt;ConcreteDecorator：具体的装饰器类&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Java代码实现：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public abstract class Component {  
+    /**
+     * 待增强的方法
+     */  
+    public abstract void operation();  
+}
+public class ConcreteComponent extends Component {  
+
+    public void operation() {}  
+
+}  
+public abstract class Decorator extends Component {  
+    /**
+     * 持有组件对象
+     */  
+    protected Component component;  
+
+    /**
+     * 构造方法，传入组件对象
+     * @param component 组件对象
+     */  
+    public Decorator(Component component) {  
+        this.component = component;  
+    }  
+
+    public void operation() {  
+        //转发请求给组件对象，可以在转发前后执行一些附加动作  
+        component.operation();  
+    }  
+
+
+}  
+public class ConcreteDecoratorA extends Decorator {  
+       public ConcreteDecoratorA(Component component) {  
+            super(component);  
+   }  
+       private void operationFirst(){ } //在调用父类的operation方法之前需要执行的操作  
+       private void operationLast(){ } //在调用父类的operation方法之后需要执行的操作  
+       public void operation() {  
+           //调用父类的方法，可以在调用前后执行一些增强功能
+           operationFirst(); //添加的功能  
+           //这里可以选择性的调用父类的方法，如果不调用则相当于完全改写了方法，实现了新的功能
+           super.operation();
+           operationLast(); //添加的功能  
+   }  
+}  
+public class Client{  
+   public static void main(String[] args){  
+    Component c1 = new ConcreteComponent (); //首先创建需要被装饰的原始对象(即要被装饰的对象)  
+    Decorator decoratorA = new ConcreteDecoratorA(c1); //给对象透明的增加功能A并调用  
+    decoratorA .operation();  
+    Decorator decoratorB = new ConcreteDecoratorB(c1); //给对象透明的增加功能B并调用  
+    decoratorB .operation();
+    //这里实现了自己装饰自己的功能，装饰器也可以装饰具体的装饰对象，此时相当于给对象在增加A的功能基础上在添加功能B  
+    Decorator decoratorBandA = new ConcreteDecoratorB(decoratorA);  
+    decoratorBandA.operation();  
+  }  
+}  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Java中的IO是明显的装饰器模式的运用。如FileInputStream是InputStream的一个子类，从文件中读取数据流，BufferedInputStream是继承自FilterInputStream的具体的装饰器类，该类提供一个内存的缓冲区类保存输入流中的数据。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));&lt;/code&gt;&lt;/p&gt;
+
 &lt;p&gt;参考文献：&lt;/p&gt;
 
 &lt;p&gt;http://www.cnblogs.com/cenyu/p/6289209.html&lt;/p&gt;
+
+&lt;p&gt;http://blog.csdn.net/hust_is_lcd/article/details/7884320&lt;/p&gt;
 </description>
         <pubDate>Thu, 22 Jun 2017 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/java/2017/06/22/%E6%AD%BB%E7%A3%95%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html</link>
@@ -1581,7 +1675,9 @@ public class Customer {
         
         <category>适配器</category>
         
-        <category>代理模式</category>
+        <category>代理</category>
+        
+        <category>装饰器模式</category>
         
         
         <category>Java</category>
