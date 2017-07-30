@@ -2,6 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
+        <loc>http://localhost:4000/java/2017/07/26/%E6%AD%BB%E7%A3%95Spring%E6%BA%90%E7%A0%81%E4%B9%8BSpring-MVC.html</loc>
+    </url>
+
+    <url>
         <loc>http://localhost:4000/java/2017/07/21/%E6%AD%BB%E7%A3%95Spring%E6%BA%90%E7%A0%81%E4%B9%8BAOP.html</loc>
     </url>
 
