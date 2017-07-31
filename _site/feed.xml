@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 31 Jul 2017 18:10:28 +0800</pubDate>
-    <lastBuildDate>Mon, 31 Jul 2017 18:10:28 +0800</lastBuildDate>
+    <pubDate>Mon, 31 Jul 2017 22:23:54 +0800</pubDate>
+    <lastBuildDate>Mon, 31 Jul 2017 22:23:54 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -413,13 +413,342 @@ private void initHandlerMappings(ApplicationContext context) {
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;initHandlerMappings是对HandlerMappings的初始化，这些Map的作用是为HTTP请求找到相应的Controller控制器，以完成功能逻辑。IoC容器初始化后，容器里有各种各样的Bean，initHandlerMappings会从IoC容器中通过getBean来获取handlerMapping，handlerMapping包含了MVC中Controller的定义和配置，同时handlerMappings变量就已经获取了在BeanDefinition配置好的映射关系。加载的HandlerMapping被放在一个List中并已经排好序。&lt;/p&gt;
+&lt;p&gt;initHandlerMappings是对HandlerMappings的初始化，这些Map的作用是为HTTP请求找到相应的Controller控制器，以完成功能逻辑。IoC容器初始化后，容器里有各种各样的Bean，initHandlerMappings会从IoC容器中通过getBean来获取handlerMapping，handlerMapping包含了MVC中Controller的定义和配置，同时handlerMappings变量就已经获取了在BeanDefinition配置好的映射关系。加载的HandlerMapping被放在一个List中并已经排好序，存储着HTTP请求对应的映射数据，List中的一个元素就是一个HandlerMapping，一个mapping中有一系列的URL与Controller的映射。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;initHandlerMappings方法调用栈&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;img title=&quot;死磕Spring源码-SpringMVC&quot; 图片3=&quot;&quot; src=&quot;http://img.mukewang.com/597ef9330001fb1313280208.png&quot; style=&quot;width:100%&quot; alt=&quot;initHandlerMappings方法调用栈&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;img title=&quot;死磕Spring源码-SpringMVC&quot; 图片4=&quot;&quot; src=&quot;http://img.mukewang.com/597ef94100012e7b13780762.png&quot; style=&quot;width:100%&quot; alt=&quot;死磕Spring源码-SpringMVC&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;MVC处理HTTP分发请求&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;上面已经完成了HandlerMapping的加载，每一个HandlerMapping持有一系列从URL请求到Controller的映射，这种映射关系通常用一个Map（LinkedHashMap，命名为handlerMap）来持有。
+private final Map&amp;lt;String, Object&amp;gt; urlMap = new LinkedHashMap&amp;lt;String, Object&amp;gt;();&lt;/p&gt;
+
+&lt;p&gt;某个URL映射到哪个Controller，这部分的配置是在容器对Bean进行依赖注入时发生的，通过Bean的postProcessor来完成，（registerHandler方法）。这样就为DispatcherServlet的分发奠定了数据基础。&lt;/p&gt;
+
+&lt;p&gt;SimpleUrlHandlerMapping注册handler的代码逻辑&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SimpleUrlHandlerMapping.initApplicationContext
+@Override
+public void initApplicationContext() throws BeansException {
+    super.initApplicationContext();
+    registerHandlers(this.urlMap);
+}
+
+protected void registerHandlers(Map&amp;lt;String, Object&amp;gt; urlMap) throws BeansException {
+    if (urlMap.isEmpty()) {
+        logger.warn(&quot;Neither 'urlMap' nor 'mappings' set on SimpleUrlHandlerMapping&quot;);
+    }
+    else {
+        for (Map.Entry&amp;lt;String, Object&amp;gt; entry : urlMap.entrySet()) {
+            String url = entry.getKey();
+            Object handler = entry.getValue();
+            // 确保url以&quot;/&quot;开头
+            if (!url.startsWith(&quot;/&quot;)) {
+                url = &quot;/&quot; + url;
+            }
+            // 去掉空格
+            if (handler instanceof String) {
+                handler = ((String) handler).trim();
+            }
+            registerHandler(url, handler);
+        }
+    }
+}
+
+protected void registerHandler(String urlPath, Object handler) throws BeansException, IllegalStateException {
+    Assert.notNull(urlPath, &quot;URL path must not be null&quot;);
+    Assert.notNull(handler, &quot;Handler object must not be null&quot;);
+    Object resolvedHandler = handler;
+
+    if (!this.lazyInitHandlers &amp;amp;&amp;amp; handler instanceof String) {
+        String handlerName = (String) handler;
+        if (getApplicationContext().isSingleton(handlerName)) {
+            resolvedHandler = getApplicationContext().getBean(handlerName);
+        }
+    }
+
+    Object mappedHandler = this.handlerMap.get(urlPath);
+    if (mappedHandler != null) {
+        if (mappedHandler != resolvedHandler) {
+            throw new IllegalStateException(
+                    &quot;Cannot map &quot; + getHandlerDescription(handler) + &quot; to URL path [&quot; + urlPath +
+                    &quot;]: There is already &quot; + getHandlerDescription(mappedHandler) + &quot; mapped.&quot;);
+        }
+    }
+    else {
+        //如果url是“/”，则这个url映射的Controller就是rootHandler
+        if (urlPath.equals(&quot;/&quot;)) {
+            if (logger.isInfoEnabled()) {
+                logger.info(&quot;Root mapping to &quot; + getHandlerDescription(handler));
+            }
+            setRootHandler(resolvedHandler);
+        }//如果url是“/*”，则这个url映射的Controller就是DefaultHandler
+        else if (urlPath.equals(&quot;/*&quot;)) {
+            if (logger.isInfoEnabled()) {
+                logger.info(&quot;Default mapping to &quot; + getHandlerDescription(handler));
+            }
+            setDefaultHandler(resolvedHandler);
+        }
+        else {//如果url是正常的url，设置handlerMap的key和value分别对应url和对应的Controller
+            this.handlerMap.put(urlPath, resolvedHandler);
+            if (logger.isInfoEnabled()) {
+                logger.info(&quot;Mapped URL path [&quot; + urlPath + &quot;] onto &quot; + getHandlerDescription(handler));
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;准备好handlerMap中的数据后，我们来看看handlerMapping如何完成请求的映射处理。
+在HandlerMapping中定义了getHandler方法，这个方法会根据我们刚刚初始化得到的handlerMap来获取与HTTP请求对应的HandlerExecutionChain，它封装了具体的Controller对象。HandlerExecutionChain有两个比较重要：拦截器（Interceptor）链和handler对象，handler对象就是HTTP对应的Controller，通过拦截器链里的拦截器来对handler对象提供功能的增强。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;AbstractHandlerMapping.getHandler
+@Override
+public final HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
+    //获取request对应的handler
+    Object handler = getHandlerInternal(request);
+    //获取默认的handler
+    if (handler == null) {
+        handler = getDefaultHandler();
+    }
+    if (handler == null) {
+        return null;
+    }
+    // 根据名称取出对应的Handler Bean
+    if (handler instanceof String) {
+        String handlerName = (String) handler;
+        handler = getApplicationContext().getBean(handlerName);
+    }
+    //把这个handler封装到HandlerExecutionChain中并加上拦截器
+    HandlerExecutionChain executionChain = getHandlerExecutionChain(handler, request);
+    if (CorsUtils.isCorsRequest(request)) {
+        CorsConfiguration globalConfig = this.corsConfigSource.getCorsConfiguration(request);
+        CorsConfiguration handlerConfig = getCorsConfiguration(handler, request);
+        CorsConfiguration config = (globalConfig != null ? globalConfig.combine(handlerConfig) : handlerConfig);
+        executionChain = getCorsHandlerExecutionChain(request, executionChain, config);
+    }
+    return executionChain;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;获取request对应的handler的代码逻辑&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@Override
+protected Object getHandlerInternal(HttpServletRequest request) throws Exception {
+    //从request获取url路径
+    String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
+    //从HandlerMap中获取指定url路径的handler
+    Object handler = lookupHandler(lookupPath, request);
+    if (handler == null) {
+        // 如果没有对应url路径的handler则返回相应的handler（RootHandler或DefaultHandler）
+        Object rawHandler = null;
+        if (&quot;/&quot;.equals(lookupPath)) {
+            rawHandler = getRootHandler();
+        }
+        if (rawHandler == null) {
+            rawHandler = getDefaultHandler();
+        }
+        if (rawHandler != null) {
+            if (rawHandler instanceof String) {
+                String handlerName = (String) rawHandler;
+                rawHandler = getApplicationContext().getBean(handlerName);
+            }
+            validateHandler(rawHandler, request);
+            handler = buildPathExposingHandler(rawHandler, lookupPath, lookupPath, null);
+        }
+    }
+    if (handler != null &amp;amp;&amp;amp; logger.isDebugEnabled()) {
+        logger.debug(&quot;Mapping [&quot; + lookupPath + &quot;] to &quot; + handler);
+    }
+    else if (handler == null &amp;amp;&amp;amp; logger.isTraceEnabled()) {
+        logger.trace(&quot;No handler mapping found for [&quot; + lookupPath + &quot;]&quot;);
+    }
+    return handler;
+}
+
+protected Object lookupHandler(String urlPath, HttpServletRequest request) throws Exception {
+    // 直接匹配url
+    Object handler = this.handlerMap.get(urlPath);
+    if (handler != null) {
+        if (handler instanceof String) {
+            String handlerName = (String) handler;
+            handler = getApplicationContext().getBean(handlerName);
+        }
+        validateHandler(handler, request);
+        return buildPathExposingHandler(handler, urlPath, urlPath, null);
+    }
+    // 如果直接匹配url不成功，则匹配最佳的
+    List&amp;lt;String&amp;gt; matchingPatterns = new ArrayList&amp;lt;String&amp;gt;();
+    for (String registeredPattern : this.handlerMap.keySet()) {
+        if (getPathMatcher().match(registeredPattern, urlPath)) {
+            matchingPatterns.add(registeredPattern);
+        }
+        else if (useTrailingSlashMatch()) {
+            if (!registeredPattern.endsWith(&quot;/&quot;) &amp;amp;&amp;amp; getPathMatcher().match(registeredPattern + &quot;/&quot;, urlPath)) {
+                matchingPatterns.add(registeredPattern +&quot;/&quot;);
+            }
+        }
+    }
+    String bestPatternMatch = null;
+    Comparator&amp;lt;String&amp;gt; patternComparator = getPathMatcher().getPatternComparator(urlPath);
+    if (!matchingPatterns.isEmpty()) {
+        Collections.sort(matchingPatterns, patternComparator);
+        if (logger.isDebugEnabled()) {
+            logger.debug(&quot;Matching patterns for request [&quot; + urlPath + &quot;] are &quot; + matchingPatterns);
+        }
+        bestPatternMatch = matchingPatterns.get(0);
+    }
+    if (bestPatternMatch != null) {
+        handler = this.handlerMap.get(bestPatternMatch);
+        if (handler == null) {
+            Assert.isTrue(bestPatternMatch.endsWith(&quot;/&quot;));
+            handler = this.handlerMap.get(bestPatternMatch.substring(0, bestPatternMatch.length() - 1));
+        }
+        if (handler instanceof String) {
+            String handlerName = (String) handler;
+            handler = getApplicationContext().getBean(handlerName);
+        }
+        validateHandler(handler, request);
+        String pathWithinMapping = getPathMatcher().extractPathWithinPattern(bestPatternMatch, urlPath);
+
+        Map&amp;lt;String, String&amp;gt; uriTemplateVariables = new LinkedHashMap&amp;lt;String, String&amp;gt;();
+        for (String matchingPattern : matchingPatterns) {
+            if (patternComparator.compare(bestPatternMatch, matchingPattern) == 0) {
+                Map&amp;lt;String, String&amp;gt; vars = getPathMatcher().extractUriTemplateVariables(matchingPattern, urlPath);
+                Map&amp;lt;String, String&amp;gt; decodedVars = getUrlPathHelper().decodePathVariables(request, vars);
+                uriTemplateVariables.putAll(decodedVars);
+            }
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug(&quot;URI Template variables for request [&quot; + urlPath + &quot;] are &quot; + uriTemplateVariables);
+        }
+        return buildPathExposingHandler(handler, bestPatternMatch, pathWithinMapping, uriTemplateVariables);
+    }
+    return null;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;得到handler对象后，把这个handler封装到HandlerExecutionChain中并加上拦截器&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;protected HandlerExecutionChain getHandlerExecutionChain(Object handler, HttpServletRequest request) {
+    HandlerExecutionChain chain = (handler instanceof HandlerExecutionChain ?
+            (HandlerExecutionChain) handler : new HandlerExecutionChain(handler));
+
+    String lookupPath = this.urlPathHelper.getLookupPathForRequest(request);
+    for (HandlerInterceptor interceptor : this.adaptedInterceptors) {
+        if (interceptor instanceof MappedInterceptor) {
+            MappedInterceptor mappedInterceptor = (MappedInterceptor) interceptor;
+            if (mappedInterceptor.matches(lookupPath, this.pathMatcher)) {
+                chain.addInterceptor(mappedInterceptor.getInterceptor());
+            }
+        }
+        else {
+            chain.addInterceptor(interceptor);
+        }
+    }
+    return chain;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;现在我们完成了对HandlerExecutionChain的封装工作，为handler对http请求响应做好了准备。&lt;/p&gt;
+
+&lt;p&gt;DispatcherServlet是HttpServlet的子类，和其他的HttpServlet一样，通过doService方法来响应HTTP请求（再调用doDispatch）。DispatcherServlet通过getHandler得到一个HandlerExecutionChain后，通过HandlerAdapter来验证这个handler的合法性（handler instanceof Controller，如果是Controller的对象则返回true，反之返回false），合法后执行handler方法获取结果数据，这些数据都封装在ModelAndView中返回给前端进行视图呈现，对视图呈现的处理是通过调用入口：render方法来实现的。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    HttpServletRequest processedRequest = request;
+    HandlerExecutionChain mappedHandler = null;
+    boolean multipartRequestParsed = false;
+
+    WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
+
+    try {
+        ModelAndView mv = null;
+        Exception dispatchException = null;
+
+        try {
+            processedRequest = checkMultipart(request);
+            multipartRequestParsed = (processedRequest != request);
+
+            // Determine handler for the current request.
+            mappedHandler = getHandler(processedRequest);
+            if (mappedHandler == null || mappedHandler.getHandler() == null) {
+                noHandlerFound(processedRequest, response);
+                return;
+            }
+
+            // Determine handler adapter for the current request.
+            HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
+
+            // Process last-modified header, if supported by the handler.
+            String method = request.getMethod();
+            boolean isGet = &quot;GET&quot;.equals(method);
+            if (isGet || &quot;HEAD&quot;.equals(method)) {
+                long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
+                if (logger.isDebugEnabled()) {
+                    logger.debug(&quot;Last-Modified value for [&quot; + getRequestUri(request) + &quot;] is: &quot; + lastModified);
+                }
+                if (new ServletWebRequest(request, response).checkNotModified(lastModified) &amp;amp;&amp;amp; isGet) {
+                    return;
+                }
+            }
+
+            if (!mappedHandler.applyPreHandle(processedRequest, response)) {
+                return;
+            }
+
+            // Actually invoke the handler.
+            mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+
+            if (asyncManager.isConcurrentHandlingStarted()) {
+                return;
+            }
+
+            applyDefaultViewName(processedRequest, mv);
+            mappedHandler.applyPostHandle(processedRequest, response, mv);
+        }
+        catch (Exception ex) {
+            dispatchException = ex;
+        }
+        catch (Throwable err) {
+            // As of 4.3, we're processing Errors thrown from handler methods as well,
+            // making them available for @ExceptionHandler methods and other scenarios.
+            dispatchException = new NestedServletException(&quot;Handler dispatch failed&quot;, err);
+        }
+        processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
+    }
+    catch (Exception ex) {
+        triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
+    }
+    catch (Throwable err) {
+        triggerAfterCompletion(processedRequest, response, mappedHandler,
+                new NestedServletException(&quot;Handler processing failed&quot;, err));
+    }
+    finally {
+        if (asyncManager.isConcurrentHandlingStarted()) {
+            // Instead of postHandle and afterCompletion
+            if (mappedHandler != null) {
+                mappedHandler.applyAfterConcurrentHandlingStarted(processedRequest, response);
+            }
+        }
+        else {
+            // Clean up any resources used by a multipart request.
+            if (multipartRequestParsed) {
+                cleanupMultipart(processedRequest);
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;img title=&quot;死磕Spring源码-MVC处理HTTP分发请求&quot; 图片1=&quot;&quot; src=&quot;http://img.mukewang.com/597f3b22000129d617520768.png&quot; style=&quot;width:100%&quot; alt=&quot;MVC处理HTTP分发请求&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;参考文献：&lt;/p&gt;
 
