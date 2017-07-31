@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 30 Jul 2017 23:31:40 +0800</pubDate>
-    <lastBuildDate>Sun, 30 Jul 2017 23:31:40 +0800</lastBuildDate>
+    <pubDate>Mon, 31 Jul 2017 18:10:28 +0800</pubDate>
+    <lastBuildDate>Mon, 31 Jul 2017 18:10:28 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -122,7 +122,7 @@ protected WebApplicationContext createWebApplicationContext(ServletContext sc) {
 
 protected Class&amp;lt;?&amp;gt; determineContextClass(ServletContext servletContext) {
     String contextClassName = servletContext.getInitParameter(CONTEXT_CLASS_PARAM);
-    //如果在ServletContext中配置了CONTEXT_CLASS_PARAM，则使用这个class反射根上下文。
+    //如果在ServletContext中配置了CONTEXT_CLASS_PARAM，则使用这个class反射生成根上下文实例。
     if (contextClassName != null) {
         try {
             return ClassUtils.forName(contextClassName, ClassUtils.getDefaultClassLoader());
@@ -132,7 +132,7 @@ protected Class&amp;lt;?&amp;gt; determineContextClass(ServletContext servletCon
                     &quot;Failed to load custom context class [&quot; + contextClassName + &quot;]&quot;, ex);
         }
     }
-    else {//如果没有配置CONTEXT_CLASS_PARAM，则使用默认的contextClass来反射根上下文
+    else {//如果没有配置CONTEXT_CLASS_PARAM，则使用默认的contextClass来反射生成根上下文实例。
         contextClassName = defaultStrategies.getProperty(WebApplicationContext.class.getName());
         try {
             return ClassUtils.forName(contextClassName, ContextLoader.class.getClassLoader());
@@ -179,6 +179,247 @@ protected void configureAndRefreshWebApplicationContext(ConfigurableWebApplicati
 &lt;p&gt;ContextLoaderListener初始化根上下文过程图&lt;/p&gt;
 
 &lt;p&gt;&lt;img title=&quot;死磕Spring源码-SpringMVC&quot; 图片1=&quot;&quot; src=&quot;http://img.mukewang.com/597dfb49000101aa16560728.png&quot; style=&quot;width:100%&quot; alt=&quot;初始化根上下文过程图&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Spring MVC的启动（DispatcherServlet）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在完成ContextLoaderListener的初始化后，Web容器开始初始化DispatcherServlet。DispatcherServlet会建立自己的上下文来持有Spring MVC的Bean对象，在建立自己持有的IOC容器时，会将根上下文作为自己持有的上下文的双亲上下文，建立了这个上下文后将该上下文保存到ServletContext中，供以后检索和使用。DispatcherServlet的启动过程也就是Spring MVC的启动过程。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;DispatcherServlet的继承关系&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;死磕Spring源码-SpringMVC&quot; 图片2=&quot;&quot; src=&quot;http://img.mukewang.com/597ef8590001cdb904720208.png&quot; style=&quot;width:100%&quot; alt=&quot;DispatcherServlet的继承关系&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;DispatcherServlet通过继承FrameworkServlet和HttpServletBean来继承HttpServlet，这样就可以使用Servlet API来对HTTP请求进行响应，成为Spring MVC的前端处理器。&lt;/p&gt;
+
+&lt;p&gt;DispatcherServlet的工作分为两部分：一个是&lt;strong&gt;初始化部分&lt;/strong&gt;，通过调用initStrategies方法完成Spring MVC的初始化；一个是&lt;strong&gt;对HTTP请求进行响应&lt;/strong&gt;，作为一个servlet，Web容器会调用Servlet的doGet和doPost方法来完成响应动作。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;DispatcherServlet的启动与初始化&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;DispatcherServlet的启动与Servlet的启动是相似的，在Servlet初始化时会调用init方法，在DispatcherServlet的基类HttpServletBean的初始化也由init开始。DispatcherServlet持有一个以自己的Servlet名称命名的IoC容器，这个容器作为根上下文的子上下文存在，在Web容器的上下文体系中，一个根上下文可以作为多个Servlet子上下文的双亲上下文。&lt;/p&gt;
+
+&lt;p&gt;一般情况下controller相关的bean或者对应的注解扫描配置在子上下文中，而service、dao的bean或者对应的注解扫描配置在根上下文中。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;建立MVC的上下文代码逻辑：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;HttpServletBean.init()
+@Override
+public final void init() throws ServletException {
+    if (logger.isDebugEnabled()) {
+        logger.debug(&quot;Initializing servlet '&quot; + getServletName() + &quot;'&quot;);
+    }
+
+    // 获取Servlet的初始化参数，配置Bean属性
+    try {
+        PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
+        BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
+        ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
+        bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
+        initBeanWrapper(bw);
+        bw.setPropertyValues(pvs, true);
+    }
+    catch (BeansException ex) {
+        logger.error(&quot;Failed to set bean properties on servlet '&quot; + getServletName() + &quot;'&quot;, ex);
+        throw ex;
+    }
+
+    // 具体初始化过程
+    initServletBean();
+
+    if (logger.isDebugEnabled()) {
+        logger.debug(&quot;Servlet '&quot; + getServletName() + &quot;' configured successfully&quot;);
+    }
+}
+
+@Override
+protected final void initServletBean() throws ServletException {
+    getServletContext().log(&quot;Initializing Spring FrameworkServlet '&quot; + getServletName() + &quot;'&quot;);
+    if (this.logger.isInfoEnabled()) {
+        this.logger.info(&quot;FrameworkServlet '&quot; + getServletName() + &quot;': initialization started&quot;);
+    }
+    long startTime = System.currentTimeMillis();
+    //初始化上下文
+    try {
+        this.webApplicationContext = initWebApplicationContext();
+        initFrameworkServlet();
+    }
+    catch (ServletException ex) {
+        this.logger.error(&quot;Context initialization failed&quot;, ex);
+        throw ex;
+    }
+    catch (RuntimeException ex) {
+        this.logger.error(&quot;Context initialization failed&quot;, ex);
+        throw ex;
+    }
+
+    if (this.logger.isInfoEnabled()) {
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        this.logger.info(&quot;FrameworkServlet '&quot; + getServletName() + &quot;': initialization completed in &quot; +
+                elapsedTime + &quot; ms&quot;);
+    }
+}
+
+//这里的初始化上下文和ContextLoaderListner不太一样
+protected WebApplicationContext initWebApplicationContext() {
+    //使用ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE来获取根上下文
+    WebApplicationContext rootContext =
+            WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+    WebApplicationContext wac = null;
+
+    if (this.webApplicationContext != null) {
+        wac = this.webApplicationContext;
+        if (wac instanceof ConfigurableWebApplicationContext) {
+            ConfigurableWebApplicationContext cwac = (ConfigurableWebApplicationContext) wac;
+            if (!cwac.isActive()) {
+                if (cwac.getParent() == null) {
+                    // 设置根上下文为双亲上下文
+                    cwac.setParent(rootContext);
+                }
+                configureAndRefreshWebApplicationContext(cwac);
+            }
+        }
+    }
+    if (wac == null) {
+        wac = findWebApplicationContext();
+    }
+    //如果以上都没有能获取MVC的IoC容器，则创建一个
+    if (wac == null) {
+        wac = createWebApplicationContext(rootContext);
+    }
+
+    if (!this.refreshEventReceived) {
+        onRefresh(wac);
+    }
+
+    if (this.publishContext) {
+        //把建立好的子上下文存放到ServletContext中去，使用的属性名就是当前servlet名
+        String attrName = getServletContextAttributeName();
+        getServletContext().setAttribute(attrName, wac);
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug(&quot;Published WebApplicationContext of servlet '&quot; + getServletName() +
+                    &quot;' as ServletContext attribute with name [&quot; + attrName + &quot;]&quot;);
+        }
+    }
+
+    return wac;
+}
+
+protected WebApplicationContext createWebApplicationContext(ApplicationContext parent) {
+    Class&amp;lt;?&amp;gt; contextClass = getContextClass();
+    if (this.logger.isDebugEnabled()) {
+        this.logger.debug(&quot;Servlet with name '&quot; + getServletName() +
+                &quot;' will try to create custom WebApplicationContext context of class '&quot; +
+                contextClass.getName() + &quot;'&quot; + &quot;, using parent context [&quot; + parent + &quot;]&quot;);
+    }
+    if (!ConfigurableWebApplicationContext.class.isAssignableFrom(contextClass)) {
+        throw new ApplicationContextException(
+                &quot;Fatal initialization error in servlet with name '&quot; + getServletName() +
+                &quot;': custom WebApplicationContext class [&quot; + contextClass.getName() +
+                &quot;] is not of type ConfigurableWebApplicationContext&quot;);
+    }
+    //实例化需要的具体上下文对象，这个上下文对象也是XmlWebApplicationContext
+    ConfigurableWebApplicationContext wac =
+            (ConfigurableWebApplicationContext) BeanUtils.instantiateClass(contextClass);
+
+    wac.setEnvironment(getEnvironment());
+    //设置双亲上下文
+    wac.setParent(parent);
+    wac.setConfigLocation(getContextConfigLocation());
+
+    configureAndRefreshWebApplicationContext(wac);
+
+    return wac;
+}
+
+protected void configureAndRefreshWebApplicationContext(ConfigurableWebApplicationContext wac) {
+    if (ObjectUtils.identityToString(wac).equals(wac.getId())) {
+        if (this.contextId != null) {
+            wac.setId(this.contextId);
+        }
+        else {
+            wac.setId(ConfigurableWebApplicationContext.APPLICATION_CONTEXT_ID_PREFIX +
+                    ObjectUtils.getDisplayString(getServletContext().getContextPath()) + &quot;/&quot; + getServletName());
+        }
+    }
+
+    wac.setServletContext(getServletContext());
+    wac.setServletConfig(getServletConfig());
+    wac.setNamespace(getNamespace());
+    wac.addApplicationListener(new SourceFilteringListener(wac, new ContextRefreshListener()));
+
+    ConfigurableEnvironment env = wac.getEnvironment();
+    if (env instanceof ConfigurableWebEnvironment) {
+        ((ConfigurableWebEnvironment) env).initPropertySources(getServletContext(), getServletConfig());
+    }
+
+    postProcessWebApplicationContext(wac);
+    applyInitializers(wac);
+    //通过refresh方法来调用容器初始化过程
+    wac.refresh();
+}
+
+DispatcherServlet.onRefresh
+protected void onRefresh(ApplicationContext context) {
+    initStrategies(context);
+}
+
+//启动整个Spring MVC框架的初始化
+protected void initStrategies(ApplicationContext context) {
+    initMultipartResolver(context);
+    initLocaleResolver(context);
+    initThemeResolver(context);
+    initHandlerMappings(context);
+    initHandlerAdapters(context);
+    initHandlerExceptionResolvers(context);
+    initRequestToViewNameTranslator(context);
+    initViewResolvers(context);
+    initFlashMapManager(context);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;MVC框架的初始化是在initStrategies方法中完成的，初始化了支持国际化的LocaleResolver、request映射的HandlerMappings、视图生成的ViewResolvers等。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//初始化HandlerMapping
+private void initHandlerMappings(ApplicationContext context) {
+    this.handlerMappings = null;
+    //detectAllHandlerMappings这里默认为true，即默认从所有的IoC容器中获取HandlerMapping
+    if (this.detectAllHandlerMappings) {
+        // Find all HandlerMappings in the ApplicationContext, including ancestor contexts.
+        Map&amp;lt;String, HandlerMapping&amp;gt; matchingBeans =
+                BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerMapping.class, true, false);
+        if (!matchingBeans.isEmpty()) {
+            this.handlerMappings = new ArrayList&amp;lt;HandlerMapping&amp;gt;(matchingBeans.values());
+            // We keep HandlerMappings in sorted order.
+            AnnotationAwareOrderComparator.sort(this.handlerMappings);
+        }
+    }
+    else {//否则从当前的IoC容器中通过getBean获取所有Bean名称为“handlerMapping”的HandlerMapping
+        try {
+            HandlerMapping hm = context.getBean(HANDLER_MAPPING_BEAN_NAME, HandlerMapping.class);
+            this.handlerMappings = Collections.singletonList(hm);
+        }
+        catch (NoSuchBeanDefinitionException ex) {
+            // Ignore, we'll add a default HandlerMapping later.
+        }
+    }
+
+    // 如果没有handlerMappings，则从配置文件中读取
+    if (this.handlerMappings == null) {
+        this.handlerMappings = getDefaultStrategies(context, HandlerMapping.class);
+        if (logger.isDebugEnabled()) {
+            logger.debug(&quot;No HandlerMappings found in servlet '&quot; + getServletName() + &quot;': using default&quot;);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;initHandlerMappings是对HandlerMappings的初始化，这些Map的作用是为HTTP请求找到相应的Controller控制器，以完成功能逻辑。IoC容器初始化后，容器里有各种各样的Bean，initHandlerMappings会从IoC容器中通过getBean来获取handlerMapping，handlerMapping包含了MVC中Controller的定义和配置，同时handlerMappings变量就已经获取了在BeanDefinition配置好的映射关系。加载的HandlerMapping被放在一个List中并已经排好序。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;initHandlerMappings方法调用栈&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;死磕Spring源码-SpringMVC&quot; 图片3=&quot;&quot; src=&quot;http://img.mukewang.com/597ef9330001fb1313280208.png&quot; style=&quot;width:100%&quot; alt=&quot;initHandlerMappings方法调用栈&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;死磕Spring源码-SpringMVC&quot; 图片4=&quot;&quot; src=&quot;http://img.mukewang.com/597ef94100012e7b13780762.png&quot; style=&quot;width:100%&quot; alt=&quot;死磕Spring源码-SpringMVC&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;参考文献：&lt;/p&gt;
 
