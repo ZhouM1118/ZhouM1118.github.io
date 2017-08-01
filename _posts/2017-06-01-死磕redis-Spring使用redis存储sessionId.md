@@ -143,8 +143,8 @@ pom.xml中的redis部分
 	redis.maxTotal=1000  
 	redis.minIdle=8  
 	redis.testOnBorrow=true
-	redis.host=120.27.35.26
-	redis.port=7006
+	redis.host=127.0.0.1
+	redis.port=6379
 	
 Spring redis配置文件：redis-context.xml
 
