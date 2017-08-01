@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="死磕redis-Spring使用redis存储sessionId" name="description">
+  
+  
+    <meta name="keywords" content="redis, Spring, sessionId">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|死磕redis-Spring使用redis存储sessionId
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Database</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 1 Jun 2017</span>
+                        <h1>
+                            死磕redis-Spring使用redis存储sessionId
+                        </h1>
+                    </div>
+                    	<p><strong>一、redis 储备知识</strong></p>
+
+<p>Redis 是完全开源免费的一个高性能的key-value数据库。</p>
+
+<p>Redis支持五种数据类型：string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。</p>
+
+<p>string类型是Redis最基本的数据类型，一个键最大能存储512MB。</p>
+<blockquote>
+  <p>127.0.0.1:6379&gt; set database “redis”</p>
+
+  <p>OK</p>
+
+  <p>127.0.0.1:6379&gt; get database</p>
+
+  <p>“redis”</p>
+</blockquote>
+
+<p>Redis hash是一个string类型的field和value的映射表，hash特别适合用于存储对象。每个 hash 可以存储 2^32 -1 键值对（40多亿）。</p>
+
+<blockquote>
+  <p>127.0.0.1:6379&gt; hmset user:1 zhoum 24 man coder</p>
+
+  <p>OK</p>
+
+  <p>127.0.0.1:6379&gt; hgetall user:1</p>
+
+  <p>1) “zhoum”</p>
+
+  <p>2) “24”</p>
+
+  <p>3) “man”</p>
+
+  <p>4) “coder”</p>
+</blockquote>
+
+<p>Redis List列表是简单的字符串列表，按照插入顺序排序。列表最多可存储 2^32 - 1 元素。</p>
+
+<blockquote>
+  <p>127.0.0.1:6379&gt; lpush databases redis</p>
+
+  <p>(integer) 1</p>
+
+  <p>127.0.0.1:6379&gt; lpush databases mysql</p>
+
+  <p>(integer) 2</p>
+
+  <p>127.0.0.1:6379&gt; lpush databases sqlite</p>
+
+  <p>(integer) 3</p>
+
+  <p>127.0.0.1:6379&gt; lpush databases mongodb</p>
+
+  <p>(integer) 4</p>
+
+  <p>127.0.0.1:6379&gt; lrange databases 0 10</p>
+
+  <p>1) “mongodb”</p>
+
+  <p>2) “sqlite”</p>
+
+  <p>3) “mysql”</p>
+
+  <p>4) “redis”</p>
+</blockquote>
+
+<p>Redis的Set是string类型的无序集合。</p>
+
+<blockquote>
+  <p>127.0.0.1:6379&gt; sadd databases redis</p>
+
+  <p>(integer) 1</p>
+
+  <p>127.0.0.1:6379&gt; sadd databases mysql</p>
+
+  <p>(integer) 1</p>
+
+  <p>127.0.0.1:6379&gt; sadd databases sqlite</p>
+
+  <p>(integer) 1</p>
+
+  <p>127.0.0.1:6379&gt; sadd databases sqlite</p>
+
+  <p>(integer) 0</p>
+
+  <p>127.0.0.1:6379&gt; smembers databases</p>
+
+  <p>1) “sqlite”</p>
+
+  <p>2) “mysql”</p>
+
+  <p>3) “redis”</p>
+</blockquote>
+
+<p>Redis zset 和 set 一样也是string类型元素的有序集合,且不允许重复的成员。</p>
+
+<blockquote>
+  <p>127.0.0.1:6379&gt; zadd databases 0 redis</p>
+
+  <p>(integer) 1</p>
+
+  <p>127.0.0.1:6379&gt; zadd databases 0 mysql</p>
+
+  <p>(integer) 1</p>
+
+  <p>127.0.0.1:6379&gt; zadd databases 0 sqlite</p>
+
+  <p>(integer) 1</p>
+
+  <p>127.0.0.1:6379&gt; zadd databases 0 sqlite</p>
+
+  <p>(integer) 0</p>
+
+  <p>127.0.0.1:6379&gt; ZRANGEBYSCORE databases 0 1000</p>
+
+  <p>1) “redis”</p>
+
+  <p>2) “mysql”</p>
+
+  <p>3) “sqlite”</p>
+</blockquote>
+
+<p><strong>二、Spring使用redis存储sessionid</strong></p>
+
+<p>pom.xml中的redis部分</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.data&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-data-redis&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;redis.clients&lt;/groupId&gt;
+    &lt;artifactId&gt;jedis&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+</div>
+
+<p>配置文件：redis.properties</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>redis.maxIdle=100  
+redis.maxActive=300  
+redis.maxWait=1000  
+redis.timeout=100000  
+redis.maxTotal=1000  
+redis.minIdle=8  
+redis.testOnBorrow=true
+redis.host=120.27.35.26
+redis.port=7006
+</code></pre>
+</div>
+
+<p>Spring redis配置文件：redis-context.xml</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+    <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="na">xmlns:p=</span><span class="s">"http://www.springframework.org/schema/p"</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"jedisPoolConfig"</span> <span class="na">class=</span><span class="s">"redis.clients.jedis.JedisPoolConfig"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"maxIdle"</span> <span class="na">value=</span><span class="s">"${redis.maxIdle}"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"maxTotal"</span> <span class="na">value=</span><span class="s">"${redis.maxTotal}"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"maxWaitMillis"</span> <span class="na">value=</span><span class="s">"${redis.maxWait}"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"testOnBorrow"</span> <span class="na">value=</span><span class="s">"${redis.testOnBorrow}"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"jedisConnectionFactory"</span>
+        <span class="na">class=</span><span class="s">"org.springframework.data.redis.connection.jedis.JedisConnectionFactory"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"poolConfig"</span> <span class="na">ref=</span><span class="s">"jedisPoolConfig"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"hostName"</span> <span class="na">value=</span><span class="s">"${redis.host}"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"port"</span> <span class="na">value=</span><span class="s">"${redis.port}"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"redisTemplate"</span> <span class="na">class=</span><span class="s">"org.springframework.data.redis.core.RedisTemplate"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"connectionFactory"</span> <span class="na">ref=</span><span class="s">"jedisConnectionFactory"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"keySerializer"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;bean</span>
+                <span class="na">class=</span><span class="s">"org.springframework.data.redis.serializer.StringRedisSerializer"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"valueSerializer"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;bean</span>
+                <span class="na">class=</span><span class="s">"org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"hashKeySerializer"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;bean</span>
+                <span class="na">class=</span><span class="s">"org.springframework.data.redis.serializer.StringRedisSerializer"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"hashValueSerializer"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;bean</span>
+                <span class="na">class=</span><span class="s">"org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;/beans&gt;</span>
+</code></pre>
+</div>
+
+<p>java代码</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>import org.springframework.data.redis.core.RedisTemplate;
+import java.io.Serializable;
+
+@Autowired
+protected RedisTemplate&lt;Serializable, Serializable&gt; redisTemplate;
+
+public void addAdminRedis(String sessionId, Integer aid) {
+    if(null != sessionId &amp;&amp; null != aid){
+        redisTemplate.opsForValue().set(sessionId+ADMIN_SUFFIX,aid);
+    }
+}
+
+public AdministratorVo getAdminRedis(String sessionId) {
+    if(null == sessionId){
+        return  null;
+    }
+    if(null == redisTemplate.opsForValue().get(sessionId+ADMIN_SUFFIX)){
+        return  null;
+    }
+    Integer aid = (Integer)redisTemplate.opsForValue().get(sessionId+ADMIN_SUFFIX);
+    AdministratorVo admin = adminMapper.selectAdminById(aid);
+    if(null != admin){
+        admin.setPassword(null);
+    }
+    return admin;
+}
+
+public void deleteAdminRedis(String sessionId) {
+    if(sessionId != null){
+        AdministratorVo vo = getAdminRedis(sessionId+ADMIN_SUFFIX);
+        if(null != vo){
+            redisTemplate.delete(ADMIN_POWER_PREFIX+vo.getId().toString());
+        }
+
+        redisTemplate.delete(sessionId+ADMIN_SUFFIX);
+    }
+}
+</code></pre>
+</div>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">redis</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">Spring</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">sessionId</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
