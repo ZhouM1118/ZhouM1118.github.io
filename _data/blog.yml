@@ -9,6 +9,9 @@
 - name: Javascript
   href: /javascript/
 
+- name: Database
+  href: /database/
+
 - name: Python
   href: /python/
 
@@ -17,9 +20,6 @@
 
 - name: HTML
   href: /html/
-
-- name: Database
-  href: /database/
 
 - name: DeepLearning
   href: /DeepLearning/
