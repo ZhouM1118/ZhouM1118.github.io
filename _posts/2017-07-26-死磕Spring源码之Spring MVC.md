@@ -11,7 +11,7 @@ icon: icon-html
 
 Spring IoC是Spring的核心，所以IoC也是Spring MVC的基础，Spring MVC 会建立起一个IOC容器体系，IoC的启动过程与web容器启动的过程是集成在一起的，它们的启动由ContextLoaderListener监听器负责完成。建立IOC容器体系后，DispatcherServlet作为Spring MVC处理web请求的转发器也建立起来，从而完成响应HTTP请求的准备工作。
 
-**IOC容器的启动（ContextLoaderListener）**
+**一、IOC容器的启动（ContextLoaderListener）**
 
 IoC容器的启动过程就是建立上下文的过程，由ContextLoaderListener启动的上下文为根上下文，在根上下文的基础上，还有一个与Web MVC相关的上下文作为根上下文的子上下文来保存DispatcherServlet所需要的MVC对象，构成一个上下文体系。这个上下文体系的建立与初始化是由ContextLoader来完成的。
 
@@ -170,15 +170,15 @@ IoC容器的启动过程就是建立上下文的过程，由ContextLoaderListene
 	    wac.refresh();
 	}
 	
-ContextLoaderListener初始化根上下文过程图
+**ContextLoaderListener初始化根上下文过程图**
 
 <img title="死磕Spring源码-SpringMVC" 图片1="" src="http://img.mukewang.com/597dfb49000101aa16560728.png" style="width:100%" alt="初始化根上下文过程图">
 
-**Spring MVC的启动（DispatcherServlet）**
+**二、Spring MVC的启动（DispatcherServlet）**
 
 在完成ContextLoaderListener的初始化后，Web容器开始初始化DispatcherServlet。DispatcherServlet会建立自己的上下文来持有Spring MVC的Bean对象，在建立自己持有的IOC容器时，会将根上下文作为自己持有的上下文的双亲上下文，建立了这个上下文后将该上下文保存到ServletContext中，供以后检索和使用。DispatcherServlet的启动过程也就是Spring MVC的启动过程。
 
-**DispatcherServlet的继承关系**
+**2.1 DispatcherServlet的继承关系**
 
 <img title="死磕Spring源码-SpringMVC" 图片2="" src="http://img.mukewang.com/597ef8590001cdb904720208.png" style="width:50%" alt="DispatcherServlet的继承关系">
 
@@ -186,7 +186,7 @@ DispatcherServlet通过继承FrameworkServlet和HttpServletBean来继承HttpServ
 
 DispatcherServlet的工作分为两部分：一个是**初始化部分**，通过调用initStrategies方法完成Spring MVC的初始化；一个是**对HTTP请求进行响应**，作为一个servlet，Web容器会调用Servlet的doGet和doPost方法来完成响应动作。
 
-**DispatcherServlet的启动与初始化**
+**2.2 DispatcherServlet的启动与初始化**
 
 DispatcherServlet的启动与Servlet的启动是相似的，在Servlet初始化时会调用init方法，在DispatcherServlet的基类HttpServletBean的初始化也由init开始。DispatcherServlet持有一个以自己的Servlet名称命名的IoC容器，这个容器作为根上下文的子上下文存在，在Web容器的上下文体系中，一个根上下文可以作为多个Servlet子上下文的双亲上下文。
 
@@ -411,7 +411,7 @@ initHandlerMappings是对HandlerMappings的初始化，这些Map的作用是为H
 
 <img title="死磕Spring源码-SpringMVC" 图片4="" src="http://img.mukewang.com/597ef94100012e7b13780762.png" style="width:100%" alt="死磕Spring源码-SpringMVC">
 
-**MVC处理HTTP分发请求**
+**2.3 MVC处理HTTP分发请求**
 
 上面已经完成了HandlerMapping的加载，每一个HandlerMapping持有一系列从URL请求到Controller的映射，这种映射关系通常用一个Map（LinkedHashMap，命名为handlerMap）来持有。
 

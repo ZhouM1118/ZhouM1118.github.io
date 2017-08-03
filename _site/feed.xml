@@ -5,15 +5,15 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 03 Aug 2017 21:16:39 +0800</pubDate>
-    <lastBuildDate>Thu, 03 Aug 2017 21:16:39 +0800</lastBuildDate>
+    <pubDate>Thu, 03 Aug 2017 21:22:09 +0800</pubDate>
+    <lastBuildDate>Thu, 03 Aug 2017 21:22:09 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
         <title>死磕Spring源码-Spring MVC</title>
         <description>&lt;p&gt;Spring IoC是Spring的核心，所以IoC也是Spring MVC的基础，Spring MVC 会建立起一个IOC容器体系，IoC的启动过程与web容器启动的过程是集成在一起的，它们的启动由ContextLoaderListener监听器负责完成。建立IOC容器体系后，DispatcherServlet作为Spring MVC处理web请求的转发器也建立起来，从而完成响应HTTP请求的准备工作。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;IOC容器的启动（ContextLoaderListener）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;一、IOC容器的启动（ContextLoaderListener）&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;IoC容器的启动过程就是建立上下文的过程，由ContextLoaderListener启动的上下文为根上下文，在根上下文的基础上，还有一个与Web MVC相关的上下文作为根上下文的子上下文来保存DispatcherServlet所需要的MVC对象，构成一个上下文体系。这个上下文体系的建立与初始化是由ContextLoader来完成的。&lt;/p&gt;
 
@@ -176,15 +176,15 @@ protected void configureAndRefreshWebApplicationContext(ConfigurableWebApplicati
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;ContextLoaderListener初始化根上下文过程图&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;ContextLoaderListener初始化根上下文过程图&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;img title=&quot;死磕Spring源码-SpringMVC&quot; 图片1=&quot;&quot; src=&quot;http://img.mukewang.com/597dfb49000101aa16560728.png&quot; style=&quot;width:100%&quot; alt=&quot;初始化根上下文过程图&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Spring MVC的启动（DispatcherServlet）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;二、Spring MVC的启动（DispatcherServlet）&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;在完成ContextLoaderListener的初始化后，Web容器开始初始化DispatcherServlet。DispatcherServlet会建立自己的上下文来持有Spring MVC的Bean对象，在建立自己持有的IOC容器时，会将根上下文作为自己持有的上下文的双亲上下文，建立了这个上下文后将该上下文保存到ServletContext中，供以后检索和使用。DispatcherServlet的启动过程也就是Spring MVC的启动过程。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;DispatcherServlet的继承关系&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.1 DispatcherServlet的继承关系&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;img title=&quot;死磕Spring源码-SpringMVC&quot; 图片2=&quot;&quot; src=&quot;http://img.mukewang.com/597ef8590001cdb904720208.png&quot; style=&quot;width:50%&quot; alt=&quot;DispatcherServlet的继承关系&quot; /&gt;&lt;/p&gt;
 
@@ -192,7 +192,7 @@ protected void configureAndRefreshWebApplicationContext(ConfigurableWebApplicati
 
 &lt;p&gt;DispatcherServlet的工作分为两部分：一个是&lt;strong&gt;初始化部分&lt;/strong&gt;，通过调用initStrategies方法完成Spring MVC的初始化；一个是&lt;strong&gt;对HTTP请求进行响应&lt;/strong&gt;，作为一个servlet，Web容器会调用Servlet的doGet和doPost方法来完成响应动作。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;DispatcherServlet的启动与初始化&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.2 DispatcherServlet的启动与初始化&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;DispatcherServlet的启动与Servlet的启动是相似的，在Servlet初始化时会调用init方法，在DispatcherServlet的基类HttpServletBean的初始化也由init开始。DispatcherServlet持有一个以自己的Servlet名称命名的IoC容器，这个容器作为根上下文的子上下文存在，在Web容器的上下文体系中，一个根上下文可以作为多个Servlet子上下文的双亲上下文。&lt;/p&gt;
 
@@ -421,7 +421,7 @@ private void initHandlerMappings(ApplicationContext context) {
 
 &lt;p&gt;&lt;img title=&quot;死磕Spring源码-SpringMVC&quot; 图片4=&quot;&quot; src=&quot;http://img.mukewang.com/597ef94100012e7b13780762.png&quot; style=&quot;width:100%&quot; alt=&quot;死磕Spring源码-SpringMVC&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;MVC处理HTTP分发请求&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.3 MVC处理HTTP分发请求&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;上面已经完成了HandlerMapping的加载，每一个HandlerMapping持有一系列从URL请求到Controller的映射，这种映射关系通常用一个Map（LinkedHashMap，命名为handlerMap）来持有。&lt;/p&gt;
 
