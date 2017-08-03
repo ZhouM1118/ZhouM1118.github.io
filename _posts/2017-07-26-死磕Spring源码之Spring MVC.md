@@ -180,7 +180,7 @@ ContextLoaderListener初始化根上下文过程图
 
 **DispatcherServlet的继承关系**
 
-<img title="死磕Spring源码-SpringMVC" 图片2="" src="http://img.mukewang.com/597ef8590001cdb904720208.png" style="width:100%" alt="DispatcherServlet的继承关系">
+<img title="死磕Spring源码-SpringMVC" 图片2="" src="http://img.mukewang.com/597ef8590001cdb904720208.png" style="width:50%" alt="DispatcherServlet的继承关系">
 
 DispatcherServlet通过继承FrameworkServlet和HttpServletBean来继承HttpServlet，这样就可以使用Servlet API来对HTTP请求进行响应，成为Spring MVC的前端处理器。
 

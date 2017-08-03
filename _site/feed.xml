@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 03 Aug 2017 20:21:36 +0800</pubDate>
-    <lastBuildDate>Thu, 03 Aug 2017 20:21:36 +0800</lastBuildDate>
+    <pubDate>Thu, 03 Aug 2017 21:01:08 +0800</pubDate>
+    <lastBuildDate>Thu, 03 Aug 2017 21:01:08 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -186,7 +186,7 @@ protected void configureAndRefreshWebApplicationContext(ConfigurableWebApplicati
 
 &lt;p&gt;&lt;strong&gt;DispatcherServlet的继承关系&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img title=&quot;死磕Spring源码-SpringMVC&quot; 图片2=&quot;&quot; src=&quot;http://img.mukewang.com/597ef8590001cdb904720208.png&quot; style=&quot;width:100%&quot; alt=&quot;DispatcherServlet的继承关系&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img title=&quot;死磕Spring源码-SpringMVC&quot; 图片2=&quot;&quot; src=&quot;http://img.mukewang.com/597ef8590001cdb904720208.png&quot; style=&quot;width:50%&quot; alt=&quot;DispatcherServlet的继承关系&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;DispatcherServlet通过继承FrameworkServlet和HttpServletBean来继承HttpServlet，这样就可以使用Servlet API来对HTTP请求进行响应，成为Spring MVC的前端处理器。&lt;/p&gt;
 
