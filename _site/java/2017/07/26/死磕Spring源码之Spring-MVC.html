@@ -669,8 +669,9 @@ private void initHandlerMappings(ApplicationContext context) {
 
 <p><strong>MVC处理HTTP分发请求</strong></p>
 
-<p>上面已经完成了HandlerMapping的加载，每一个HandlerMapping持有一系列从URL请求到Controller的映射，这种映射关系通常用一个Map（LinkedHashMap，命名为handlerMap）来持有。
-private final Map&lt;String, Object&gt; urlMap = new LinkedHashMap&lt;String, Object&gt;();</p>
+<p>上面已经完成了HandlerMapping的加载，每一个HandlerMapping持有一系列从URL请求到Controller的映射，这种映射关系通常用一个Map（LinkedHashMap，命名为handlerMap）来持有。</p>
+
+<p><code class="highlighter-rouge">private final Map&lt;String, Object&gt; urlMap = new LinkedHashMap&lt;String, Object&gt;();</code></p>
 
 <p>某个URL映射到哪个Controller，这部分的配置是在容器对Bean进行依赖注入时发生的，通过Bean的postProcessor来完成，（registerHandler方法）。这样就为DispatcherServlet的分发奠定了数据基础。</p>
 

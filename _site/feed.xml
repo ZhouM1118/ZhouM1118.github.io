@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 03 Aug 2017 21:01:08 +0800</pubDate>
-    <lastBuildDate>Thu, 03 Aug 2017 21:01:08 +0800</lastBuildDate>
+    <pubDate>Thu, 03 Aug 2017 21:16:39 +0800</pubDate>
+    <lastBuildDate>Thu, 03 Aug 2017 21:16:39 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -423,8 +423,9 @@ private void initHandlerMappings(ApplicationContext context) {
 
 &lt;p&gt;&lt;strong&gt;MVC处理HTTP分发请求&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;上面已经完成了HandlerMapping的加载，每一个HandlerMapping持有一系列从URL请求到Controller的映射，这种映射关系通常用一个Map（LinkedHashMap，命名为handlerMap）来持有。
-private final Map&amp;lt;String, Object&amp;gt; urlMap = new LinkedHashMap&amp;lt;String, Object&amp;gt;();&lt;/p&gt;
+&lt;p&gt;上面已经完成了HandlerMapping的加载，每一个HandlerMapping持有一系列从URL请求到Controller的映射，这种映射关系通常用一个Map（LinkedHashMap，命名为handlerMap）来持有。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;private final Map&amp;lt;String, Object&amp;gt; urlMap = new LinkedHashMap&amp;lt;String, Object&amp;gt;();&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;某个URL映射到哪个Controller，这部分的配置是在容器对Bean进行依赖注入时发生的，通过Bean的postProcessor来完成，（registerHandler方法）。这样就为DispatcherServlet的分发奠定了数据基础。&lt;/p&gt;
 

@@ -414,7 +414,8 @@ initHandlerMappings是对HandlerMappings的初始化，这些Map的作用是为H
 **MVC处理HTTP分发请求**
 
 上面已经完成了HandlerMapping的加载，每一个HandlerMapping持有一系列从URL请求到Controller的映射，这种映射关系通常用一个Map（LinkedHashMap，命名为handlerMap）来持有。
-private final Map<String, Object> urlMap = new LinkedHashMap<String, Object>();
+
+`private final Map<String, Object> urlMap = new LinkedHashMap<String, Object>();`
 
 某个URL映射到哪个Controller，这部分的配置是在容器对Bean进行依赖注入时发生的，通过Bean的postProcessor来完成，（registerHandler方法）。这样就为DispatcherServlet的分发奠定了数据基础。
 
