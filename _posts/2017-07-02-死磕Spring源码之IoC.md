@@ -508,11 +508,46 @@ BeanDefinitionDocumentReader类的registerBeanDefinitions方法
 
 完成了BeanDefinition的注册，IOC容器的初始化过程就结束了，在这个IOC容器中已经有了整个Bean的配置信息。
 
+**总结：**
+
+**IoC的概念**
+
+**BeanFactory**（提供IoC容器最基本的功能规范），BeanFactory接口的基本方法有哪些？从手工创建IOC容器中可以获悉IoC的建立与初始化过程（四步：资源定位->创建BeanFactory的IoC容器->创建一个加载BeanDefinition的读取器，通过一个回调配置给BeanFactory->从已定位的资源中加载BeanDefinition）
+
+**ApplicationContext**（高级形态意义的IOC容器），以FileSystemApplicationContext为例解析ApplicationContext的初始化过程。
+
+**资源定位**：Resource getResource(String location)，不同标识对应不同的Resource，classPath->classPathResource；url->ServletContextResource；否则调用容器本身的getResourceByPath方法获取Resource
+
+**载入与解析资源**：`int loadBeanDefinitions(Resource resource)`，input是之前定位好的资源对象Resource，输出是这次加载了多少个BeanDefinition；载入与解析的工作分为两步：
+
+第一：通过调用XML的解析器得到document对象；
+	
+第二：
+
+--->将得到的document对象作为输入传入`registerBeanDefinitions(Document doc, Resource resource)`方法
+
+--->然后使用BeanDefinitionDocumentReader类来按照Spring的Bean规则解析Document对象，得到Document的Element对象，`Element root = doc.getDocumentElement()`
+
+--->解析element对象，`BeanDefinitionHolder parseBeanDefinitionElement(Element ele, BeanDefinition containingBean)`，将Element作为输入，在parseBeanDefinitionElement方法中解析，取得<Bean>元素中的id、name、aliase属性的值，对Bean元素的详细解析，比如class、parent、init-method、destroy-method等
+
+--->最终将解析的数据作为输入，生成BeanDefinitionHolder的实例，`return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);`
+
+**资源的注册**：这部分相对载入与解析要更简单一些，将这部分生成的BeanDefinitionHolder作为输入，传入`void registerBeanDefinition(BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)`
+
+--->从BeanDefinitionHolder对象中获取beanName和BeanDefinition，
+
+`String beanName = definitionHolder.getBeanName();
+registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition())`
+
+并以beanName和BeanDefinition作为输入去注册Bean，用一个`new ConcurrentHashMap<String, BeanDefinition>(256)`的hashMap来维护Bean；同时从BeanDefinitionHolder对象中过去Bean的一些配置属性，并且为Bean设置好这些配置属性：`registry.registerAlias(beanName, alias);`
+
+
+
 参考：
 
 1、Spring 4.3.3源码
 
-2、Spring 技术内幕（深入解析Spring架构与设计原理）
+2、《Spring 技术内幕（深入解析Spring架构与设计原理）》
 
 
 

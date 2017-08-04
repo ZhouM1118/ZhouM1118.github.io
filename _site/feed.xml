@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 03 Aug 2017 21:22:09 +0800</pubDate>
-    <lastBuildDate>Thu, 03 Aug 2017 21:22:09 +0800</lastBuildDate>
+    <pubDate>Fri, 04 Aug 2017 15:21:47 +0800</pubDate>
+    <lastBuildDate>Fri, 04 Aug 2017 15:21:47 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -2273,11 +2273,44 @@ public void registerBeanDefinition(String beanName, BeanDefinition beanDefinitio
 
 &lt;p&gt;完成了BeanDefinition的注册，IOC容器的初始化过程就结束了，在这个IOC容器中已经有了整个Bean的配置信息。&lt;/p&gt;
 
+&lt;p&gt;&lt;strong&gt;总结：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;IoC的概念&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;BeanFactory&lt;/strong&gt;（提供IoC容器最基本的功能规范），BeanFactory接口的基本方法有哪些？从手工创建IOC容器中可以获悉IoC的建立与初始化过程（四步：资源定位-&amp;gt;创建BeanFactory的IoC容器-&amp;gt;创建一个加载BeanDefinition的读取器，通过一个回调配置给BeanFactory-&amp;gt;从已定位的资源中加载BeanDefinition）&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;ApplicationContext&lt;/strong&gt;（高级形态意义的IOC容器），以FileSystemApplicationContext为例解析ApplicationContext的初始化过程。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;资源定位&lt;/strong&gt;：Resource getResource(String location)，不同标识对应不同的Resource，classPath-&amp;gt;classPathResource；url-&amp;gt;ServletContextResource；否则调用容器本身的getResourceByPath方法获取Resource&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;载入与解析资源&lt;/strong&gt;：&lt;code class=&quot;highlighter-rouge&quot;&gt;int loadBeanDefinitions(Resource resource)&lt;/code&gt;，input是之前定位好的资源对象Resource，输出是这次加载了多少个BeanDefinition；载入与解析的工作分为两步：&lt;/p&gt;
+
+&lt;p&gt;第一：通过调用XML的解析器得到document对象；&lt;/p&gt;
+
+&lt;p&gt;第二：&lt;/p&gt;
+
+&lt;p&gt;—&amp;gt;将得到的document对象作为输入传入&lt;code class=&quot;highlighter-rouge&quot;&gt;registerBeanDefinitions(Document doc, Resource resource)&lt;/code&gt;方法&lt;/p&gt;
+
+&lt;p&gt;—&amp;gt;然后使用BeanDefinitionDocumentReader类来按照Spring的Bean规则解析Document对象，得到Document的Element对象，&lt;code class=&quot;highlighter-rouge&quot;&gt;Element root = doc.getDocumentElement()&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;—&amp;gt;解析element对象，&lt;code class=&quot;highlighter-rouge&quot;&gt;BeanDefinitionHolder parseBeanDefinitionElement(Element ele, BeanDefinition containingBean)&lt;/code&gt;，将Element作为输入，在parseBeanDefinitionElement方法中解析，取得&lt;Bean&gt;元素中的id、name、aliase属性的值，对Bean元素的详细解析，比如class、parent、init-method、destroy-method等&lt;/Bean&gt;&lt;/p&gt;
+
+&lt;p&gt;—&amp;gt;最终将解析的数据作为输入，生成BeanDefinitionHolder的实例，&lt;code class=&quot;highlighter-rouge&quot;&gt;return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;资源的注册&lt;/strong&gt;：这部分相对载入与解析要更简单一些，将这部分生成的BeanDefinitionHolder作为输入，传入&lt;code class=&quot;highlighter-rouge&quot;&gt;void registerBeanDefinition(BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;—&amp;gt;从BeanDefinitionHolder对象中获取beanName和BeanDefinition，&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;String beanName = definitionHolder.getBeanName();
+registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition())&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;并以beanName和BeanDefinition作为输入去注册Bean，用一个&lt;code class=&quot;highlighter-rouge&quot;&gt;new ConcurrentHashMap&amp;lt;String, BeanDefinition&amp;gt;(256)&lt;/code&gt;的hashMap来维护Bean；同时从BeanDefinitionHolder对象中过去Bean的一些配置属性，并且为Bean设置好这些配置属性：&lt;code class=&quot;highlighter-rouge&quot;&gt;registry.registerAlias(beanName, alias);&lt;/code&gt;&lt;/p&gt;
+
 &lt;p&gt;参考：&lt;/p&gt;
 
 &lt;p&gt;1、Spring 4.3.3源码&lt;/p&gt;
 
-&lt;p&gt;2、Spring 技术内幕（深入解析Spring架构与设计原理）&lt;/p&gt;
+&lt;p&gt;2、《Spring 技术内幕（深入解析Spring架构与设计原理）》&lt;/p&gt;
 
 </description>
         <pubDate>Sun, 02 Jul 2017 00:00:00 +0800</pubDate>
