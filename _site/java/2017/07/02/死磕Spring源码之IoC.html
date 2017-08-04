@@ -803,7 +803,7 @@ registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition())<
 
 <p>并以beanName和BeanDefinition作为输入去注册Bean，用一个<code class="highlighter-rouge">new ConcurrentHashMap&lt;String, BeanDefinition&gt;(256)</code>的hashMap来维护Bean；同时从BeanDefinitionHolder对象中过去Bean的一些配置属性，并且为Bean设置好这些配置属性：<code class="highlighter-rouge">registry.registerAlias(beanName, alias);</code></p>
 
-<p>参考：</p>
+<p><strong>参考：</strong></p>
 
 <p>1、Spring 4.3.3源码</p>
 

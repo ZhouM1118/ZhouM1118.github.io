@@ -543,7 +543,7 @@ registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition())`
 
 
 
-参考：
+**参考：**
 
 1、Spring 4.3.3源码
 
