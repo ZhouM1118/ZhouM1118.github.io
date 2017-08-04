@@ -539,7 +539,7 @@ BeanDefinitionDocumentReader类的registerBeanDefinitions方法
 `String beanName = definitionHolder.getBeanName();
 registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition())`
 
-并以beanName和BeanDefinition作为输入去注册Bean，用一个`new ConcurrentHashMap<String, BeanDefinition>(256)`的hashMap来维护Bean；同时从BeanDefinitionHolder对象中过去Bean的一些配置属性，并且为Bean设置好这些配置属性：`registry.registerAlias(beanName, alias);`
+并以beanName和BeanDefinition作为输入去注册Bean，用一个`new ConcurrentHashMap<String, BeanDefinition>(256)`的hashMap来维护Bean。
 
 
 
