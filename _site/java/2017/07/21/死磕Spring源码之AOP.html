@@ -342,7 +342,7 @@ class TruePointcut implements Pointcut, Serializable {
 
 <p><strong>AOP的设计与实现</strong></p>
 
-<p>Spring的AOP采用的是<a href="https://zhoum1118.github.io/java/2017/06/22/%E6%AD%BB%E7%A3%95%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">动态代理模式</a>，Spring在代理类中包裹切面，在运行期间把切面织入到Bean中，也就是说Spring用代理类封装了目标类，同时拦截了被通知方法的调用，处理完通知（Advice）后，再把调用转发给真正的目标Bean，也正因为是动态代理，所以Spring的AOP只支持到方法连接点而无法提供字段和构造器接入点（AspectJ和JBoss可以），所以Spring无法创建细粒度的通知。</p>
+<p>Spring的AOP采用的是<a href="https://zhoum1118.github.io/java/2017/06/22/%E6%AD%BB%E7%A3%95%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A7%82%E9%80%82%E4%BB%A3%E8%A3%85.html">动态代理模式</a>，Spring在代理类中包裹切面，在运行期间把切面织入到Bean中，也就是说Spring用代理类封装了目标类，同时拦截了被通知方法的调用，处理完通知（Advice）后，再把调用转发给真正的目标Bean，也正因为是动态代理，所以Spring的AOP只支持到方法连接点而无法提供字段和构造器接入点（AspectJ和JBoss可以），所以Spring无法创建细粒度的通知。</p>
 
 <p>根据Spring AOP的动态代理的过程，我们可以把AOP的设计分为两大块：第一，需要为目标对象建立代理对象（如何生成代理对象？）；第二，需要启动代理对象的拦截器来完成各种横切面的织入（如何织入横切面同时如何拦截对目标对象方法的调用？）。</p>
 
