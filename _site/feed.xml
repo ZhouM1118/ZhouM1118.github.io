@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 04 Aug 2017 16:52:43 +0800</pubDate>
-    <lastBuildDate>Fri, 04 Aug 2017 16:52:43 +0800</lastBuildDate>
+    <pubDate>Sat, 05 Aug 2017 10:18:44 +0800</pubDate>
+    <lastBuildDate>Sat, 05 Aug 2017 10:18:44 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -1125,8 +1125,6 @@ public Object proceed() throws Throwable {
 &lt;p&gt;首先会根据配置来判断拦截器是否与当前的调用方法相匹配（matches），如果当前的调用方法与配置的拦截器相匹配，那么相应的拦截器就开始发挥作用。这个过程是一个递归遍历的过程，它会遍历在代理对象中设置的拦截器链中所有的拦截器，被匹配的拦截器被逐一调用，直到所有的拦截器都被遍历完，才是对目标对象的方法调用，这样就完成了对目标对象方法调用的增强。&lt;/p&gt;
 
 &lt;p&gt;应该注意到，Advice通知不是直接对目标对象作用来完成增强的，而是对不同种类的通知通过AdviceAdapter适配器来实现的。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;总结：&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;参考文献：&lt;/strong&gt;&lt;/p&gt;
 
