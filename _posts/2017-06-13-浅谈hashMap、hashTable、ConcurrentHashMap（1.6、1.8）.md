@@ -49,8 +49,13 @@ HashMap是最常用的集合类框架之一，它实现了Map接口，所以存�
 	    return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
 	}
 
-我们通过hashCode和equals方法来保证HashMap中搞得key值的唯一性。
-当我们调用put存值时，HashMap首先会调用K的hashCode方法，获取哈希码，通过哈希码快速找到某个存放位置，如果hashCode不同，equals一定为false，如果hashCode相同，equals不一定为true。所以理论上，hashCode可能存在冲突的情况，也就是碰撞，当碰撞发生时，计算出的hashCode是相同的，这时会取到对应hashCode位置已存储的元素，最终通过equals来比较。HashMap通过hashCode和equals最终判断出K是否已存在，如果已存在，则使用新V值替换旧V值，并返回旧V值，如果不存在 ，则存放新的键值对<K, V>。
+我们通过hashCode和equals方法来保证HashMap中的key值的唯一性。
+当我们调用put存值时，HashMap首先会调用K的hashCode方法，获取哈希码，通过哈希码快速找到某个存放位置，这里需要注意的是，如果hashCode不同，equals一定为false，如果hashCode相同，equals不一定为true。所以理论上，hashCode可能存在冲突的情况，也就是碰撞，当碰撞发生时，计算出的hashCode是相同的，这时会比较对应hashCode位置的key，最终通过equals来比较。HashMap通过hashCode和equals最终判断出K是否已存在，如果两个hash值相等且key值相等(e.hash == hash && ((k = e.key) == key || key.equals(k))),则用新的Entry的value覆盖原来节点的value。如果两个hash值相等但key值不等 ，则将该节点插入该链表的链头。
+
+**如果冲突发生的次数多了，链表的长度越来越长，该怎么办呢？**
+
+随着HashMap中元素的数量越来越多，发生碰撞的概率也就越来越大，碰撞所产生的链表长度也就会越来越长，这样势必会影响HashMap的速度，因为原来找到数组的index就可以直接根据key取到值了，但是冲突严重，也就是说链表长，那就得循环链表了，时间就浪费在循环链表上了，也就慢了。为了保证HashMap的效率，系统必须要在某个临界点进行扩容处理。该临界点在当HashMap中元素的数量等于table数组长度*加载因子。但是扩容是一个非常耗时的过程，因为它需要重新计算这些数据在新table数组中的位置并进行复制处理。所以如果我们已经预知HashMap中元素的个数，那么预设元素的个数能够有效的提高HashMap的性能。
+
 
 **hashMap为什么是线程不安全的？**
 
