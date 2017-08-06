@@ -96,6 +96,39 @@ HashTable和HashMap很相似，但HashTable是线程安全的，同时HashTable�
 	public synchronized V remove(Object key) {}
 	public synchronized void clear() {}
 	public synchronized Object clone() {}
+
+**HashMap与HashTable的几点不同**
+
+1、HashMap是非线程安全的，而HashTable是线程安全的；
+
+2、HashMap的遍历一般使用Iterator，而HashTable一般使用的是Enumeration。
+
+	public interface Enumeration<E> {
+	
+	    boolean hasMoreElements();
+	
+	    E nextElement();
+	}
+	
+	public interface Iterator<E> {
+	 
+	    boolean hasNext();
+	
+	    E next();
+	
+	    default void remove() {
+	        throw new UnsupportedOperationException("remove");
+	    }
+	
+	    default void forEachRemaining(Consumer<? super E> action) {
+	        Objects.requireNonNull(action);
+	        while (hasNext())
+	            action.accept(next());
+	    }
+	}
+
+从上面JDK1.8版本中的Enumeration和Iterator的代码中可以看到，Iterator对集合的操作多了一个remove，也就是说在对HashMap进行遍历的时候可以调用Iterator的remove方法来删除HashMap中的值。值得注意的是，Iterator支持fail-fast机制，在用Iterator遍历一个集合时，如果另外的线程调用了该集合的remove方法，则会抛出ConcurrentModificationException(比较了modCount == expectedModCount)，但调用Iterator的remove方法则不会。Enumeration的遍历输出是先进后出的，而Iterator的遍历输出是先进先出的。
+
 	
 **三、concurrentHashMap**
 

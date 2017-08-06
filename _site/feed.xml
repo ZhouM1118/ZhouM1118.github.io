@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 06 Aug 2017 15:45:02 +0800</pubDate>
-    <lastBuildDate>Sun, 06 Aug 2017 15:45:02 +0800</lastBuildDate>
+    <pubDate>Sun, 06 Aug 2017 17:25:30 +0800</pubDate>
+    <lastBuildDate>Sun, 06 Aug 2017 17:25:30 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -3041,6 +3041,40 @@ public synchronized void clear() {}
 public synchronized Object clone() {}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;HashMap与HashTable的几点不同&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;1、HashMap是非线程安全的，而HashTable是线程安全的；&lt;/p&gt;
+
+&lt;p&gt;2、HashMap的遍历一般使用Iterator，而HashTable一般使用的是Enumeration。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public interface Enumeration&amp;lt;E&amp;gt; {
+
+    boolean hasMoreElements();
+
+    E nextElement();
+}
+
+public interface Iterator&amp;lt;E&amp;gt; {
+ 
+    boolean hasNext();
+
+    E next();
+
+    default void remove() {
+        throw new UnsupportedOperationException(&quot;remove&quot;);
+    }
+
+    default void forEachRemaining(Consumer&amp;lt;? super E&amp;gt; action) {
+        Objects.requireNonNull(action);
+        while (hasNext())
+            action.accept(next());
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;从上面JDK1.8版本中的Enumeration和Iterator的代码中可以看到，Iterator对集合的操作多了一个remove，也就是说在对HashMap进行遍历的时候可以调用Iterator的remove方法来删除HashMap中的值。值得注意的是，Iterator支持fail-fast机制，在用Iterator遍历一个集合时，如果另外的线程调用了该集合的remove方法，则会抛出ConcurrentModificationException(比较了modCount == expectedModCount)，但调用Iterator的remove方法则不会。Enumeration的遍历输出是先进后出的，而Iterator的遍历输出是先进先出的。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;三、concurrentHashMap&lt;/strong&gt;&lt;/p&gt;
 
