@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 06 Aug 2017 17:25:30 +0800</pubDate>
-    <lastBuildDate>Sun, 06 Aug 2017 17:25:30 +0800</lastBuildDate>
+    <pubDate>Tue, 08 Aug 2017 10:12:09 +0800</pubDate>
+    <lastBuildDate>Tue, 08 Aug 2017 10:12:09 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -3255,506 +3255,6 @@ private final Node&amp;lt;K,V&amp;gt;[] initTable() {
       </item>
     
       <item>
-        <title>Java知识点大扫盲</title>
-        <description>&lt;p&gt;在Java的学习过程中，多多少少会遗漏掉一些基本的知识点，而这些基本的知识点往往是奠定Java基础很重要的部分，里面的很多知识点我们编程中往往用不到，但理解它们能帮助我们更好地掌握Java，本文是一个长期贴，会不定时更新。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;1、函数的形参到底获取的是实参的值还是实参的引用地址？&lt;/strong&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Main17{     
-     String str = &quot;start&quot;;
-     char ch[] = {'a','b','c'};
-     Integer a = 1;
-     float f = 1.0f;
-     double d = 1.0;     
-     public void change(String str,char[] ch){
-          str = &quot;end&quot;;
-          ch[0] = 'e';
-     }     
-     public void change(Integer a){
-          a = 2;
-     }     
-     public void change(float f){
-          f = 2.0f;
-     }
-     public void change(double d){
-          d = 2.0;
-     }     
-     public static void main(String[] args) {
-          Main17 m17 = new Main17();
-          m17.change(m17.str, m17.ch);
-          System.out.print(m17.str + &quot; and &quot;);
-          System.out.println(m17.ch);
-          m17.change(m17.a);
-          System.out.println(m17.a);
-          m17.change(m17.f);
-          System.out.println(m17.f);
-          m17.change(m17.d);
-          System.out.println(m17.d);
-     }
-}
-result：
-start and ebc
-1
-1.0
-1.0
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;我们可以发现String，float，double，这些值changea后都没变，但是char的值改变了，也就是说String，float，double给形参传入的是实参的值，因为这些类都是final类（还有：Integer，Long，Short）；而char给形参传入的是实参的引用地址，所以change中改变了char的值会反映到类的全局变量。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;2、Java中&amp;amp;&amp;amp;和&amp;amp;以及||和|的区别&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&amp;amp;&amp;amp;和&amp;amp;都是表示与，区别是&amp;amp;&amp;amp;只要第一个条件为false，后面条件就不再判断。而&amp;amp;要对所有的条件都进行判断。&lt;/p&gt;
-
-&lt;p&gt;但是||和|都是表示“或”，区别是||只要第一个条件为true，后面的条件就不再判断，而|要对所有的条件进行判断。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;3、==与equals&lt;/strong&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;String s = &quot;hello&quot;；
-String t = “hello”；
-char c [] = {'h','e','l','l','o'}；
-
-s == t //true
-s.equals(c)//false
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;首先==与equals是有明显区别的。&lt;/p&gt;
-
-&lt;p&gt;==强调栈中的比较，可以理解为地址比较&lt;/p&gt;
-
-&lt;p&gt;equals强调对象的内容比较&lt;/p&gt;
-
-&lt;p&gt;String s=“hello”；会在栈中生成hello字符串，并存入字符串常量池中。&lt;/p&gt;
-
-&lt;p&gt;String t=“hello” ；创建时，会在字符串常量池中寻找，当找到需要的hello时，不进行字符串的创建，引用已有的。 所以，s==t返回true，s.equals(t)也是true。&lt;/p&gt;
-
-&lt;p&gt;char c[]={‘h’,’e’,’l’,’l’,’o’}; c==s这个是不存在的，==两边类型不同，t.equals(c)这个语句在anObject instanceof String这步判断不会通过，也就是cha[] 压根不能与String相比较，类型不是相同的。返回false。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;4、静态成员变量或静态代码块&amp;gt;mian方法&amp;gt;非静态成员变量或非静态代码块&amp;gt;构造方法&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;静态方法或静态块会比构造方法（包括父类的构造函数）先加载，且只加载一次。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class Test{
-     public Test(){
-          System.out.println(&quot;I'm 构造器&quot;);
-     }
-     static{
-          System.out.println(&quot;I'm static&quot;);
-     }
-}
-result：
-I'm static
-I'm 构造器
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;5、String的replaceAll方法&lt;/strong&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;String classFile = &quot;com.jd.&quot;. replaceAll(&quot;.&quot;, &quot;/&quot;) 
-	+ &quot;MyClass.class&quot;;
-System.out.println(classFile);
-result：
-/////////MyClass.class
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;由于replaceAll方法的第一个参数是一个正则表达式，而”.”在正则表达式中表示任何字符，所以会把前面字符串的所有字符都替换成”/”。如果想替换的只是”.”，那么要写成”\.”。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;6、try-catch-finally&lt;/strong&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static int func (){
-    try{
-        return 1;
-    }catch (Exception e){
-        return 2;
-    }finally{
-        return 3;
-    }
-}
-result：
-3
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Try catch finally获取异常错误的结构，try中没有异常时，但是有return等跳转语句，这样会引发程序控制流离开当前的try，即在return语句执行之后返回之前去完成finally中资源的释放。 由于代码中的finally中有return语句，将try中的return语句覆盖，程序直接跳出。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;7、匿名内部类&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;匿名内部类也就是没有名字的内部类。&lt;/p&gt;
-
-&lt;p&gt;正因为没有名字，所以匿名内部类只能使用一次，它通常用来简化代码编写
-但使用匿名内部类还有个前提条件：必须继承一个父类或实现一个接口。&lt;/p&gt;
-
-&lt;p&gt;实例1:不使用匿名内部类来实现抽象方法&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;abstract class Person {
-    public abstract void eat();
-}
-class Child extends Person {
-    public void eat() {
-        System.out.println(&quot;eat something&quot;);
-    }
-}
-public class Demo {
-    public static void main(String[] args) {
-        Person p = new Child();
-        p.eat();
-    }
-}
-运行结果：eat something
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;可以看到，我们用Child继承了Person类，然后实现了Child的一个实例，将其向上转型为Person类的引用。&lt;/p&gt;
-
-&lt;p&gt;但是，如果此处的Child类只使用一次，那么将其编写为独立的一个类岂不是很麻烦？&lt;/p&gt;
-
-&lt;p&gt;这个时候就引入了匿名内部类。&lt;/p&gt;
-
-&lt;p&gt;实例2：匿名内部类的基本实现&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;abstract class Person {
-    public abstract void eat();
-}
-public class Demo {
-    public static void main(String[] args) {
-        Person p = new Person() {
-            public void eat() {
-                System.out.println(&quot;eat something&quot;);
-            }
-        };
-        p.eat();
-    }
-}
-运行结果：eat something
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;可以看到，我们直接将抽象类Person中的方法在大括号中实现了。&lt;/p&gt;
-
-&lt;p&gt;这样便可以省略一个类的书写。&lt;/p&gt;
-
-&lt;p&gt;并且，匿名内部类还能用于接口上。&lt;/p&gt;
-
-&lt;p&gt;实例3：在接口上使用匿名内部类&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;interface Person {
-    public void eat();
-}
-public class Demo {
-    public static void main(String[] args) {
-        Person p = new Person() {
-            public void eat() {
-                System.out.println(&quot;eat something&quot;);
-            }
-        };
-        p.eat();
-    }
-}
-运行结果：eat something
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;由上面的例子可以看出，只要一个类是抽象的或是一个接口，那么其子类中的方法都可以使用匿名内部类来实现。&lt;/p&gt;
-
-&lt;p&gt;最常用的情况就是在多线程的实现上，因为要实现多线程必须继承Thread类或是继承Runnable接口。&lt;/p&gt;
-
-&lt;p&gt;实例4：Thread类的匿名内部类实现&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Demo {
-    public static void main(String[] args) {
-        Thread t = new Thread() {
-            public void run() {
-                for (int i = 1; i &amp;lt;= 5; i++) {
-                    System.out.print(i + &quot; &quot;);
-                }
-            }
-        };
-        t.start();
-    }
-}
-运行结果：1 2 3 4 5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;实例5：Runnable接口的匿名内部类实现&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Demo {
-    public static void main(String[] args) {
-        Runnable r = new Runnable() {
-            public void run() {
-                for (int i = 1; i &amp;lt;= 5; i++) {
-                    System.out.print(i + &quot; &quot;);
-                }
-            }
-        };
-        Thread t = new Thread(r);
-        t.start();
-    }
-}
-运行结果：1 2 3 4 5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;8、Integer等的比较&lt;/strong&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Integer i01 = 59;
-int i02 = 59;
-Integer i03 = Integer.valueof(59);
-Integer i04 = new Integer(59);
-
-i01 == i02//true
-i01 == i03//true
-i03 == i04//false
-i03 == i04//true
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Byte,Short,Integer,Long,Character这5种整型的包装类在对应值小于等于127并且大于等于-128时会使用常量池，因为他们至占用一个字节(-128~127);超出这个范围将会返回一个新的包装类对象。&lt;/p&gt;
-
-&lt;p&gt;比如&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static Integer valueOf(int i) {
-    if (i &amp;gt;= IntegerCache.low &amp;amp;&amp;amp; i &amp;lt;= IntegerCache.high)
-        return IntegerCache.cache[i + (-IntegerCache.low)];
-    return new Integer(i);
-}
-
-public static Long valueOf(long l) {
-    final int offset = 128;
-    if (l &amp;gt;= -128 &amp;amp;&amp;amp; l &amp;lt;= 127) { // will cache
-        return LongCache.cache[(int)l + offset];
-    }
-    return new Long(l);
-}
-
-public static Short valueOf(short s) {
-    final int offset = 128;
-    int sAsInt = s;
-    if (sAsInt &amp;gt;= -128 &amp;amp;&amp;amp; sAsInt &amp;lt;= 127) { // must cache
-        return ShortCache.cache[sAsInt + offset];
-    }
-    return new Short(s);
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;所以&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static void main(String[] args) {
-
-    Integer a = 127;
-    Integer b = 127;
-
-    Integer c = 128;
-    Integer d = 128;
-
-    System.out.println(a == b);//true
-    System.out.println(c == d);//false
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;注意：int和Integer(只要值相等，无论new否)比，都为true，因为会把Integer自动拆箱为int再去比。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;9、Spring的事务传播特性&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;PROPAGATION_required–支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。&lt;/p&gt;
-
-&lt;p&gt;PROPAGATION_supports–支持当前事务，如果当前没有事务，就以非事务方式执行。&lt;/p&gt;
-
-&lt;p&gt;PROPAGATION_mandatory–支持当前事务，如果当前没有事务，就抛出异常。&lt;/p&gt;
-
-&lt;p&gt;PROPAGATION_requires _new–新建事务，如果当前存在事务，把当前事务挂起。&lt;/p&gt;
-
-&lt;p&gt;PROPAGATION_not _supported–以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。&lt;/p&gt;
-
-&lt;p&gt;PROPAGATION_never–以非事务方式执行，如果当前存在事务，则抛出异常。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;10、i++与++i&lt;/strong&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Inc {
-    public static void main(String[] args) {
-       Inc inc = new Inc();
-       int i = 0;
-       inc.fermin(i); //查看知识点1
-       i= i ++;
-       System.out.println(i);  //0，这个结果是不是很意外
-    }
-    void fermin(int i){
-       i++;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Java使用了中间缓存变量机制：&lt;/p&gt;
-
-&lt;p&gt;i=i++;等同于：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;temp=i； (等号右边的i)
-i=i+1;      (等号右边的i)
-i=temp;   (等号左边的i)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;而i=++i;则等同于：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;i=i+1;
-temp=i;
-i=temp;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;但如果把“i= i ++; ”改为“i++”，结果会是1。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Spike
-{
-    public static void main(String[] args)
-    {
-        Counter a = new Counter();
-        System.out.println(a.increment());
-        System.out.println(a.anotherIncrement());
-        Counter b = new Counter();
-        System.out.println(b.increment());
-    }
-}
-class Counter
-{
-    private static int count = 0;
-    public int increment()
-    {
-        return count++;
-    }
-    public int anotherIncrement()
-    {
-        return ++count;
-    }
-}
-result：
-0 2 2
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;increment()方法返回当前count值，然后count增加1&lt;/p&gt;
-
-&lt;p&gt;antoherIncrement()方法让count增加1，然后返回count值&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;11、null&lt;/strong&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Main17{
-  private static void testMethod(){
-        System.out.println(&quot;testMethod&quot;);
-   }
-    public static void main(String args[]) {
-      ((Main17)null).testMethod();
-    }
-}
-result：
-testMethod
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Java中，null是一个关键字，不是对象，也不是Objcet的实例，它用来标识一个不确定的对象。因此可以将null赋给引用类型变量，但不可以将null赋给基本类型变量。&lt;/p&gt;
-
-&lt;p&gt;比如：int a = null;是错误的。Ojbect o = null是正确的。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;12、类方法、类变量和实例方法、实例变量&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;用static修饰的方法和变量是类方法、类变量，可以直接用类名.的方法来调用；&lt;/p&gt;
-
-&lt;p&gt;没有用static修饰的方法和变量就属于实例方法、实例变量，必须实例化类之后用实例化对象才能调用。在类方法中调用实例变量会报错，在实例方法中调用实例变量则没有问题。&lt;/p&gt;
-
-&lt;p&gt;由于类方法是属于整个类的，并不属于类的哪个对象，所以类方法的方法体中不能有与类的对象有关的内容。即类方法体有如下限制：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;类方法中不能引用对象变量；&lt;/li&gt;
-  &lt;li&gt;类方法中不能调用类的对象方法；&lt;/li&gt;
-  &lt;li&gt;在类方法中不能使用super、this关键字。&lt;/li&gt;
-  &lt;li&gt;类方法不能被覆盖。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;如果违反这些限制，就会导致程序编译错误。&lt;/p&gt;
-
-&lt;p&gt;与类方法相比，对象方法几乎没有什么限制：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;对象方法中可以引用对象变量，也可以引用类变量；&lt;/li&gt;
-  &lt;li&gt;对象方法中可以调用类方法；&lt;/li&gt;
-  &lt;li&gt;对象方法中可以使用super、this关键字。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;strong&gt;13、Collection与Collections的区别&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;java.util.Collection 是一个集合接口。它提供了对集合对象进行基本操作的通用接口方法。Collection接口在Java 类库中有很多具体的实现。Collection接口的意义是为各种具体的集合提供了最大化的统一操作方式。&lt;/p&gt;
-
-&lt;p&gt;Collection &lt;br /&gt;
-├List &lt;br /&gt;
-│├LinkedList &lt;br /&gt;
-│├ArrayList &lt;br /&gt;
-│└Vector &lt;br /&gt;
-│　└Stack &lt;br /&gt;
-└Set&lt;br /&gt;
-│　└HashSet&lt;/p&gt;
-
-&lt;p&gt;└Queue&lt;/p&gt;
-
-&lt;p&gt;java.util.Collections 是一个包装类。它包含有各种有关集合操作的静态多态方法。此类不能实例化，因为内部的构造函数被私有化了就像一个工具类，服务于Java的Collection框架。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;14、super()与this()&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;1）调用super()必须写在子类构造方法的第一行，否则编译不通过。每个子类构造方法的第一条语句，都是隐含地调用super()，如果父类没有这种形式的构造函数，那么在编译的时候就会报错。&lt;/p&gt;
-
-&lt;p&gt;2）super()和this()类似,区别是，super从子类中调用父类的构造方法，this()在同一类内调用其它方法。&lt;/p&gt;
-
-&lt;p&gt;3）super()和this()均需放在构造方法内第一行，既然两个都要放在第一行，那么两个就不可能同时存在一个构造函数里。&lt;/p&gt;
-
-&lt;p&gt;4）尽管可以用this调用一个构造器，但却不能调用两个。&lt;/p&gt;
-
-&lt;p&gt;5）this()和super()都指的是对象，所以，均不可以在static环境中使用。包括：static变量,static方法，static语句块。&lt;/p&gt;
-
-&lt;p&gt;6）从本质上讲，this是一个指向本对象的指针, 然而super是一个Java关键字。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Main17{
-    public Main17(){
-        super();
-        System.out.println(&quot;1&quot;);
-    }
-    public Main17(int a){
-        this();
-        System.out.println(a);
-    }
-    public Main17(int a, String s){
-        this(a);
-        System.out.println(s+a);
-    }
-    public static void main(String[] args) {
-        Main17 main17 = new Main17(2,&quot;end:&quot;);
-    }
-}
-result：
-1
-2
-end:2
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-</description>
-        <pubDate>Sun, 11 Jun 2017 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/java/2017/06/11/Java%E7%9F%A5%E8%AF%86%E7%82%B9%E5%A4%A7%E6%89%AB%E7%9B%B2.html</link>
-        <guid isPermaLink="true">http://localhost:4000/java/2017/06/11/Java%E7%9F%A5%E8%AF%86%E7%82%B9%E5%A4%A7%E6%89%AB%E7%9B%B2.html</guid>
-        
-        <category>java</category>
-        
-        <category>知识点</category>
-        
-        
-        <category>Java</category>
-        
-      </item>
-    
-      <item>
         <title>死磕redis-Spring使用redis存储sessionId</title>
         <description>&lt;p&gt;&lt;strong&gt;一、redis 储备知识&lt;/strong&gt;&lt;/p&gt;
 
@@ -4478,6 +3978,346 @@ console&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span cla
       </item>
     
       <item>
+        <title>浅谈Java集合Collection</title>
+        <description>&lt;p&gt;一直想找个时间系统的整理下Java的集合类，毕竟Collection包含了很多我们在实际项目中要用到的数据结构，比如列表、set、队列等，下面我们直接来看看Java集合类中各大数据结构。&lt;/p&gt;
+
+&lt;p&gt;Collection部分层次结构如下所示：
+Collection &lt;br /&gt;
+├List &lt;br /&gt;
+│├LinkedList &lt;br /&gt;
+│├ArrayList &lt;br /&gt;
+│└Vector &lt;br /&gt;
+│　└Stack &lt;br /&gt;
+├Set &lt;br /&gt;
+│├HashSet  &lt;br /&gt;
+└ Queue&lt;br /&gt;
+　└ BlockingQueue&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;一、Collection&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;子接口：Set，List，Queue&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public interface Collection&amp;lt;E&amp;gt; extends Iterable&amp;lt;E&amp;gt; {}&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//获取该集合的大小
+int size();
+//判空
+boolean isEmpty();
+//判断集合是否包含某元素
+boolean contains(Object o);
+//获取集合的迭代器，迭代器的具体实现在子类中用内部类实现
+Iterator&amp;lt;E&amp;gt; iterator();
+//返回该集合的元素数组
+Object[] toArray();
+//添加元素
+boolean add(E e);
+//删除指定元素值的元素
+boolean remove(Object o);
+//判断集合是否包含指定集合中所有的元素
+boolean containsAll(Collection&amp;lt;?&amp;gt; c);
+//向当前集合添加指定集合中所有的元素
+boolean addAll(Collection&amp;lt;? extends E&amp;gt; c);
+//在当前集合中移除指定集合中所有的元素
+boolean removeAll(Collection&amp;lt;?&amp;gt; c);
+//保留指定集合中的元素，删除当前集合中不在指定集合中的元素
+boolean retainAll(Collection&amp;lt;?&amp;gt; c);
+//清空集合
+void clear();
+//Comparison and hashing
+boolean equals(Object o);
+int hashCode(); 还有一些复写Iterable接口的方法
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;二、List&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;实现类包括：LinkedList,Vector,ArrayList。&lt;/p&gt;
+
+&lt;p&gt;继承Collection，可以按索引的顺序访问，元素顺序均是按添加的先后进行排列的，允许重复的元素,允许多个null元素。&lt;/p&gt;
+
+&lt;p&gt;除了包含Collection中的方法，还有一些自己的方法。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public interface List&amp;lt;E&amp;gt; extends Collection&amp;lt;E&amp;gt; {}&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//获取指定索引的元素
+E get(int index);
+//替代指定索引位置的元素
+E set(int index, E element);
+//添加指定索引位置的元素
+void add(int index, E element);
+//移除指定索引位置的元素
+E remove(int index);
+//获取指定元素在集合中第一次出现的索引值
+int indexOf(Object o);
+//获取指定元素在集合中最后一次出现的索引值
+int lastIndexOf(Object o);
+//获取ListIterator迭代器，迭代器的具体实现在子类中用内部类实现
+ListIterator&amp;lt;E&amp;gt; listIterator();
+//获取集合中从fromIndex到toIndex的值
+List&amp;lt;E&amp;gt; subList(int fromIndex, int toIndex);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;ListIterator&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;List除了具备Collection接口的iterator方法外，还提供了listIterator，listIterator相对iterator，允许添加、设定元素，前后向遍历。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public interface ListIterator&amp;lt;E&amp;gt; extends Iterator&amp;lt;E&amp;gt; {}&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;boolean hasNext();
+E next();
+boolean hasPrevious();
+E previous();
+int nextIndex();
+int previousIndex();
+void remove();
+void set(E e);
+void add(E e);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;2.1 ArrayList&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;ArrayList依赖于数组实现的，初始长度为10的Object[]，并且可随需要而增加的动态数组。当元素超过10，采用ensureCapacity方法来扩容，ArrayList底层会新生成一个数组，长度为原来的1.5倍+1, 也就是自动增长了差不多是原来的一半，然后将原数组内容复制到新数组中，并且后续增加的内容会放到新数组中。&lt;/p&gt;
+
+&lt;p&gt;ArrayList对随机访问性能很好，但进行大量插入，删除操作，性能很差，因为操作之后后续元素需要移动。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public class ArrayList&amp;lt;E&amp;gt; extends AbstractList&amp;lt;E&amp;gt;
+        implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable{}&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;private static final int DEFAULT_CAPACITY = 10;
+private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;构造方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public ArrayList(int initialCapacity) {}
+public ArrayList() {}
+public ArrayList(Collection&amp;lt;? extends E&amp;gt; c) {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;扩容方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public void ensureCapacity(int minCapacity) {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;2.2 Vector&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;特点与ArrayList相同， 不同的是Vector操作元素的方法是同步（对集合操作的方法都用synchronized关键字）的，同一时刻只能有一个线程访问，由于Vector是线程同步的，那么性能上要比ArrayList要低。Vector也是依赖数组实现的，在需要对Vector扩容时，自动增长为原来数组长度的一倍。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public class Vector&amp;lt;E&amp;gt;
+    extends AbstractList&amp;lt;E&amp;gt;
+    implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable{}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;**构造方法  **&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//默认初始容量为10
+public Vector()  
+//默认增量为0
+public Vector(int initialCapacity)
+public Vector(int initialCapacity,int capacityIncrement)  
+        第一个参数是初始容量,第二个参数是当Vector满时的增量  
+public Vector(Collection&amp;lt;? extends E&amp;gt; c) {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;2.2.1 Stack&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Stack类继承了Vector，实现了一个后进先出的堆栈，Stack提供了5个额外的方法实现栈的操作。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public
+class Stack&amp;lt;E&amp;gt; extends Vector&amp;lt;E&amp;gt; {}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;构造方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public Stack() {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;实现栈的方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public E push(E item) {}
+//调用了peek操作，获取栈顶元素，并删除栈顶元素
+public synchronized E pop() {}
+//获取栈顶元素，不删除栈顶元素
+public synchronized E peek() {}
+public boolean empty() {}
+public synchronized int search(Object o) {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;2.3 LinkedList&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;LinkedList功能与ArrayList，Vector相同，但内部是依赖双链表实现的，因此有很好的插入和删除性能,但随机访问元素的性能很差。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public class LinkedList&amp;lt;E&amp;gt;
+    extends AbstractSequentialList&amp;lt;E&amp;gt;
+    implements List&amp;lt;E&amp;gt;, Deque&amp;lt;E&amp;gt;, Cloneable, java.io.Serializable
+{}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;构造方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public LinkedList() {}
+public LinkedList(Collection&amp;lt;? extends E&amp;gt; c) {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;LinkedList类的元素表示：Node内部类&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;private static class Node&amp;lt;E&amp;gt; {
+    E item;
+    Node&amp;lt;E&amp;gt; next;
+    Node&amp;lt;E&amp;gt; prev;
+
+    Node(Node&amp;lt;E&amp;gt; prev, E element, Node&amp;lt;E&amp;gt; next) {
+        this.item = element;
+        this.next = next;
+        this.prev = prev;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;正序遍历链表&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;private static void printList(List link) {  
+    // 得到链表的迭代器,位置指向链头  
+    ListIterator li = link.listIterator();  
+    // 判断迭代器中是否有下一个元素  
+    while (li.hasNext()) {  
+        // 返回下个元素  
+        System.out.println(li.next() + &quot; &quot;);  
+    }  
+}  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;逆序遍历链表&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;private static void printReversedList(List link) {  
+    // 得到链表的迭代器,位置指向link.size()结尾  
+    ListIterator li = link.listIterator(link.size());  
+    // 判断迭代器中是否有前一个元素  
+    while (li.hasPrevious()) {  
+        // 返回前一个元素  
+        System.out.println(li.previous() + &quot; &quot;);  
+    }  
+}  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;三、Set&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;不包含重复元素，最多包含一个null，元素没有顺序。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public interface Set&amp;lt;E&amp;gt; extends Collection&amp;lt;E&amp;gt; {}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3.1 HashSet&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;实现了Set接口，底层用hashMap来实现，hashSet的大部分方法也都是调用hashMap来实现的。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public class HashSet&amp;lt;E&amp;gt;
+    extends AbstractSet&amp;lt;E&amp;gt;
+    implements Set&amp;lt;E&amp;gt;, Cloneable, java.io.Serializable{}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;构造方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public HashSet() {
+    map = new HashMap&amp;lt;&amp;gt;();
+}
+public HashSet(Collection&amp;lt;? extends E&amp;gt; c) {
+    map = new HashMap&amp;lt;&amp;gt;(Math.max((int) (c.size()/.75f) + 1, 16));
+    addAll(c);
+}
+public HashSet(int initialCapacity, float loadFactor) {
+    map = new HashMap&amp;lt;&amp;gt;(initialCapacity, loadFactor);
+}
+public HashSet(int initialCapacity) {
+    map = new HashMap&amp;lt;&amp;gt;(initialCapacity);
+}
+HashSet(int initialCapacity, float loadFactor, boolean dummy) {
+    map = new LinkedHashMap&amp;lt;&amp;gt;(initialCapacity, loadFactor);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;HashSet保证了当前集合对于某一元素的唯一存在性，集合中是否存在一个对象是通过equals()和hashCode()协同判断。&lt;/p&gt;
+
+&lt;p&gt;HashSet的add()方法详解:&lt;/p&gt;
+
+&lt;p&gt;判断已经存储在集合中的对象hashCode值是否与增加对象的hashCode值一致&lt;br /&gt;
+如果不一致,直接加进去&lt;br /&gt;
+如果一致,再进行equals()比较&lt;br /&gt;
+    如果equals()返回true,对象已经存在不增加进去&lt;br /&gt;
+    如果equals()返回false,把对象增加进去&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;四、Queue&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Queue接口与List、Set同一级别，都是继承了Collection接口。Queue不允许包含NULL元素。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public interface Queue&amp;lt;E&amp;gt; extends Collection&amp;lt;E&amp;gt; {}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;队列方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//增加一个元素，队列满则抛出IIIegaISlabEepeplian异常
+boolean add(E e);
+//添加一个元素，队列满则返回false
+boolean offer(E e);
+//移除并返回队列头部的元素，队列空则抛出一个NoSuchElementException异常
+E remove();
+//移除并返问队列头部的元素，队列空则返回null
+E poll();
+//返问但不移除队列头部的元素，队列空则抛出一个NoSuchElementException异常
+E element();
+//返问但不移除队列头部的元素，队列空则返回null
+E peek();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;4.1 BlockingQueue&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;用阻塞队列两个显著的好处就是：多线程操作共同的队列时不需要额外的同步，另外就是队列会自动平衡负载，即那边（生产与消费两边）处理快了就会被阻塞掉，从而减少两边的处理速度差距。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public interface BlockingQueue&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; {}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;阻塞队列的方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//增加一个元素，队列满则阻塞当前线程
+void put(E e) throws InterruptedException;
+//移除并返问队列头部的元素，队列空则阻塞当前线程
+E take() throws InterruptedException;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;五、Collection与Collections的区别&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;java.util.Collection 是一个集合接口。它提供了对集合对象进行基本操作的通用接口方法。Collection接口在Java 类库中有很多具体的实现。Collection接口的意义是为各种具体的集合提供了最大化的统一操作方式。&lt;/p&gt;
+
+&lt;p&gt;java.util.Collections 是一个包装类。它包含有各种有关集合操作的静态多态方法。此类不能实例化，因为内部的构造函数被私有化了就像一个工具类，服务于Java的Collection框架。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;private Collections() {}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;参考文献&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Java - Collection：http://blog.csdn.net/itlwc/article/details/10148321&lt;/p&gt;
+
+&lt;p&gt;java中queue的使用：http://www.cnblogs.com/end/archive/2012/10/25/2738493.html&lt;/p&gt;
+</description>
+        <pubDate>Sat, 13 May 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/java/2017/05/13/%E6%B5%85%E8%B0%88Java%E9%9B%86%E5%90%88Collection.html</link>
+        <guid isPermaLink="true">http://localhost:4000/java/2017/05/13/%E6%B5%85%E8%B0%88Java%E9%9B%86%E5%90%88Collection.html</guid>
+        
+        <category>Collection</category>
+        
+        
+        <category>Java</category>
+        
+      </item>
+    
+      <item>
         <title>死磕JavaScript-松散类型、js变量存储模型、变量提升</title>
         <description>&lt;p&gt;好久没来慕课网学习了，上研究生之后，发现突然又变回学生后对自己的要求也松很多，开始到处旅游，做些没计划的事情，也很少写技术博客了，最近静下心来开始研究底层的东西，以后就在这写了，希望能死磕自己，坚持下去。好了，干货走起……&lt;/p&gt;
 
@@ -4547,6 +4387,506 @@ console.log(obj1.name);// 运行结果：obj1 name&lt;/span&gt;&lt;/code&gt;&lt;
         
         
         <category>Javascript</category>
+        
+      </item>
+    
+      <item>
+        <title>Java知识点大扫盲</title>
+        <description>&lt;p&gt;在Java的学习过程中，多多少少会遗漏掉一些基本的知识点，而这些基本的知识点往往是奠定Java基础很重要的部分，里面的很多知识点我们编程中往往用不到，但理解它们能帮助我们更好地掌握Java，本文是一个长期贴，会不定时更新。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1、函数的形参到底获取的是实参的值还是实参的引用地址？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Main17{     
+     String str = &quot;start&quot;;
+     char ch[] = {'a','b','c'};
+     Integer a = 1;
+     float f = 1.0f;
+     double d = 1.0;     
+     public void change(String str,char[] ch){
+          str = &quot;end&quot;;
+          ch[0] = 'e';
+     }     
+     public void change(Integer a){
+          a = 2;
+     }     
+     public void change(float f){
+          f = 2.0f;
+     }
+     public void change(double d){
+          d = 2.0;
+     }     
+     public static void main(String[] args) {
+          Main17 m17 = new Main17();
+          m17.change(m17.str, m17.ch);
+          System.out.print(m17.str + &quot; and &quot;);
+          System.out.println(m17.ch);
+          m17.change(m17.a);
+          System.out.println(m17.a);
+          m17.change(m17.f);
+          System.out.println(m17.f);
+          m17.change(m17.d);
+          System.out.println(m17.d);
+     }
+}
+result：
+start and ebc
+1
+1.0
+1.0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;我们可以发现String，float，double，这些值changea后都没变，但是char的值改变了，也就是说String，float，double给形参传入的是实参的值，因为这些类都是final类（还有：Integer，Long，Short）；而char给形参传入的是实参的引用地址，所以change中改变了char的值会反映到类的全局变量。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2、Java中&amp;amp;&amp;amp;和&amp;amp;以及||和|的区别&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;amp;&amp;amp;和&amp;amp;都是表示与，区别是&amp;amp;&amp;amp;只要第一个条件为false，后面条件就不再判断。而&amp;amp;要对所有的条件都进行判断。&lt;/p&gt;
+
+&lt;p&gt;但是||和|都是表示“或”，区别是||只要第一个条件为true，后面的条件就不再判断，而|要对所有的条件进行判断。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3、==与equals&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;String s = &quot;hello&quot;；
+String t = “hello”；
+char c [] = {'h','e','l','l','o'}；
+
+s == t //true
+s.equals(c)//false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;首先==与equals是有明显区别的。&lt;/p&gt;
+
+&lt;p&gt;==强调栈中的比较，可以理解为地址比较&lt;/p&gt;
+
+&lt;p&gt;equals强调对象的内容比较&lt;/p&gt;
+
+&lt;p&gt;String s=“hello”；会在栈中生成hello字符串，并存入字符串常量池中。&lt;/p&gt;
+
+&lt;p&gt;String t=“hello” ；创建时，会在字符串常量池中寻找，当找到需要的hello时，不进行字符串的创建，引用已有的。 所以，s==t返回true，s.equals(t)也是true。&lt;/p&gt;
+
+&lt;p&gt;char c[]={‘h’,’e’,’l’,’l’,’o’}; c==s这个是不存在的，==两边类型不同，t.equals(c)这个语句在anObject instanceof String这步判断不会通过，也就是cha[] 压根不能与String相比较，类型不是相同的。返回false。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;4、静态成员变量或静态代码块&amp;gt;mian方法&amp;gt;非静态成员变量或非静态代码块&amp;gt;构造方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;静态方法或静态块会比构造方法（包括父类的构造函数）先加载，且只加载一次。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class Test{
+     public Test(){
+          System.out.println(&quot;I'm 构造器&quot;);
+     }
+     static{
+          System.out.println(&quot;I'm static&quot;);
+     }
+}
+result：
+I'm static
+I'm 构造器
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;5、String的replaceAll方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;String classFile = &quot;com.jd.&quot;. replaceAll(&quot;.&quot;, &quot;/&quot;) 
+	+ &quot;MyClass.class&quot;;
+System.out.println(classFile);
+result：
+/////////MyClass.class
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;由于replaceAll方法的第一个参数是一个正则表达式，而”.”在正则表达式中表示任何字符，所以会把前面字符串的所有字符都替换成”/”。如果想替换的只是”.”，那么要写成”\.”。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;6、try-catch-finally&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static int func (){
+    try{
+        return 1;
+    }catch (Exception e){
+        return 2;
+    }finally{
+        return 3;
+    }
+}
+result：
+3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Try catch finally获取异常错误的结构，try中没有异常时，但是有return等跳转语句，这样会引发程序控制流离开当前的try，即在return语句执行之后返回之前去完成finally中资源的释放。 由于代码中的finally中有return语句，将try中的return语句覆盖，程序直接跳出。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;7、匿名内部类&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;匿名内部类也就是没有名字的内部类。&lt;/p&gt;
+
+&lt;p&gt;正因为没有名字，所以匿名内部类只能使用一次，它通常用来简化代码编写
+但使用匿名内部类还有个前提条件：必须继承一个父类或实现一个接口。&lt;/p&gt;
+
+&lt;p&gt;实例1:不使用匿名内部类来实现抽象方法&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;abstract class Person {
+    public abstract void eat();
+}
+class Child extends Person {
+    public void eat() {
+        System.out.println(&quot;eat something&quot;);
+    }
+}
+public class Demo {
+    public static void main(String[] args) {
+        Person p = new Child();
+        p.eat();
+    }
+}
+运行结果：eat something
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;可以看到，我们用Child继承了Person类，然后实现了Child的一个实例，将其向上转型为Person类的引用。&lt;/p&gt;
+
+&lt;p&gt;但是，如果此处的Child类只使用一次，那么将其编写为独立的一个类岂不是很麻烦？&lt;/p&gt;
+
+&lt;p&gt;这个时候就引入了匿名内部类。&lt;/p&gt;
+
+&lt;p&gt;实例2：匿名内部类的基本实现&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;abstract class Person {
+    public abstract void eat();
+}
+public class Demo {
+    public static void main(String[] args) {
+        Person p = new Person() {
+            public void eat() {
+                System.out.println(&quot;eat something&quot;);
+            }
+        };
+        p.eat();
+    }
+}
+运行结果：eat something
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;可以看到，我们直接将抽象类Person中的方法在大括号中实现了。&lt;/p&gt;
+
+&lt;p&gt;这样便可以省略一个类的书写。&lt;/p&gt;
+
+&lt;p&gt;并且，匿名内部类还能用于接口上。&lt;/p&gt;
+
+&lt;p&gt;实例3：在接口上使用匿名内部类&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;interface Person {
+    public void eat();
+}
+public class Demo {
+    public static void main(String[] args) {
+        Person p = new Person() {
+            public void eat() {
+                System.out.println(&quot;eat something&quot;);
+            }
+        };
+        p.eat();
+    }
+}
+运行结果：eat something
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;由上面的例子可以看出，只要一个类是抽象的或是一个接口，那么其子类中的方法都可以使用匿名内部类来实现。&lt;/p&gt;
+
+&lt;p&gt;最常用的情况就是在多线程的实现上，因为要实现多线程必须继承Thread类或是继承Runnable接口。&lt;/p&gt;
+
+&lt;p&gt;实例4：Thread类的匿名内部类实现&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Demo {
+    public static void main(String[] args) {
+        Thread t = new Thread() {
+            public void run() {
+                for (int i = 1; i &amp;lt;= 5; i++) {
+                    System.out.print(i + &quot; &quot;);
+                }
+            }
+        };
+        t.start();
+    }
+}
+运行结果：1 2 3 4 5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;实例5：Runnable接口的匿名内部类实现&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Demo {
+    public static void main(String[] args) {
+        Runnable r = new Runnable() {
+            public void run() {
+                for (int i = 1; i &amp;lt;= 5; i++) {
+                    System.out.print(i + &quot; &quot;);
+                }
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
+    }
+}
+运行结果：1 2 3 4 5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;8、Integer等的比较&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Integer i01 = 59;
+int i02 = 59;
+Integer i03 = Integer.valueof(59);
+Integer i04 = new Integer(59);
+
+i01 == i02//true
+i01 == i03//true
+i03 == i04//false
+i03 == i04//true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Byte,Short,Integer,Long,Character这5种整型的包装类在对应值小于等于127并且大于等于-128时会使用常量池，因为他们至占用一个字节(-128~127);超出这个范围将会返回一个新的包装类对象。&lt;/p&gt;
+
+&lt;p&gt;比如&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static Integer valueOf(int i) {
+    if (i &amp;gt;= IntegerCache.low &amp;amp;&amp;amp; i &amp;lt;= IntegerCache.high)
+        return IntegerCache.cache[i + (-IntegerCache.low)];
+    return new Integer(i);
+}
+
+public static Long valueOf(long l) {
+    final int offset = 128;
+    if (l &amp;gt;= -128 &amp;amp;&amp;amp; l &amp;lt;= 127) { // will cache
+        return LongCache.cache[(int)l + offset];
+    }
+    return new Long(l);
+}
+
+public static Short valueOf(short s) {
+    final int offset = 128;
+    int sAsInt = s;
+    if (sAsInt &amp;gt;= -128 &amp;amp;&amp;amp; sAsInt &amp;lt;= 127) { // must cache
+        return ShortCache.cache[sAsInt + offset];
+    }
+    return new Short(s);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;所以&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static void main(String[] args) {
+
+    Integer a = 127;
+    Integer b = 127;
+
+    Integer c = 128;
+    Integer d = 128;
+
+    System.out.println(a == b);//true
+    System.out.println(c == d);//false
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;注意：int和Integer(只要值相等，无论new否)比，都为true，因为会把Integer自动拆箱为int再去比。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;9、Spring的事务传播特性&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;PROPAGATION_required–支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。&lt;/p&gt;
+
+&lt;p&gt;PROPAGATION_supports–支持当前事务，如果当前没有事务，就以非事务方式执行。&lt;/p&gt;
+
+&lt;p&gt;PROPAGATION_mandatory–支持当前事务，如果当前没有事务，就抛出异常。&lt;/p&gt;
+
+&lt;p&gt;PROPAGATION_requires _new–新建事务，如果当前存在事务，把当前事务挂起。&lt;/p&gt;
+
+&lt;p&gt;PROPAGATION_not _supported–以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。&lt;/p&gt;
+
+&lt;p&gt;PROPAGATION_never–以非事务方式执行，如果当前存在事务，则抛出异常。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;10、i++与++i&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Inc {
+    public static void main(String[] args) {
+       Inc inc = new Inc();
+       int i = 0;
+       inc.fermin(i); //查看知识点1
+       i= i ++;
+       System.out.println(i);  //0，这个结果是不是很意外
+    }
+    void fermin(int i){
+       i++;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Java使用了中间缓存变量机制：&lt;/p&gt;
+
+&lt;p&gt;i=i++;等同于：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;temp=i； (等号右边的i)
+i=i+1;      (等号右边的i)
+i=temp;   (等号左边的i)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;而i=++i;则等同于：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;i=i+1;
+temp=i;
+i=temp;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;但如果把“i= i ++; ”改为“i++”，结果会是1。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Spike
+{
+    public static void main(String[] args)
+    {
+        Counter a = new Counter();
+        System.out.println(a.increment());
+        System.out.println(a.anotherIncrement());
+        Counter b = new Counter();
+        System.out.println(b.increment());
+    }
+}
+class Counter
+{
+    private static int count = 0;
+    public int increment()
+    {
+        return count++;
+    }
+    public int anotherIncrement()
+    {
+        return ++count;
+    }
+}
+result：
+0 2 2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;increment()方法返回当前count值，然后count增加1&lt;/p&gt;
+
+&lt;p&gt;antoherIncrement()方法让count增加1，然后返回count值&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;11、null&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Main17{
+  private static void testMethod(){
+        System.out.println(&quot;testMethod&quot;);
+   }
+    public static void main(String args[]) {
+      ((Main17)null).testMethod();
+    }
+}
+result：
+testMethod
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Java中，null是一个关键字，不是对象，也不是Objcet的实例，它用来标识一个不确定的对象。因此可以将null赋给引用类型变量，但不可以将null赋给基本类型变量。&lt;/p&gt;
+
+&lt;p&gt;比如：int a = null;是错误的。Ojbect o = null是正确的。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;12、类方法、类变量和实例方法、实例变量&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;用static修饰的方法和变量是类方法、类变量，可以直接用类名.的方法来调用；&lt;/p&gt;
+
+&lt;p&gt;没有用static修饰的方法和变量就属于实例方法、实例变量，必须实例化类之后用实例化对象才能调用。在类方法中调用实例变量会报错，在实例方法中调用实例变量则没有问题。&lt;/p&gt;
+
+&lt;p&gt;由于类方法是属于整个类的，并不属于类的哪个对象，所以类方法的方法体中不能有与类的对象有关的内容。即类方法体有如下限制：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;类方法中不能引用对象变量；&lt;/li&gt;
+  &lt;li&gt;类方法中不能调用类的对象方法；&lt;/li&gt;
+  &lt;li&gt;在类方法中不能使用super、this关键字。&lt;/li&gt;
+  &lt;li&gt;类方法不能被覆盖。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;如果违反这些限制，就会导致程序编译错误。&lt;/p&gt;
+
+&lt;p&gt;与类方法相比，对象方法几乎没有什么限制：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;对象方法中可以引用对象变量，也可以引用类变量；&lt;/li&gt;
+  &lt;li&gt;对象方法中可以调用类方法；&lt;/li&gt;
+  &lt;li&gt;对象方法中可以使用super、this关键字。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;13、Collection与Collections的区别&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;java.util.Collection 是一个集合接口。它提供了对集合对象进行基本操作的通用接口方法。Collection接口在Java 类库中有很多具体的实现。Collection接口的意义是为各种具体的集合提供了最大化的统一操作方式。&lt;/p&gt;
+
+&lt;p&gt;Collection &lt;br /&gt;
+├List &lt;br /&gt;
+│├LinkedList &lt;br /&gt;
+│├ArrayList &lt;br /&gt;
+│└Vector &lt;br /&gt;
+│　└Stack &lt;br /&gt;
+└Set&lt;br /&gt;
+│　└HashSet&lt;/p&gt;
+
+&lt;p&gt;└Queue&lt;/p&gt;
+
+&lt;p&gt;java.util.Collections 是一个包装类。它包含有各种有关集合操作的静态多态方法。此类不能实例化，因为内部的构造函数被私有化了就像一个工具类，服务于Java的Collection框架。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;14、super()与this()&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;1）调用super()必须写在子类构造方法的第一行，否则编译不通过。每个子类构造方法的第一条语句，都是隐含地调用super()，如果父类没有这种形式的构造函数，那么在编译的时候就会报错。&lt;/p&gt;
+
+&lt;p&gt;2）super()和this()类似,区别是，super从子类中调用父类的构造方法，this()在同一类内调用其它方法。&lt;/p&gt;
+
+&lt;p&gt;3）super()和this()均需放在构造方法内第一行，既然两个都要放在第一行，那么两个就不可能同时存在一个构造函数里。&lt;/p&gt;
+
+&lt;p&gt;4）尽管可以用this调用一个构造器，但却不能调用两个。&lt;/p&gt;
+
+&lt;p&gt;5）this()和super()都指的是对象，所以，均不可以在static环境中使用。包括：static变量,static方法，static语句块。&lt;/p&gt;
+
+&lt;p&gt;6）从本质上讲，this是一个指向本对象的指针, 然而super是一个Java关键字。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class Main17{
+    public Main17(){
+        super();
+        System.out.println(&quot;1&quot;);
+    }
+    public Main17(int a){
+        this();
+        System.out.println(a);
+    }
+    public Main17(int a, String s){
+        this(a);
+        System.out.println(s+a);
+    }
+    public static void main(String[] args) {
+        Main17 main17 = new Main17(2,&quot;end:&quot;);
+    }
+}
+result：
+1
+2
+end:2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+</description>
+        <pubDate>Thu, 11 May 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/java/2017/05/11/Java%E7%9F%A5%E8%AF%86%E7%82%B9%E5%A4%A7%E6%89%AB%E7%9B%B2.html</link>
+        <guid isPermaLink="true">http://localhost:4000/java/2017/05/11/Java%E7%9F%A5%E8%AF%86%E7%82%B9%E5%A4%A7%E6%89%AB%E7%9B%B2.html</guid>
+        
+        <category>java</category>
+        
+        <category>知识点</category>
+        
+        
+        <category>Java</category>
         
       </item>
     

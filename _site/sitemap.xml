@@ -30,10 +30,6 @@
     </url>
 
     <url>
-        <loc>http://localhost:4000/java/2017/06/11/Java%E7%9F%A5%E8%AF%86%E7%82%B9%E5%A4%A7%E6%89%AB%E7%9B%B2.html</loc>
-    </url>
-
-    <url>
         <loc>http://localhost:4000/database/2017/06/01/%E6%AD%BB%E7%A3%95redis-Spring%E4%BD%BF%E7%94%A8redis%E5%AD%98%E5%82%A8sessionId.html</loc>
     </url>
 
@@ -62,7 +58,15 @@
     </url>
 
     <url>
+        <loc>http://localhost:4000/java/2017/05/13/%E6%B5%85%E8%B0%88Java%E9%9B%86%E5%90%88Collection.html</loc>
+    </url>
+
+    <url>
         <loc>http://localhost:4000/javascript/2017/05/12/%E6%9D%BE%E6%95%A3%E7%B1%BB%E5%9E%8B-js%E5%8F%98%E9%87%8F%E5%AD%98%E5%82%A8%E6%A8%A1%E5%9E%8B-%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87.html</loc>
+    </url>
+
+    <url>
+        <loc>http://localhost:4000/java/2017/05/11/Java%E7%9F%A5%E8%AF%86%E7%82%B9%E5%A4%A7%E6%89%AB%E7%9B%B2.html</loc>
     </url>
 
     <url>

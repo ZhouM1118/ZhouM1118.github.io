@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="浅谈Java集合Collection" name="description">
+  
+  
+    <meta name="keywords" content="Collection">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|浅谈Java集合Collection
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Java</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 13 May 2017</span>
+                        <h1>
+                            浅谈Java集合Collection
+                        </h1>
+                    </div>
+                    	<p>一直想找个时间系统的整理下Java的集合类，毕竟Collection包含了很多我们在实际项目中要用到的数据结构，比如列表、set、队列等，下面我们直接来看看Java集合类中各大数据结构。</p>
+
+<p>Collection部分层次结构如下所示：
+Collection <br />
+├List <br />
+│├LinkedList <br />
+│├ArrayList <br />
+│└Vector <br />
+│　└Stack <br />
+├Set <br />
+│├HashSet  <br />
+└ Queue<br />
+　└ BlockingQueue</p>
+
+<p><strong>一、Collection</strong></p>
+
+<p>子接口：Set，List，Queue</p>
+
+<p><code class="highlighter-rouge">public interface Collection&lt;E&gt; extends Iterable&lt;E&gt; {}</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//获取该集合的大小
+int size();
+//判空
+boolean isEmpty();
+//判断集合是否包含某元素
+boolean contains(Object o);
+//获取集合的迭代器，迭代器的具体实现在子类中用内部类实现
+Iterator&lt;E&gt; iterator();
+//返回该集合的元素数组
+Object[] toArray();
+//添加元素
+boolean add(E e);
+//删除指定元素值的元素
+boolean remove(Object o);
+//判断集合是否包含指定集合中所有的元素
+boolean containsAll(Collection&lt;?&gt; c);
+//向当前集合添加指定集合中所有的元素
+boolean addAll(Collection&lt;? extends E&gt; c);
+//在当前集合中移除指定集合中所有的元素
+boolean removeAll(Collection&lt;?&gt; c);
+//保留指定集合中的元素，删除当前集合中不在指定集合中的元素
+boolean retainAll(Collection&lt;?&gt; c);
+//清空集合
+void clear();
+//Comparison and hashing
+boolean equals(Object o);
+int hashCode(); 还有一些复写Iterable接口的方法
+</code></pre>
+</div>
+
+<p><strong>二、List</strong></p>
+
+<p>实现类包括：LinkedList,Vector,ArrayList。</p>
+
+<p>继承Collection，可以按索引的顺序访问，元素顺序均是按添加的先后进行排列的，允许重复的元素,允许多个null元素。</p>
+
+<p>除了包含Collection中的方法，还有一些自己的方法。</p>
+
+<p><code class="highlighter-rouge">public interface List&lt;E&gt; extends Collection&lt;E&gt; {}</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//获取指定索引的元素
+E get(int index);
+//替代指定索引位置的元素
+E set(int index, E element);
+//添加指定索引位置的元素
+void add(int index, E element);
+//移除指定索引位置的元素
+E remove(int index);
+//获取指定元素在集合中第一次出现的索引值
+int indexOf(Object o);
+//获取指定元素在集合中最后一次出现的索引值
+int lastIndexOf(Object o);
+//获取ListIterator迭代器，迭代器的具体实现在子类中用内部类实现
+ListIterator&lt;E&gt; listIterator();
+//获取集合中从fromIndex到toIndex的值
+List&lt;E&gt; subList(int fromIndex, int toIndex);
+</code></pre>
+</div>
+
+<p><strong>ListIterator</strong></p>
+
+<p>List除了具备Collection接口的iterator方法外，还提供了listIterator，listIterator相对iterator，允许添加、设定元素，前后向遍历。</p>
+
+<p><code class="highlighter-rouge">public interface ListIterator&lt;E&gt; extends Iterator&lt;E&gt; {}</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>boolean hasNext();
+E next();
+boolean hasPrevious();
+E previous();
+int nextIndex();
+int previousIndex();
+void remove();
+void set(E e);
+void add(E e);
+</code></pre>
+</div>
+
+<p><strong>2.1 ArrayList</strong></p>
+
+<p>ArrayList依赖于数组实现的，初始长度为10的Object[]，并且可随需要而增加的动态数组。当元素超过10，采用ensureCapacity方法来扩容，ArrayList底层会新生成一个数组，长度为原来的1.5倍+1, 也就是自动增长了差不多是原来的一半，然后将原数组内容复制到新数组中，并且后续增加的内容会放到新数组中。</p>
+
+<p>ArrayList对随机访问性能很好，但进行大量插入，删除操作，性能很差，因为操作之后后续元素需要移动。</p>
+
+<p><code class="highlighter-rouge">public class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt;
+        implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable{}</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>private static final int DEFAULT_CAPACITY = 10;
+private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+</code></pre>
+</div>
+
+<p><strong>构造方法</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public ArrayList(int initialCapacity) {}
+public ArrayList() {}
+public ArrayList(Collection&lt;? extends E&gt; c) {}
+</code></pre>
+</div>
+
+<p><strong>扩容方法</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public void ensureCapacity(int minCapacity) {}
+</code></pre>
+</div>
+
+<p><strong>2.2 Vector</strong></p>
+
+<p>特点与ArrayList相同， 不同的是Vector操作元素的方法是同步（对集合操作的方法都用synchronized关键字）的，同一时刻只能有一个线程访问，由于Vector是线程同步的，那么性能上要比ArrayList要低。Vector也是依赖数组实现的，在需要对Vector扩容时，自动增长为原来数组长度的一倍。</p>
+
+<p><code class="highlighter-rouge">public class Vector&lt;E&gt;
+    extends AbstractList&lt;E&gt;
+    implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable{}</code></p>
+
+<p>**构造方法  **</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//默认初始容量为10
+public Vector()  
+//默认增量为0
+public Vector(int initialCapacity)
+public Vector(int initialCapacity,int capacityIncrement)  
+        第一个参数是初始容量,第二个参数是当Vector满时的增量  
+public Vector(Collection&lt;? extends E&gt; c) {}
+</code></pre>
+</div>
+
+<p><strong>2.2.1 Stack</strong></p>
+
+<p>Stack类继承了Vector，实现了一个后进先出的堆栈，Stack提供了5个额外的方法实现栈的操作。</p>
+
+<p><code class="highlighter-rouge">public
+class Stack&lt;E&gt; extends Vector&lt;E&gt; {}</code></p>
+
+<p><strong>构造方法</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public Stack() {}
+</code></pre>
+</div>
+
+<p><strong>实现栈的方法</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public E push(E item) {}
+//调用了peek操作，获取栈顶元素，并删除栈顶元素
+public synchronized E pop() {}
+//获取栈顶元素，不删除栈顶元素
+public synchronized E peek() {}
+public boolean empty() {}
+public synchronized int search(Object o) {}
+</code></pre>
+</div>
+
+<p><strong>2.3 LinkedList</strong></p>
+
+<p>LinkedList功能与ArrayList，Vector相同，但内部是依赖双链表实现的，因此有很好的插入和删除性能,但随机访问元素的性能很差。</p>
+
+<p><code class="highlighter-rouge">public class LinkedList&lt;E&gt;
+    extends AbstractSequentialList&lt;E&gt;
+    implements List&lt;E&gt;, Deque&lt;E&gt;, Cloneable, java.io.Serializable
+{}</code></p>
+
+<p><strong>构造方法</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public LinkedList() {}
+public LinkedList(Collection&lt;? extends E&gt; c) {}
+</code></pre>
+</div>
+
+<p>LinkedList类的元素表示：Node内部类</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>private static class Node&lt;E&gt; {
+    E item;
+    Node&lt;E&gt; next;
+    Node&lt;E&gt; prev;
+
+    Node(Node&lt;E&gt; prev, E element, Node&lt;E&gt; next) {
+        this.item = element;
+        this.next = next;
+        this.prev = prev;
+    }
+}
+</code></pre>
+</div>
+
+<p><strong>正序遍历链表</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>private static void printList(List link) {  
+    // 得到链表的迭代器,位置指向链头  
+    ListIterator li = link.listIterator();  
+    // 判断迭代器中是否有下一个元素  
+    while (li.hasNext()) {  
+        // 返回下个元素  
+        System.out.println(li.next() + " ");  
+    }  
+}  
+</code></pre>
+</div>
+
+<p><strong>逆序遍历链表</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>private static void printReversedList(List link) {  
+    // 得到链表的迭代器,位置指向link.size()结尾  
+    ListIterator li = link.listIterator(link.size());  
+    // 判断迭代器中是否有前一个元素  
+    while (li.hasPrevious()) {  
+        // 返回前一个元素  
+        System.out.println(li.previous() + " ");  
+    }  
+}  
+</code></pre>
+</div>
+
+<p><strong>三、Set</strong></p>
+
+<p>不包含重复元素，最多包含一个null，元素没有顺序。</p>
+
+<p><code class="highlighter-rouge">public interface Set&lt;E&gt; extends Collection&lt;E&gt; {}</code></p>
+
+<p><strong>3.1 HashSet</strong></p>
+
+<p>实现了Set接口，底层用hashMap来实现，hashSet的大部分方法也都是调用hashMap来实现的。</p>
+
+<p><code class="highlighter-rouge">public class HashSet&lt;E&gt;
+    extends AbstractSet&lt;E&gt;
+    implements Set&lt;E&gt;, Cloneable, java.io.Serializable{}</code></p>
+
+<p><strong>构造方法</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public HashSet() {
+    map = new HashMap&lt;&gt;();
+}
+public HashSet(Collection&lt;? extends E&gt; c) {
+    map = new HashMap&lt;&gt;(Math.max((int) (c.size()/.75f) + 1, 16));
+    addAll(c);
+}
+public HashSet(int initialCapacity, float loadFactor) {
+    map = new HashMap&lt;&gt;(initialCapacity, loadFactor);
+}
+public HashSet(int initialCapacity) {
+    map = new HashMap&lt;&gt;(initialCapacity);
+}
+HashSet(int initialCapacity, float loadFactor, boolean dummy) {
+    map = new LinkedHashMap&lt;&gt;(initialCapacity, loadFactor);
+}
+</code></pre>
+</div>
+
+<p>HashSet保证了当前集合对于某一元素的唯一存在性，集合中是否存在一个对象是通过equals()和hashCode()协同判断。</p>
+
+<p>HashSet的add()方法详解:</p>
+
+<p>判断已经存储在集合中的对象hashCode值是否与增加对象的hashCode值一致<br />
+如果不一致,直接加进去<br />
+如果一致,再进行equals()比较<br />
+    如果equals()返回true,对象已经存在不增加进去<br />
+    如果equals()返回false,把对象增加进去</p>
+
+<p><strong>四、Queue</strong></p>
+
+<p><strong>Queue接口与List、Set同一级别，都是继承了Collection接口。Queue不允许包含NULL元素。</strong></p>
+
+<p><code class="highlighter-rouge">public interface Queue&lt;E&gt; extends Collection&lt;E&gt; {}</code></p>
+
+<p><strong>队列方法</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//增加一个元素，队列满则抛出IIIegaISlabEepeplian异常
+boolean add(E e);
+//添加一个元素，队列满则返回false
+boolean offer(E e);
+//移除并返回队列头部的元素，队列空则抛出一个NoSuchElementException异常
+E remove();
+//移除并返问队列头部的元素，队列空则返回null
+E poll();
+//返问但不移除队列头部的元素，队列空则抛出一个NoSuchElementException异常
+E element();
+//返问但不移除队列头部的元素，队列空则返回null
+E peek();
+</code></pre>
+</div>
+
+<p><strong>4.1 BlockingQueue</strong></p>
+
+<p>用阻塞队列两个显著的好处就是：多线程操作共同的队列时不需要额外的同步，另外就是队列会自动平衡负载，即那边（生产与消费两边）处理快了就会被阻塞掉，从而减少两边的处理速度差距。</p>
+
+<p><code class="highlighter-rouge">public interface BlockingQueue&lt;E&gt; extends Queue&lt;E&gt; {}</code></p>
+
+<p><strong>阻塞队列的方法</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//增加一个元素，队列满则阻塞当前线程
+void put(E e) throws InterruptedException;
+//移除并返问队列头部的元素，队列空则阻塞当前线程
+E take() throws InterruptedException;
+</code></pre>
+</div>
+
+<p><strong>五、Collection与Collections的区别</strong></p>
+
+<p>java.util.Collection 是一个集合接口。它提供了对集合对象进行基本操作的通用接口方法。Collection接口在Java 类库中有很多具体的实现。Collection接口的意义是为各种具体的集合提供了最大化的统一操作方式。</p>
+
+<p>java.util.Collections 是一个包装类。它包含有各种有关集合操作的静态多态方法。此类不能实例化，因为内部的构造函数被私有化了就像一个工具类，服务于Java的Collection框架。</p>
+
+<p><code class="highlighter-rouge">private Collections() {}</code></p>
+
+<p><strong>参考文献</strong></p>
+
+<p>Java - Collection：http://blog.csdn.net/itlwc/article/details/10148321</p>
+
+<p>java中queue的使用：http://www.cnblogs.com/end/archive/2012/10/25/2738493.html</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">Collection</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
