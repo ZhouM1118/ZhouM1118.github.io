@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 09 Aug 2017 18:05:10 +0800</pubDate>
-    <lastBuildDate>Wed, 09 Aug 2017 18:05:10 +0800</lastBuildDate>
+    <pubDate>Wed, 09 Aug 2017 18:09:15 +0800</pubDate>
+    <lastBuildDate>Wed, 09 Aug 2017 18:09:15 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -1177,9 +1177,11 @@ public class Client {
         Produce1 p1 = new Produce1();  
         Produce2 p2 = new Produce2();  
     }  
-} 很显然如果用上面的方式获取少数的Produce的对象是可行的，但多了就不行了，而且会导致类与类之间的耦合度非常高，于是出现了工厂模式，工厂模式就是屏蔽创建对象的具体过程，用户只需要调用工厂方法就可以得到对象的实例。
+}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+
+&lt;p&gt;很显然如果用上面的方式获取少数的Produce的对象是可行的，但多了就不行了，而且会导致类与类之间的耦合度非常高，于是出现了工厂模式，工厂模式就是屏蔽创建对象的具体过程，用户只需要调用工厂方法就可以得到对象的实例。&lt;/p&gt;
 
 &lt;p&gt;工厂模式按其复杂程度分为三类：简单工厂、工厂、抽象工厂模式。&lt;/p&gt;
 
