@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="死磕数据库调优-数据库优化的几点思考" name="description">
+  
+  
+    <meta name="keywords" content="数据库设计, 数据库优化">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|死磕数据库调优-数据库优化的几点思考
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Database</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 13 Aug 2017</span>
+                        <h1>
+                            死磕数据库调优-数据库优化的几点思考
+                        </h1>
+                    </div>
+                    	<p>上篇我们讲了下在数据库表设计时如何根据业务需求来选取最适合自己的字段属性设计，今天我们来聊聊当你拿到一句sql语句，你会从哪些方面来优化它。</p>
+
+<p><strong>方面一、in、exists还是join</strong></p>
+
+<p>使用场景：我们要查询整个湖北省所有的水土流失信息，显然全国的水土流失表中的数据比湖北省城市数要大很多，假设全国的水土流失表有100万条数据，湖北省总共有80个市（包括直辖市、县级市和市辖区等）。</p>
+
+<p>问题：那么对于这种使用场景，sql中使用in还是exists？</p>
+
+<p>测试：</p>
+
+<p><code class="highlighter-rouge">1、select * from shuituInfo where cid in(select id from city );</code></p>
+
+<p><code class="highlighter-rouge">2、select * from shuituInfo where exists(select id from city where shuituInfo.cid= city.id);</code></p>
+
+<p>测试下来，在表结构一样的情况下，我们发现1比2的效率要高很多。</p>
+
+<p>分析：</p>
+
+<p>如果两个表中一个较小，一个较大，则子查询表数据大的用exists，子查询表数据小的用in。因为in会使用城市表中的id去到水土流失信息表中直接匹配所需要的行，而exists是根据匹配项去判断是或者否，然后根据是否返回结果。当子查询的表数据量大而主表数据量小，用exists判断，效率就会高，而当子查询的表数据量小而主表数据量大的时候，直接匹配你需要的值则更快。</p>
+
+<p>主表有100万行，子查询里面有80条数据，那么exists会把100万行在子查询里面进行匹配，匹配上了就显示，匹配不上就不显示，所以需要判断100万次，而in则会使用子查询的80条记录直接匹配主表中的100万行数据，in的效率通常会更高，但是如果反过来，主表80条记录，子查询里面有100万行，exists只进行80次判断，而in会用100万个数据去匹配这80条记录，所以比exists更快。所以说in的效率取决于子表的数据量大小，而exists的效率取决于主表的数据量大小。如果字表的数据量小，使用in时只需要从主表中检索符合字表的数据就好了；如果主表的数据量小，使用exists只需要判断主表中的数据是否满足子查询。</p>
+
+<p><code class="highlighter-rouge">3、select s.* from shuituInfo s, city c where s.cid = c.id;</code></p>
+
+<p>其实我们使用隐式(implicit) inner join的效率会更高一点：</p>
+
+<p>EXISTS &lt;= IN &lt;= JOIN</p>
+
+<p>NOT EXISTS &lt;= NOT IN &lt;= LEFT JOIN</p>
+
+<p>所以在同等情况下，尽量避免子查询，而用join来实现。个人理解是，join之所以更有效率一些，是因为MySQL不需要在内存中创建临时表来完成查询工作。</p>
+
+<p><strong>方向二、union 和 union all</strong></p>
+
+<p>在一些应用场景下，我们常需要使用union来写一些去重的sql，但union会将各查询子集的记录做比较并去除相同的记录，所以比起单纯的union all（不排除重复的值）来说通常速度都会慢上许多。一般来说，如果我们确定在某些应用场景下合并子集后不会出现重复值那么使用union all。</p>
+
+<p>对于索引列最好使用union all，因复杂的查询【包含运算等】将使or、in放弃索引而全表扫描。</p>
+
+<p>对于只有非索引字段最好使用or或者in，因为非索引字段本来要全表扫描而union all会成倍增加表扫描的次数。见文献-MySQL中使用or、in与union all在查询命令下的效率对比</p>
+
+<p><strong>方向三、常见的优化手段</strong></p>
+
+<p>1、应该尽量把字段设置为<code class="highlighter-rouge">not null</code>，这样在将来执行查询的时候，数据库不用去比较<code class="highlighter-rouge">null</code>值。</p>
+
+<p>2、最好是在相同类型的字段间进行比较的操作。在MySQL3.23版之前，这甚至是一个必须的条件。例如不能将一个建有索引的INT字段和BIGINT字段进行比较；但是作为特殊的情况，在CHAR类型的字段和VARCHAR类型字段的字段大小相同的时候，可以将它们进行比较。</p>
+
+<p>3、在建有索引的字段上尽量不要使用函数进行操作，或者进行计算。比如：在一个DATE类型的字段上使用YEAE()函数时，将会使索引不能发挥应有的作用。</p>
+
+<p>4、在搜索字符型字段时，我们有时会使用like关键字和通配符，这种做法虽然简单，但却也是以牺牲系统性能为代价的。因为在有些情况（比如<code class="highlighter-rouge">like '%param%'</code>）下，like查询使用不到索引，会扫描全表，但如果是<code class="highlighter-rouge">like 'param'</code> 或<code class="highlighter-rouge">like 'param%'</code>的情况下，索引不会失效。但在数据量非常大的时候还是建议不使用like。</p>
+
+<p>参考文献：</p>
+
+<p>MySQL中使用or、in与union all在查询命令下的效率对比：http://www.jb51.net/article/75171.htm</p>
+
+<p>MySQL数据库优化的八种方式：http://www.cnblogs.com/zhyunfe/p/6209074.html</p>
+
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">数据库设计</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">数据库优化</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
