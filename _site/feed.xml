@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 15 Aug 2017 17:30:23 +0800</pubDate>
-    <lastBuildDate>Tue, 15 Aug 2017 17:30:23 +0800</lastBuildDate>
+    <pubDate>Tue, 15 Aug 2017 17:33:57 +0800</pubDate>
+    <lastBuildDate>Tue, 15 Aug 2017 17:33:57 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -43,7 +43,7 @@
 
 &lt;p&gt;所以在同等情况下，尽量避免子查询，而用join来实现。个人理解是，join之所以更有效率一些，是因为MySQL不需要在内存中创建临时表来完成查询工作。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;方向二、union 和 union all&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方面二、union 和 union all&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;在一些应用场景下，我们常需要使用union来写一些去重的sql，但union会将各查询子集的记录做比较并去除相同的记录，所以比起单纯的union all（不排除重复的值）来说通常速度都会慢上许多。一般来说，如果我们确定在某些应用场景下合并子集后不会出现重复值那么使用union all。&lt;/p&gt;
 
@@ -51,7 +51,7 @@
 
 &lt;p&gt;对于只有非索引字段最好使用or或者in，因为非索引字段本来要全表扫描而union all会成倍增加表扫描的次数。见文献-MySQL中使用or、in与union all在查询命令下的效率对比&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;方向三、常见的优化手段&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方面三、常见的优化手段&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;1、应该尽量把字段设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;not null&lt;/code&gt;，这样在将来执行查询的时候，数据库不用去比较&lt;code class=&quot;highlighter-rouge&quot;&gt;null&lt;/code&gt;值。&lt;/p&gt;
 
