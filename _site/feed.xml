@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 15 Aug 2017 17:33:57 +0800</pubDate>
-    <lastBuildDate>Tue, 15 Aug 2017 17:33:57 +0800</lastBuildDate>
+    <pubDate>Sun, 20 Aug 2017 10:44:33 +0800</pubDate>
+    <lastBuildDate>Sun, 20 Aug 2017 10:44:33 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -5048,6 +5048,31 @@ end:2
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
+&lt;p&gt;&lt;strong&gt;15、Java中的float与double精度&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;float的精度最多8位，double的精度最多17位。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static void main(String[] args) {
+		
+		double a = 1.0;
+		double b = 1.0;
+		System.out.println(a == b);//这样的代码是拿不到offer的
+		double t = 30.000000000000000;
+		double c = 30.000000000000003;//double最多17位
+		double d = 30.0000000000000003;
+		System.out.println(t == c);//false
+		System.out.println(t == d);//true
+		System.out.println(Double.compare(t, d));//0 数学上相等
+		System.out.println(c &amp;lt;= 30);//false
+		System.out.println(d &amp;lt;= 30);//true  d总位数超过了17，则会将小数点多余的3去掉即等于30.000000000000000
+		
+		float e = 4.0000003f;//float最多8位
+		float f = 4.00000003f;
+		System.out.println(e &amp;lt;= 4);//false
+		System.out.println(f &amp;lt;= 4);//true f总位数超过了8，则会将小数点多余的3去掉即等于4.0000000
+	}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 </description>
         <pubDate>Thu, 11 May 2017 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/java/2017/05/11/Java%E7%9F%A5%E8%AF%86%E7%82%B9%E5%A4%A7%E6%89%AB%E7%9B%B2.html</link>

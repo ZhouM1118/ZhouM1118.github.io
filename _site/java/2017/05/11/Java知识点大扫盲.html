@@ -741,6 +741,31 @@ end:2
 </code></pre>
 </div>
 
+<p><strong>15、Java中的float与double精度</strong></p>
+
+<p>float的精度最多8位，double的精度最多17位。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public static void main(String[] args) {
+		
+		double a = 1.0;
+		double b = 1.0;
+		System.out.println(a == b);//这样的代码是拿不到offer的
+		double t = 30.000000000000000;
+		double c = 30.000000000000003;//double最多17位
+		double d = 30.0000000000000003;
+		System.out.println(t == c);//false
+		System.out.println(t == d);//true
+		System.out.println(Double.compare(t, d));//0 数学上相等
+		System.out.println(c &lt;= 30);//false
+		System.out.println(d &lt;= 30);//true  d总位数超过了17，则会将小数点多余的3去掉即等于30.000000000000000
+		
+		float e = 4.0000003f;//float最多8位
+		float f = 4.00000003f;
+		System.out.println(e &lt;= 4);//false
+		System.out.println(f &lt;= 4);//true f总位数超过了8，则会将小数点多余的3去掉即等于4.0000000
+	}
+</code></pre>
+</div>
 
                     <hr>
                     <div class="row">
