@@ -1,6 +1,23 @@
 # careers section data
 # if you don't have language feature(language.yml is empty), ignore "i18n" items
 - name:
+    detail: 银联商务有限公司研发中心-实习
+    i18n: Chinaums
+  desc1:
+    detail: 主要职责：
+    i18n: Chinaums_desc1
+  desc2:
+    detail: 我主要负责扫码支付商户端开发，利用gloox开源框架独立完成xmpp的C++客户端，实现与openfire服务器的通讯，客户端的长连接监听，服务器的json消息推送和客户端离线重传、心跳、等接受，log实时收集与支付数据存入数据库等功能。现客户端已上线并投入生产环境使用，完成扫码支付的商户端实时数据采集，并按照既定格式提取数据，组成签购单小票。
+    i18n: Chinaums_desc2
+  date:
+    detail: 2017.06-至今
+    i18n: Chinaums_date
+  job:
+    detail: 研发工程师
+    i18n: Chinaums_job
+  icon: fa-plus-square
+
+- name:
     detail: 水土保持数据上报系统
     i18n: shuitu
   desc1:
@@ -58,21 +75,4 @@
   job:
     detail: 研究生研究方向
     i18n: deepLearning_job
-  icon: fa-plus-square
-
-- name:
-    detail:  亦非云(上海)互联网技术有限公司-实习
-    i18n: otvcloud
-  desc1:
-    detail: 主要负责：
-    i18n: otvcloud_desc1
-  desc2:
-    detail: 我主要负责内容平台重构，手机官网H5开发。内容平台采用JFinal框架，使用Bootstrap-table展示表格，使用Highcharts展示图表，官网开发采用JFinal框架，包含云产品、云服务以及新闻展示等模块，前端采用jsp不限层次继承页面，简约前端页面。
-    i18n: otvcloud_desc2
-  date:
-    detail: 2016.01-2016.09
-    i18n: otvcloud_date
-  job:
-    detail: 全栈开发
-    i18n: otvcloud_job
   icon: fa-plus-square

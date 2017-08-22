@@ -19,7 +19,8 @@ Collection
 │└Vector   
 │　└Stack   
 ├Set   
-│├HashSet    
+│├HashSet   
+│├TreeSet    
 └ Queue  
 　└ BlockingQueue
 
@@ -165,7 +166,7 @@ class Stack<E> extends Vector<E> {}`
 
 **2.3 LinkedList**
 
-LinkedList功能与ArrayList，Vector相同，但内部是依赖双链表实现的，因此有很好的插入和删除性能,但随机访问元素的性能很差。
+LinkedList功能与ArrayList，Vector相同，但内部是依赖双向链表实现的，也就是说每个结点都存放着指向前驱结点和后驱结点的引用，因此有很好的插入和删除性能,但随机访问元素的性能很差。
 
 `public class LinkedList<E>
     extends AbstractSequentialList<E>
@@ -177,7 +178,7 @@ LinkedList功能与ArrayList，Vector相同，但内部是依赖双链表实现�
 	public LinkedList() {}
 	public LinkedList(Collection<? extends E> c) {}
 
-LinkedList类的元素表示：Node内部类
+**LinkedList类的元素表示：Node内部类**
 
 	private static class Node<E> {
 	    E item;
@@ -214,6 +215,53 @@ LinkedList类的元素表示：Node内部类
 	        System.out.println(li.previous() + " ");  
 	    }  
 	}  
+	
+**在链表中任意位置插入元素**
+
+链表是一个有序集合，调用LinkedList.add方法将对象插入到链表的尾部，如何添加元素到链表中的任意位置呢？这种操作可以交由迭代器负责。ListIterator的add即可实现。
+
+	public static void addElement(){
+		List<String> list = new LinkedList<String>();
+		list.add("aaa");
+		list.add("bbb");
+		list.add("ccc");
+		System.out.println(list);//[aaa, bbb, ccc]
+		ListIterator<String> iterator = list.listIterator();
+		iterator.next();//跳过第一个元素
+		iterator.add("111");//在第二个位置插入元素111
+		System.out.println(list);//[aaa, 111, bbb, ccc]
+	}
+	
+**少用list.get(i)，用list.listIterator(i)代替**
+
+LinkedList提供了一个用来访问某个特定元素的get方法，但这种方式的效率是非常低的，在代码中应该尽量少用这种方式，因为链表中每次查找一个元素都要从链表的头部重新开始搜索，如果索引值i大于size()/2则从列表尾端开始搜索元素。
+
+	public E get(int index) {
+        checkElementIndex(index);
+        return node(index).item;
+    }
+
+	Node<E> node(int index) {
+        // assert isElementIndex(index);
+
+        if (index < (size >> 1)) {// >> 1 相当于除以2
+            Node<E> x = first;
+            for (int i = 0; i < index; i++)
+                x = x.next;
+            return x;
+        } else {
+            Node<E> x = last;
+            for (int i = size - 1; i > index; i--)
+                x = x.prev;
+            return x;
+        }
+    }
+
+还是之前的例子
+
+	System.out.println(list.get(2));//bbb
+	ListIterator<String> iterator2 = list.listIterator(2);
+	System.out.println(iterator2.next());//bbb
 
 **三、Set**
 
@@ -223,7 +271,7 @@ LinkedList类的元素表示：Node内部类
 
 **3.1 HashSet**
 
-实现了Set接口，底层用hashMap来实现，hashSet的大部分方法也都是调用hashMap来实现的。
+实现了Set接口，底层用hashMap来实现，hashSet的大部分方法也都是调用hashMap来实现的。散列表是用链表数组来实现的，每个列表称之为桶，当桶被占满的时候，就会出现散列冲突。散列表是无序的(hashMap和hashSet都是)。
 
 `public class HashSet<E>
     extends AbstractSet<E>
@@ -258,6 +306,49 @@ HashSet的add()方法详解:
     如果equals()返回true,对象已经存在不增加进去  
     如果equals()返回false,把对象增加进去
 
+**3.2 TreeSet**
+
+树集合HashSet散列集很像，但树集是有序集合。在树集中可以任意插入元素到集合中，但对集合进行遍历的时候，每个值会自动地按照排序后的顺序呈现。底层实现是采用红黑树来存储元素。
+
+添加元素的效率：hashMap > treeSet > linkedList > arrayList
+
+treeSet中的元素如何排序的呢？
+
+1. treeSet中的元素实现Comparable接口
+1. 将Comparator对象传递给TreeSet构造器实现集合中元素的排序
+
+**treeSet中的元素实现Comparable接口**
+
+	public interface Comparable<T> {
+	    public int compareTo(T o);
+	}
+
+比如简单的Integer
+
+	public int compareTo(Integer anotherInteger) {
+	   return compare(this.value, anotherInteger.value);
+	}
+	public static int compare(int x, int y) {
+	   return (x < y) ? -1 : ((x == y) ? 0 : 1);
+	}
+
+如果集合中存放的是某些自定义的对象，那么需要让你实现Comparable接口，并重写compareTo方法。
+
+**将Comparator对象传递给TreeSet构造器实现集合中元素的排序**
+
+使用Comparable接口定义排列排序有一定的局限性，如果需要对某一特定的类的不同属性进行排序，Comparable就不能很好的满足这一需求，这个时候我们可以通过将Comparator对象传递给TreeSet构造器实现集合中元素的排序。
+
+	public interface Comparator<T> {
+		int compare(T o1, T o2);
+	}
+
+	SortedSet<Item> sortByDescription = new TreeSet<>(new Comparator<Item>(){
+		public int compare(Item a, Item b){
+			String descrA = a.getDescription;
+			String descrB = b.getDescription;
+			return descrA.compareTo(descrB);
+		}
+	});
 
 **四、Queue**
 

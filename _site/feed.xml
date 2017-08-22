@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 20 Aug 2017 10:44:33 +0800</pubDate>
-    <lastBuildDate>Sun, 20 Aug 2017 10:44:33 +0800</lastBuildDate>
+    <pubDate>Tue, 22 Aug 2017 18:11:55 +0800</pubDate>
+    <lastBuildDate>Tue, 22 Aug 2017 18:11:55 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -4161,7 +4161,8 @@ Collection &lt;br /&gt;
 │└Vector &lt;br /&gt;
 │　└Stack &lt;br /&gt;
 ├Set &lt;br /&gt;
-│├HashSet  &lt;br /&gt;
+│├HashSet &lt;br /&gt;
+│├TreeSet  &lt;br /&gt;
 └ Queue&lt;br /&gt;
 　└ BlockingQueue&lt;/p&gt;
 
@@ -4323,7 +4324,7 @@ public synchronized int search(Object o) {}
 
 &lt;p&gt;&lt;strong&gt;2.3 LinkedList&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;LinkedList功能与ArrayList，Vector相同，但内部是依赖双链表实现的，因此有很好的插入和删除性能,但随机访问元素的性能很差。&lt;/p&gt;
+&lt;p&gt;LinkedList功能与ArrayList，Vector相同，但内部是依赖双向链表实现的，也就是说每个结点都存放着指向前驱结点和后驱结点的引用，因此有很好的插入和删除性能,但随机访问元素的性能很差。&lt;/p&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public class LinkedList&amp;lt;E&amp;gt;
     extends AbstractSequentialList&amp;lt;E&amp;gt;
@@ -4337,7 +4338,7 @@ public LinkedList(Collection&amp;lt;? extends E&amp;gt; c) {}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;LinkedList类的元素表示：Node内部类&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;LinkedList类的元素表示：Node内部类&lt;/strong&gt;&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;private static class Node&amp;lt;E&amp;gt; {
     E item;
@@ -4381,6 +4382,59 @@ public LinkedList(Collection&amp;lt;? extends E&amp;gt; c) {}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
+&lt;p&gt;&lt;strong&gt;在链表中任意位置插入元素&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;链表是一个有序集合，调用LinkedList.add方法将对象插入到链表的尾部，如何添加元素到链表中的任意位置呢？这种操作可以交由迭代器负责。ListIterator的add即可实现。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static void addElement(){
+	List&amp;lt;String&amp;gt; list = new LinkedList&amp;lt;String&amp;gt;();
+	list.add(&quot;aaa&quot;);
+	list.add(&quot;bbb&quot;);
+	list.add(&quot;ccc&quot;);
+	System.out.println(list);//[aaa, bbb, ccc]
+	ListIterator&amp;lt;String&amp;gt; iterator = list.listIterator();
+	iterator.next();//跳过第一个元素
+	iterator.add(&quot;111&quot;);//在第二个位置插入元素111
+	System.out.println(list);//[aaa, 111, bbb, ccc]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;少用list.get(i)，用list.listIterator(i)代替&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;LinkedList提供了一个用来访问某个特定元素的get方法，但这种方式的效率是非常低的，在代码中应该尽量少用这种方式，因为链表中每次查找一个元素都要从链表的头部重新开始搜索，如果索引值i大于size()/2则从列表尾端开始搜索元素。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public E get(int index) {
+    checkElementIndex(index);
+    return node(index).item;
+}
+
+Node&amp;lt;E&amp;gt; node(int index) {
+    // assert isElementIndex(index);
+
+    if (index &amp;lt; (size &amp;gt;&amp;gt; 1)) {// &amp;gt;&amp;gt; 1 相当于除以2
+        Node&amp;lt;E&amp;gt; x = first;
+        for (int i = 0; i &amp;lt; index; i++)
+            x = x.next;
+        return x;
+    } else {
+        Node&amp;lt;E&amp;gt; x = last;
+        for (int i = size - 1; i &amp;gt; index; i--)
+            x = x.prev;
+        return x;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;还是之前的例子&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;System.out.println(list.get(2));//bbb
+ListIterator&amp;lt;String&amp;gt; iterator2 = list.listIterator(2);
+System.out.println(iterator2.next());//bbb
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
 &lt;p&gt;&lt;strong&gt;三、Set&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;不包含重复元素，最多包含一个null，元素没有顺序。&lt;/p&gt;
@@ -4389,7 +4443,7 @@ public LinkedList(Collection&amp;lt;? extends E&amp;gt; c) {}
 
 &lt;p&gt;&lt;strong&gt;3.1 HashSet&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;实现了Set接口，底层用hashMap来实现，hashSet的大部分方法也都是调用hashMap来实现的。&lt;/p&gt;
+&lt;p&gt;实现了Set接口，底层用hashMap来实现，hashSet的大部分方法也都是调用hashMap来实现的。散列表是用链表数组来实现的，每个列表称之为桶，当桶被占满的时候，就会出现散列冲突。散列表是无序的(hashMap和hashSet都是)。&lt;/p&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public class HashSet&amp;lt;E&amp;gt;
     extends AbstractSet&amp;lt;E&amp;gt;
@@ -4425,6 +4479,58 @@ HashSet(int initialCapacity, float loadFactor, boolean dummy) {
 如果一致,再进行equals()比较&lt;br /&gt;
     如果equals()返回true,对象已经存在不增加进去&lt;br /&gt;
     如果equals()返回false,把对象增加进去&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3.2 TreeSet&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;树集合HashSet散列集很像，但树集是有序集合。在树集中可以任意插入元素到集合中，但对集合进行遍历的时候，每个值会自动地按照排序后的顺序呈现。底层实现是采用红黑树来存储元素。&lt;/p&gt;
+
+&lt;p&gt;添加元素的效率：hashMap &amp;gt; treeSet &amp;gt; linkedList &amp;gt; arrayList&lt;/p&gt;
+
+&lt;p&gt;treeSet中的元素如何排序的呢？&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;treeSet中的元素实现Comparable接口&lt;/li&gt;
+  &lt;li&gt;将Comparator对象传递给TreeSet构造器实现集合中元素的排序&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;treeSet中的元素实现Comparable接口&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public interface Comparable&amp;lt;T&amp;gt; {
+    public int compareTo(T o);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;比如简单的Integer&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public int compareTo(Integer anotherInteger) {
+   return compare(this.value, anotherInteger.value);
+}
+public static int compare(int x, int y) {
+   return (x &amp;lt; y) ? -1 : ((x == y) ? 0 : 1);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果集合中存放的是某些自定义的对象，那么需要让你实现Comparable接口，并重写compareTo方法。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;将Comparator对象传递给TreeSet构造器实现集合中元素的排序&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;使用Comparable接口定义排列排序有一定的局限性，如果需要对某一特定的类的不同属性进行排序，Comparable就不能很好的满足这一需求，这个时候我们可以通过将Comparator对象传递给TreeSet构造器实现集合中元素的排序。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public interface Comparator&amp;lt;T&amp;gt; {
+	int compare(T o1, T o2);
+}
+
+SortedSet&amp;lt;Item&amp;gt; sortByDescription = new TreeSet&amp;lt;&amp;gt;(new Comparator&amp;lt;Item&amp;gt;(){
+	public int compare(Item a, Item b){
+		String descrA = a.getDescription;
+		String descrB = b.getDescription;
+		return descrA.compareTo(descrB);
+	}
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;&lt;strong&gt;四、Queue&lt;/strong&gt;&lt;/p&gt;
 

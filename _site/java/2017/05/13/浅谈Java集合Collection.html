@@ -267,7 +267,8 @@ Collection <br />
 │└Vector <br />
 │　└Stack <br />
 ├Set <br />
-│├HashSet  <br />
+│├HashSet <br />
+│├TreeSet  <br />
 └ Queue<br />
 　└ BlockingQueue</p>
 
@@ -429,7 +430,7 @@ public synchronized int search(Object o) {}
 
 <p><strong>2.3 LinkedList</strong></p>
 
-<p>LinkedList功能与ArrayList，Vector相同，但内部是依赖双链表实现的，因此有很好的插入和删除性能,但随机访问元素的性能很差。</p>
+<p>LinkedList功能与ArrayList，Vector相同，但内部是依赖双向链表实现的，也就是说每个结点都存放着指向前驱结点和后驱结点的引用，因此有很好的插入和删除性能,但随机访问元素的性能很差。</p>
 
 <p><code class="highlighter-rouge">public class LinkedList&lt;E&gt;
     extends AbstractSequentialList&lt;E&gt;
@@ -443,7 +444,7 @@ public LinkedList(Collection&lt;? extends E&gt; c) {}
 </code></pre>
 </div>
 
-<p>LinkedList类的元素表示：Node内部类</p>
+<p><strong>LinkedList类的元素表示：Node内部类</strong></p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>private static class Node&lt;E&gt; {
     E item;
@@ -487,6 +488,59 @@ public LinkedList(Collection&lt;? extends E&gt; c) {}
 </code></pre>
 </div>
 
+<p><strong>在链表中任意位置插入元素</strong></p>
+
+<p>链表是一个有序集合，调用LinkedList.add方法将对象插入到链表的尾部，如何添加元素到链表中的任意位置呢？这种操作可以交由迭代器负责。ListIterator的add即可实现。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public static void addElement(){
+	List&lt;String&gt; list = new LinkedList&lt;String&gt;();
+	list.add("aaa");
+	list.add("bbb");
+	list.add("ccc");
+	System.out.println(list);//[aaa, bbb, ccc]
+	ListIterator&lt;String&gt; iterator = list.listIterator();
+	iterator.next();//跳过第一个元素
+	iterator.add("111");//在第二个位置插入元素111
+	System.out.println(list);//[aaa, 111, bbb, ccc]
+}
+</code></pre>
+</div>
+
+<p><strong>少用list.get(i)，用list.listIterator(i)代替</strong></p>
+
+<p>LinkedList提供了一个用来访问某个特定元素的get方法，但这种方式的效率是非常低的，在代码中应该尽量少用这种方式，因为链表中每次查找一个元素都要从链表的头部重新开始搜索，如果索引值i大于size()/2则从列表尾端开始搜索元素。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public E get(int index) {
+    checkElementIndex(index);
+    return node(index).item;
+}
+
+Node&lt;E&gt; node(int index) {
+    // assert isElementIndex(index);
+
+    if (index &lt; (size &gt;&gt; 1)) {// &gt;&gt; 1 相当于除以2
+        Node&lt;E&gt; x = first;
+        for (int i = 0; i &lt; index; i++)
+            x = x.next;
+        return x;
+    } else {
+        Node&lt;E&gt; x = last;
+        for (int i = size - 1; i &gt; index; i--)
+            x = x.prev;
+        return x;
+    }
+}
+</code></pre>
+</div>
+
+<p>还是之前的例子</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>System.out.println(list.get(2));//bbb
+ListIterator&lt;String&gt; iterator2 = list.listIterator(2);
+System.out.println(iterator2.next());//bbb
+</code></pre>
+</div>
+
 <p><strong>三、Set</strong></p>
 
 <p>不包含重复元素，最多包含一个null，元素没有顺序。</p>
@@ -495,7 +549,7 @@ public LinkedList(Collection&lt;? extends E&gt; c) {}
 
 <p><strong>3.1 HashSet</strong></p>
 
-<p>实现了Set接口，底层用hashMap来实现，hashSet的大部分方法也都是调用hashMap来实现的。</p>
+<p>实现了Set接口，底层用hashMap来实现，hashSet的大部分方法也都是调用hashMap来实现的。散列表是用链表数组来实现的，每个列表称之为桶，当桶被占满的时候，就会出现散列冲突。散列表是无序的(hashMap和hashSet都是)。</p>
 
 <p><code class="highlighter-rouge">public class HashSet&lt;E&gt;
     extends AbstractSet&lt;E&gt;
@@ -531,6 +585,58 @@ HashSet(int initialCapacity, float loadFactor, boolean dummy) {
 如果一致,再进行equals()比较<br />
     如果equals()返回true,对象已经存在不增加进去<br />
     如果equals()返回false,把对象增加进去</p>
+
+<p><strong>3.2 TreeSet</strong></p>
+
+<p>树集合HashSet散列集很像，但树集是有序集合。在树集中可以任意插入元素到集合中，但对集合进行遍历的时候，每个值会自动地按照排序后的顺序呈现。底层实现是采用红黑树来存储元素。</p>
+
+<p>添加元素的效率：hashMap &gt; treeSet &gt; linkedList &gt; arrayList</p>
+
+<p>treeSet中的元素如何排序的呢？</p>
+
+<ol>
+  <li>treeSet中的元素实现Comparable接口</li>
+  <li>将Comparator对象传递给TreeSet构造器实现集合中元素的排序</li>
+</ol>
+
+<p><strong>treeSet中的元素实现Comparable接口</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public interface Comparable&lt;T&gt; {
+    public int compareTo(T o);
+}
+</code></pre>
+</div>
+
+<p>比如简单的Integer</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public int compareTo(Integer anotherInteger) {
+   return compare(this.value, anotherInteger.value);
+}
+public static int compare(int x, int y) {
+   return (x &lt; y) ? -1 : ((x == y) ? 0 : 1);
+}
+</code></pre>
+</div>
+
+<p>如果集合中存放的是某些自定义的对象，那么需要让你实现Comparable接口，并重写compareTo方法。</p>
+
+<p><strong>将Comparator对象传递给TreeSet构造器实现集合中元素的排序</strong></p>
+
+<p>使用Comparable接口定义排列排序有一定的局限性，如果需要对某一特定的类的不同属性进行排序，Comparable就不能很好的满足这一需求，这个时候我们可以通过将Comparator对象传递给TreeSet构造器实现集合中元素的排序。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public interface Comparator&lt;T&gt; {
+	int compare(T o1, T o2);
+}
+
+SortedSet&lt;Item&gt; sortByDescription = new TreeSet&lt;&gt;(new Comparator&lt;Item&gt;(){
+	public int compare(Item a, Item b){
+		String descrA = a.getDescription;
+		String descrB = b.getDescription;
+		return descrA.compareTo(descrB);
+	}
+});
+</code></pre>
+</div>
 
 <p><strong>四、Queue</strong></p>
 
