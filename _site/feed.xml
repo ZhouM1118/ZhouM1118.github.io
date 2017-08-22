@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 22 Aug 2017 18:11:55 +0800</pubDate>
-    <lastBuildDate>Tue, 22 Aug 2017 18:11:55 +0800</lastBuildDate>
+    <pubDate>Wed, 23 Aug 2017 00:09:44 +0800</pubDate>
+    <lastBuildDate>Wed, 23 Aug 2017 00:09:44 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -4153,8 +4153,9 @@ console&lt;/span&gt;&lt;span class=&quot;pun&quot;&gt;.&lt;/span&gt;&lt;span cla
         <title>浅谈Java集合Collection</title>
         <description>&lt;p&gt;一直想找个时间系统的整理下Java的集合类，毕竟Collection包含了很多我们在实际项目中要用到的数据结构，比如列表、set、队列等，下面我们直接来看看Java集合类中各大数据结构。&lt;/p&gt;
 
-&lt;p&gt;Collection部分层次结构如下所示：
-Collection &lt;br /&gt;
+&lt;p&gt;Collection部分层次结构如下所示：&lt;/p&gt;
+
+&lt;p&gt;Collection &lt;br /&gt;
 ├List &lt;br /&gt;
 │├LinkedList &lt;br /&gt;
 │├ArrayList &lt;br /&gt;
@@ -4163,8 +4164,10 @@ Collection &lt;br /&gt;
 ├Set &lt;br /&gt;
 │├HashSet &lt;br /&gt;
 │├TreeSet  &lt;br /&gt;
-└ Queue&lt;br /&gt;
-　└ BlockingQueue&lt;/p&gt;
+├Queue&lt;br /&gt;
+│├BlockingQueue &lt;br /&gt;
+│├ArrayDeque &lt;br /&gt;
+│└PriorityQueue&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;一、Collection&lt;/strong&gt;&lt;/p&gt;
 
@@ -4567,6 +4570,47 @@ E peek();
 void put(E e) throws InterruptedException;
 //移除并返问队列头部的元素，队列空则阻塞当前线程
 E take() throws InterruptedException;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;4.2 ArrayDeque&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Java SE6中引入了Deque接口，提供了双端队列一系列实现。ArrayDeque中用初始容量16的数组或给定初始容量来构造一个无限双端队列。值得注意的是LinkedList也是Deque的一个实现类，也可以用来构造双端队列。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public class ArrayDeque&amp;lt;E&amp;gt; extends AbstractCollection&amp;lt;E&amp;gt;
+                           implements Deque&amp;lt;E&amp;gt;, Cloneable, Serializable
+{}&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public ArrayDeque() {
+    elements = new Object[16];
+}
+public ArrayDeque(int numElements) {
+    allocateElements(numElements);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;4.3 PriorityQueue&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;优先队列，队列中的元素可以按照任意的顺序输入，但却可以按照指定的顺序进行检索（TreeSet），优先队列使用了堆数据结构，堆是自我调整的二叉树，对树进行一系列的添加删除等操作，让最小（大）的元素移动到根，而不必浪费时间对元素进行排序。&lt;/p&gt;
+
+&lt;p&gt;和TreeSet一样，优先队列可以保存实现了Comparable接口的类对象，也可以保存在构造器中提供比较器（Comparator）的对象。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;public class PriorityQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt;
+    implements java.io.Serializable {}&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//优先队列默认初始值大小为11
+private static final int DEFAULT_INITIAL_CAPACITY = 11;
+
+public PriorityQueue() {
+    this(DEFAULT_INITIAL_CAPACITY, null);
+}
+public PriorityQueue(int initialCapacity) {
+    this(initialCapacity, null);
+}
+public PriorityQueue(Comparator&amp;lt;? super E&amp;gt; comparator) {
+    this(DEFAULT_INITIAL_CAPACITY, comparator);
+}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 

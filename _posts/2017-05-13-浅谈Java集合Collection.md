@@ -12,6 +12,7 @@ icon: icon-html
 一直想找个时间系统的整理下Java的集合类，毕竟Collection包含了很多我们在实际项目中要用到的数据结构，比如列表、set、队列等，下面我们直接来看看Java集合类中各大数据结构。
 
 Collection部分层次结构如下所示：
+
 Collection   
 ├List   
 │├LinkedList   
@@ -21,8 +22,10 @@ Collection
 ├Set   
 │├HashSet   
 │├TreeSet    
-└ Queue  
-　└ BlockingQueue
+├Queue  
+│├BlockingQueue   
+│├ArrayDeque   
+│└PriorityQueue   
 
 **一、Collection**
 
@@ -383,6 +386,43 @@ treeSet中的元素如何排序的呢？
 	void put(E e) throws InterruptedException;
 	//移除并返问队列头部的元素，队列空则阻塞当前线程
 	E take() throws InterruptedException;
+	
+**4.2 ArrayDeque**
+
+Java SE6中引入了Deque接口，提供了双端队列一系列实现。ArrayDeque中用初始容量16的数组或给定初始容量来构造一个无限双端队列。值得注意的是LinkedList也是Deque的一个实现类，也可以用来构造双端队列。
+
+`public class ArrayDeque<E> extends AbstractCollection<E>
+                           implements Deque<E>, Cloneable, Serializable
+{}`
+
+	public ArrayDeque() {
+	    elements = new Object[16];
+	}
+	public ArrayDeque(int numElements) {
+        allocateElements(numElements);
+    }
+
+**4.3 PriorityQueue**
+
+优先队列，队列中的元素可以按照任意的顺序输入，但却可以按照指定的顺序进行检索（TreeSet），优先队列使用了堆数据结构，堆是自我调整的二叉树，对树进行一系列的添加删除等操作，让最小（大）的元素移动到根，而不必浪费时间对元素进行排序。
+
+和TreeSet一样，优先队列可以保存实现了Comparable接口的类对象，也可以保存在构造器中提供比较器（Comparator）的对象。
+
+`public class PriorityQueue<E> extends AbstractQueue<E>
+    implements java.io.Serializable {}`
+    
+	//优先队列默认初始值大小为11
+	private static final int DEFAULT_INITIAL_CAPACITY = 11;
+	
+	public PriorityQueue() {
+	    this(DEFAULT_INITIAL_CAPACITY, null);
+	}
+	public PriorityQueue(int initialCapacity) {
+	    this(initialCapacity, null);
+	}
+	public PriorityQueue(Comparator<? super E> comparator) {
+	    this(DEFAULT_INITIAL_CAPACITY, comparator);
+	}
 
 **五、Collection与Collections的区别**
 
