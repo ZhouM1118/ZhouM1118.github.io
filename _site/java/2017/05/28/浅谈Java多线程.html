@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="浅谈Java多线程" name="description">
+  
+  
+    <meta name="keywords" content="Java, 多线程">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|浅谈Java多线程
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Java</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 28 May 2017</span>
+                        <h1>
+                            浅谈Java多线程
+                        </h1>
+                    </div>
+                    	<p>Java多线程是Java程序员必须掌握的基本的知识点，这块知识点比较复杂，知识点也比较多，今天我们一一来聊下Java多线程，系统的整理下这部分内容。</p>
+
+<p><strong>一、Java中线程创建的三种方式：</strong></p>
+
+<p>1．通过继承Thread类，重写Thread的run()方法，将线程运行的逻辑放在其中</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>class MyThread extends Thread{  
+    public void run(){  
+        //do run something 
+  }  
+}  
+public class ThreadDemo {  
+    public static void main(String[] args) {  
+        MyThread mt1= new MyThread();  
+        MyThread mt2= new MyThread();  
+        MyThread mt3= new MyThread();  
+        mt1.start();  
+        mt2.start();  
+        mt3.start();  
+    }  
+}
+</code></pre>
+</div>
+
+<p>2．通过实现Runnable接口，实例化Thread类</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//构造一个实现了Runnable接口的类
+class MyThread1 implements Runnable{ 
+    public void run(){  
+        //do run something 
+    }  
+}
+public class RunnableDemo {  
+    public static void main(String[] args) {  
+    	//创建一个类对象
+        MyThread1 mt = new MyThread1();  
+        //由Runnable创建Thread对象
+        Thread t1 = new Thread(mt);  
+        Thread t2 = new Thread(mt);  
+        Thread t3 = new Thread(mt);  
+        //启动线程
+        t1.start();  
+        t2.start();  
+        t3.start();  
+    }  
+}
+</code></pre>
+</div>
+
+<p>3．实现Callable接口，创建FutureTask包装器，实例化Thread类</p>
+
+<p>FutureTask实现接口类图：</p>
+
+<p><img title="浅谈Java多线程" 图片1="" src="http://img.mukewang.com/59b20e0e0001c1d704360178.png" alt="FutureTask实现接口类图" /></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public interface Future&lt;V&gt; {
+	//取消任务的运行
+    boolean cancel(boolean mayInterruptIfRunning);
+	//如果任务在完成前取消了返回true
+    boolean isCancelled();
+	//任务结束（正常结束、中途取消、发生异常）,返回true
+    boolean isDone();
+	//返回最终计算完成的结果
+    V get() throws InterruptedException, ExecutionException;
+	//返回在指定时间内计算的结果，如果超过指定时间没有结果则抛出TimeoutException异常
+    V get(long timeout, TimeUnit unit)
+        throws InterruptedException, ExecutionException, TimeoutException;
+}
+
+public interface Callable&lt;V&gt;{
+    V call() throws Exception;
+}
+
+class MyThread2 implements Callable&lt;Integer&gt;{
+    public Integer call(){
+        //do call something
+    }
+}
+
+public class CallableDemo{
+    public static void main(String[] args){
+        MyThread2 mt = new MyThread2();
+        FutureTask&lt;Integer&gt; task = new FutureTask&lt;&gt;(mt);
+        Thread t = new Thread(task);
+        t.start();
+        Integer result = task.get();
+    }
+}
+</code></pre>
+</div>
+
+<p>注意：</p>
+
+<p>1、不要直接调用Thread类或Runnable接口的run方法，直接调用run方法单纯执行run方法体中的内容，而不会启动新线程，应该调用Thread的start方法，这个方法将创建一个执行run方法的新线程。</p>
+
+<p>2、尽量不要使用第一种方式来创建线程，因为有多个任务，这种方式需要为每个任务创建一个独立的线程（new MyThread()），这个代价太大。</p>
+
+<p><strong>二、未捕获异常处理器</strong></p>
+
+<p>我们知道在run方法中无法抛出任何不可查的异常，但一旦run方法中出现了这类异常则会直接导致线程终止，在这种情况下，线程就GG了。通过分析，我们知道在线程死亡之前，异常会被传递到一个用于未捕获异常的处理器中，所以为了防止这种情况出现，我们可以为线程安装一个未捕获异常处理器。</p>
+
+<p>未捕获异常处理器必须实现Thread.UncaughtExceptionHanlder接口的类（这个接口类在Thread），这个类只有一个方法：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>@FunctionalInterface
+public interface UncaughtExceptionHandler {
+    void uncaughtException(Thread t, Throwable e);
+}
+</code></pre>
+</div>
+
+<p>通过Thread的静态方法<code class="highlighter-rouge">setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler eh)</code>为线程安装一个默认的处理器。</p>
+
+<p>当一个线程因为未捕获异常而终止时，通过uncaughtException方法的System.err.print打印异常信息。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public void uncaughtException(Thread t, Throwable e) {
+    if (parent != null) {
+        parent.uncaughtException(t, e);
+    } else {
+        Thread.UncaughtExceptionHandler ueh =
+            Thread.getDefaultUncaughtExceptionHandler();
+        if (ueh != null) {
+            ueh.uncaughtException(t, e);
+        } else if (!(e instanceof ThreadDeath)) {
+            System.err.print("Exception in thread \""
+                             + t.getName() + "\" ");
+            e.printStackTrace(System.err);
+        }
+    }
+}
+</code></pre>
+</div>
+
+<p><strong>三、线程状态</strong></p>
+
+<p>线程的五个基本状态：</p>
+
+<ol>
+  <li>新建（New）</li>
+  <li>可运行状态（Runnable）</li>
+  <li>运行时状态（Running）</li>
+  <li>阻塞状态（Blocked）</li>
+  <li>死亡状态（Dead）</li>
+</ol>
+
+<p>线程调用start()方法开始后，就进入到可运行状态，随着CPU的资源调度在运行和可运行之间切换；遇到阻塞则进入阻塞状态。</p>
+
+<p><strong>这五种状态的相互之间转换图如下图所示：</strong></p>
+
+<p><img title="浅谈Java多线程" 图片2="" src="http://img.mukewang.com/59b20e2f0001c39a14580596.png" style="width:100%" alt="五种状态的相互之间转换图" /></p>
+
+<p>线程被阻塞可能是由于下面五方面的原因：（《Thinking in Java》）</p>
+
+<ol>
+  <li>调用sleep(毫秒数)，使线程进入睡眠状态。在规定时间内，这个线程是不会运行的。</li>
+  <li>用suspend()暂停了线程的执行。除非收到resume()消息，否则不会返回“可运行”状态。这两个方法已经过时。</li>
+  <li>用wait()暂停了线程的执行。除非线程收到notify()或notifyAll()消息，否则不会变成“可运行”状态。</li>
+  <li>线程正在等候一些IO操作完成。</li>
+  <li>线程试图调用另一个对象的“同步”方法，但那个对象处于锁定状态，暂时无法使用。</li>
+</ol>
+
+<p><strong>如果线程中有同步方法，那么线程状态图如下图所示：</strong></p>
+
+<p><img title="浅谈Java多线程" 图片3="" src="http://img.mukewang.com/59b20e430001126914620580.png" style="width:100%" alt="同步方法的线程状态图" /></p>
+
+<p>当互斥资源被一个线程访问时，互斥资源就上锁了，这时候其他线程访问该互斥资源就会进入了一个锁池（Lock pool）；当锁被释放，其他线程获得了锁，就变为可运行状态。</p>
+
+<p><strong>如果线程调用了wait()等方法，那么线程状态图如下图所示：</strong></p>
+
+<p><img title="浅谈Java多线程" 图片4="" src="http://img.mukewang.com/59b20e530001c4c914580592.png" style="width:100%" alt="线程相互作用的状态图" /></p>
+
+<p>我们都知道线程调用了wait()（这个方法是Object的方法）方法之后，线程会释放掉锁，这个时候线程进入等待池（Wait pool）；等线程收到通知之后等待获取锁，获取锁之后才可以运行。</p>
+
+<p><strong>四、线程同步</strong></p>
+
+<p>在Java中线程同步分五种方式：</p>
+
+<ol>
+  <li>synchronized</li>
+  <li>ReentrantLock与Condition</li>
+  <li>volatile</li>
+  <li>ThreadLocal</li>
+  <li>BlockingQueue</li>
+</ol>
+
+<p><strong>4.1 synchronized、wait与notify</strong></p>
+
+<p>当一个线程访问用synchronized关键字修饰的代码块，如果这个代码块被该线程第一个访问，则这个线程会获取到该Java对象的内部锁，其他线程访问的时候则会因为获取不到内部锁而阻塞。synchronized可以修饰类方法（static修饰的方法）、实例方法和类（Object.class），但是不能修饰抽象类的抽象方法和接口中的接口方法。</p>
+
+<p>线程在执行同步方法时是具有排它性的。当任意一个线程进入到一个对象的任意一个同步方法时，这个对象的所有同步方法都被锁定了，在此期间，其他任何线程都不能访问这个对象的任意一个同步方法，直到这个线程执行完它所调用的同步方法并从中退出，从而导致它释放了该对象的同步锁之后。在一个对象被某个线程锁定之后，其他线程是可以访问这个对象的所有非同步方法的。</p>
+
+<p>我们知道wait()和notify()方法只能在加锁的代码块中使用，因为调用wait()方法时会释放所持有的对象的lock，同时进入等待状态，notifyAll()方法会唤醒所有处入等待状态的线程，注意并不是给所有唤醒线程一个对象的锁，而是让它们竞争。</p>
+
+<p><strong>4.2 ReentrantLock与Condition</strong></p>
+
+<p>ReentrantLock是可重入、互斥、实现了Lock接口的锁，它与使用synchronized方法和快具有相同的基本行为和语义，并且扩展了其能力。其lock和unlock必须成对出现，否则可能会出现死锁，通常在finally代码释放锁。ReentrantLock()还有一个可以创建公平锁的构造方法，但由于能大幅度降低程序运行效率，不推荐使用。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>//fair为true时创建公平锁
+public ReentrantLock(boolean fair) {
+    sync = fair ? new FairSync() : new NonfairSync();
+}
+</code></pre>
+</div>
+
+<p>Condition代表条件对象，用于线程之间的通信，当一个线程A需要另一个线程B满足一定条件才可以继续操作时，A线程可以调用Condition的await()来阻塞当前线程，且放弃锁，等到B线程执行了某些操作并满足了一些条件后signalAll()唤醒阻塞的线程，当A线程重新强占了锁资源后再变成可运行状态。Condition条件对象对于一个对象来说可以有多个，但Object的wait()和notify()对于一个对象来说只有一个条件对象。</p>
+
+<p><strong>4.3 volatile</strong></p>
+
+<p>对于volatile修饰的变量，jvm虚拟机保证从主内存加载到线程工作内存的值是最新的。volatile可保证变量的可见性，但无法保证原子性。</p>
+
+<p><strong>4.4 ThreadLocal</strong></p>
+
+<p>多线程同步无非是让原本多个线程对某个操作并行变成串行，我们必须小心地对共享资源进行同步，同步不仅会带来一定的效能延迟，而且在处理同步的时候，又要注意对象的锁定与释放，稍有不慎就有可能产生死锁。</p>
+
+<p>既然这么麻烦，ThreadLocal不对共享资源加锁，而是为每个线程创造一个资源的复本。将每一个线程存取数据的行为加以隔离，实现的方法就是给予每个线程一个特定空间来保管该线程所独享的资源。</p>
+
+<p>当使用ThreadLocal维护变量时，ThreadLocal为每个使用该变量的线程提供独立的变量副本，所以每一个线程都可以独立地改变自己的副本，而不会影响其它线程所对应的副本。从线程的角度看，目标变量就象是线程的本地变量，这也是类名中“Local”所要表达的意思。在 ThreadLocal 类中有一个 ThreadLocalMap ，用于存储每一个线程的变量的副本。ThreadLocalMap是ThreadLocal类的一个静态内部类，它实现了键值对的设置和获取（对比Map对象来理解），每个线程中都有一个独立的ThreadLocalMap副本，它所存储的值，只能被当前线程读取和修改。ThreadLocal类通过操作每一个线程特有的ThreadLocalMap副本，从而实现了变量访问在不同线程中的隔离。</p>
+
+<p>锁是一种以时间换空间的机制，而ThreadLocal正好是以空间换时间的。</p>
+
+<p><strong>4.5 BlockingQueue</strong></p>
+
+<p>阻塞队列在<a href="https://zhoum1118.github.io/java/2017/05/13/%E6%B5%85%E8%B0%88Java%E9%9B%86%E5%90%88Collection.html">《浅谈Java集合Collection》</a>有提到过：多线程操作共同的队列时不需要额外的同步，另外就是队列会自动平衡负载，即那边（生产与消费两边）处理快了就会被阻塞掉，从而减少两边的处理速度差距。</p>
+
+<p>参考文献：</p>
+
+<p>《Java核心技术》</p>
+
+<p>Java 多线程 线程状态图：http://www.cnblogs.com/mengdd/archive/2013/02/20/2917966.html</p>
+
+<p>JAVA中线程同步的方法：http://www.cnblogs.com/duanxz/p/3709608.html?utm_source=tuicool&amp;utm_medium=referral</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">Java</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">多线程</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
