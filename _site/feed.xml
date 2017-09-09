@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 08 Sep 2017 16:16:10 +0800</pubDate>
-    <lastBuildDate>Fri, 08 Sep 2017 16:16:10 +0800</lastBuildDate>
+    <pubDate>Sat, 09 Sep 2017 17:04:57 +0800</pubDate>
+    <lastBuildDate>Sat, 09 Sep 2017 17:04:57 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -5207,15 +5207,19 @@ public class Demo {
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Integer i01 = 59;
 int i02 = 59;
-Integer i03 = Integer.valueof(59);
+Integer i03 = Integer.valueOf(59);
 Integer i04 = new Integer(59);
 
 i01 == i02//true
 i01 == i03//true
+i02 == i03//true
+i01 == i04//false
+i02 == i04//true
 i03 == i04//false
-i03 == i04//true
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Integer.valueOf(59)&lt;/code&gt;会从Integer中的私有静态类IntegerCache中获取Integer对象，所以与i01和i02对比都为&lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;，而&lt;code class=&quot;highlighter-rouge&quot;&gt;new Integer(59)&lt;/code&gt;是新创建Integer对象，新分配了内存，所以与i01和i03对比都为&lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;。int和Integer(只要值相等，无论new否)比，都为true，因为会把Integer自动拆箱为int再去比，所以i02与i04对比为&lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;。&lt;/p&gt;
 
 &lt;p&gt;Byte,Short,Integer,Long,Character这5种整型的包装类在对应值小于等于127并且大于等于-128时会使用常量池，因为他们至占用一个字节(-128~127);超出这个范围将会返回一个新的包装类对象。&lt;/p&gt;
 
@@ -5225,6 +5229,11 @@ i03 == i04//true
     if (i &amp;gt;= IntegerCache.low &amp;amp;&amp;amp; i &amp;lt;= IntegerCache.high)
         return IntegerCache.cache[i + (-IntegerCache.low)];
     return new Integer(i);
+}
+private static class IntegerCache {
+    static final int low = -128;
+    static final int high;
+    static final Integer cache[];
 }
 
 public static Long valueOf(long l) {
@@ -5261,8 +5270,6 @@ public static Short valueOf(short s) {
 }
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-
-&lt;p&gt;注意：int和Integer(只要值相等，无论new否)比，都为true，因为会把Integer自动拆箱为int再去比。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;9、Spring的事务传播特性&lt;/strong&gt;&lt;/p&gt;
 

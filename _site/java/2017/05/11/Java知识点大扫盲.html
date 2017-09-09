@@ -502,15 +502,19 @@ public class Demo {
 
 <div class="highlighter-rouge"><pre class="highlight"><code>Integer i01 = 59;
 int i02 = 59;
-Integer i03 = Integer.valueof(59);
+Integer i03 = Integer.valueOf(59);
 Integer i04 = new Integer(59);
 
 i01 == i02//true
 i01 == i03//true
+i02 == i03//true
+i01 == i04//false
+i02 == i04//true
 i03 == i04//false
-i03 == i04//true
 </code></pre>
 </div>
+
+<p><code class="highlighter-rouge">Integer.valueOf(59)</code>会从Integer中的私有静态类IntegerCache中获取Integer对象，所以与i01和i02对比都为<code class="highlighter-rouge">true</code>，而<code class="highlighter-rouge">new Integer(59)</code>是新创建Integer对象，新分配了内存，所以与i01和i03对比都为<code class="highlighter-rouge">false</code>。int和Integer(只要值相等，无论new否)比，都为true，因为会把Integer自动拆箱为int再去比，所以i02与i04对比为<code class="highlighter-rouge">true</code>。</p>
 
 <p>Byte,Short,Integer,Long,Character这5种整型的包装类在对应值小于等于127并且大于等于-128时会使用常量池，因为他们至占用一个字节(-128~127);超出这个范围将会返回一个新的包装类对象。</p>
 
@@ -520,6 +524,11 @@ i03 == i04//true
     if (i &gt;= IntegerCache.low &amp;&amp; i &lt;= IntegerCache.high)
         return IntegerCache.cache[i + (-IntegerCache.low)];
     return new Integer(i);
+}
+private static class IntegerCache {
+    static final int low = -128;
+    static final int high;
+    static final Integer cache[];
 }
 
 public static Long valueOf(long l) {
@@ -556,8 +565,6 @@ public static Short valueOf(short s) {
 }
 </code></pre>
 </div>
-
-<p>注意：int和Integer(只要值相等，无论new否)比，都为true，因为会把Integer自动拆箱为int再去比。</p>
 
 <p><strong>9、Spring的事务传播特性</strong></p>
 
