@@ -5,8 +5,8 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 09 Sep 2017 17:04:57 +0800</pubDate>
-    <lastBuildDate>Sat, 09 Sep 2017 17:04:57 +0800</lastBuildDate>
+    <pubDate>Fri, 15 Sep 2017 00:54:37 +0800</pubDate>
+    <lastBuildDate>Fri, 15 Sep 2017 00:54:37 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
@@ -3144,6 +3144,101 @@ HashMap(Map&amp;lt;? extendsK,? extendsV&amp;gt; m)
 &lt;/div&gt;
 
 &lt;p&gt;在hashMap的size达到initialCapacity*loadFactor时会对hashMap进行扩容，值得注意的是hashMap的size大小总是2的幂次方。初始容量和加载因子的选取也是影响HashMap性能的原因之一，加载因子过高虽然减少了空间开销，但同时也增加了查找某个条目的时间；加载因子过低也可能容易导致HashMap执行rehash操作。&lt;/p&gt;
+
+&lt;p&gt;保证hashMap的size大小总为2的幂次方的方法：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;static final int tableSizeFor(int cap) {
+    int n = cap - 1;
+    n |= n &amp;gt;&amp;gt;&amp;gt; 1;
+    n |= n &amp;gt;&amp;gt;&amp;gt; 2;
+    n |= n &amp;gt;&amp;gt;&amp;gt; 4;
+    n |= n &amp;gt;&amp;gt;&amp;gt; 8;
+    n |= n &amp;gt;&amp;gt;&amp;gt; 16;
+    return (n &amp;lt; 0) ? 1 : (n &amp;gt;= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : 	n + 1;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;通过对（n - 1）无符号右移，最终会返回一个2的幂次方的值。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么要保证hashMap的size的大小为2的幂次方？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在往hashMap中添加值(putVal())，要获取添加的值得index的时候，hashMap中使用了hashMap中Node数组的length:n与key的hash值‘相与’ &lt;code class=&quot;highlighter-rouge&quot;&gt;(n - 1) &amp;amp; hash&lt;/code&gt;来计算，当hashMap的size：n为2的幂时，n - 1 转化为全为1的二进制格式，和hash‘相与’时就是hash的值，因为做与运算要比做mod运算快很多，所以保证hashMap的size的大小为2的幂次方时会提高确定key的index位置的效率。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+                   boolean evict) {
+    Node&amp;lt;K,V&amp;gt;[] tab; Node&amp;lt;K,V&amp;gt; p; int n, i;
+    if ((tab = table) == null || (n = tab.length) == 0)
+        n = (tab = resize()).length;
+    if ((p = tab[i = (n - 1) &amp;amp; hash]) == null)
+        tab[i] = newNode(hash, key, value, null);
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;HashMap能不能放入大于Integer_Max_Value个元素？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;static final int MAXIMUM_CAPACITY = 1 &amp;lt;&amp;lt; 30;//1073741824 我们知道hashMap中的最大的size为1073741824，而Integer的Max_Value为2147483647，那么还能放Integer_Max_Value个元素吗？研究源码发现是可以的。
+
+final Node&amp;lt;K,V&amp;gt;[] resize() {
+    Node&amp;lt;K,V&amp;gt;[] oldTab = table;
+    int oldCap = (oldTab == null) ? 0 : oldTab.length;
+    int oldThr = threshold;
+    int newCap, newThr = 0;
+    if (oldCap &amp;gt; 0) {
+        if (oldCap &amp;gt;= MAXIMUM_CAPACITY) {
+            threshold = Integer.MAX_VALUE;
+            return oldTab;
+        }
+    ...
+    }
+    ...
+} 在扩容的resize()方法中，如果`oldCap &amp;gt;= MAXIMUM_CAPACITY`，不会对threshold扩容，而是直接将其赋值为Integer.MAX_VALUE，将冲突的值放在链表或红黑树中。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;当链表的大小大于8的时候就一定会转化为红黑树吗？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+                   boolean evict) {
+    Node&amp;lt;K,V&amp;gt;[] tab; Node&amp;lt;K,V&amp;gt; p; int n, i;
+    if ((tab = table) == null || (n = tab.length) == 0)
+        n = (tab = resize()).length;
+    if ((p = tab[i = (n - 1) &amp;amp; hash]) == null)
+        tab[i] = newNode(hash, key, value, null);
+    else {
+        Node&amp;lt;K,V&amp;gt; e; K k;
+        if (p.hash == hash &amp;amp;&amp;amp;
+            ((k = p.key) == key || (key != null &amp;amp;&amp;amp; key.equals(k))))
+            e = p;
+        else if (p instanceof TreeNode)
+            e = ((TreeNode&amp;lt;K,V&amp;gt;)p).putTreeVal(this, tab, hash, key, value);
+        else {
+            for (int binCount = 0; ; ++binCount) {
+                if ((e = p.next) == null) {
+                    p.next = newNode(hash, key, value, null);
+                    //TREEIFY_THRESHOLD默认为8，当链表的大小大于8的时候就一定会转化为红黑树吗？
+                    if (binCount &amp;gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                        treeifyBin(tab, hash);
+                    break;
+                }
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;答案是不一定，hashMap在treeifyBin方法中将链表转换为红黑树，但会有一个判断，如果当前的hashMap长度小于64是，会对hashMap进行扩容resize()。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;final void treeifyBin(Node&amp;lt;K,V&amp;gt;[] tab, int hash) {
+    int n, index; Node&amp;lt;K,V&amp;gt; e;
+    //MIN_TREEIFY_CAPACITY 64
+    if (tab == null || (n = tab.length) &amp;lt; MIN_TREEIFY_CAPACITY)
+        resize();
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;在HashMap中我们直接接触的最常用的两个方法就是get和put方法&lt;/p&gt;
 

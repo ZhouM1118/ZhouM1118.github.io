@@ -33,6 +33,93 @@ HashMap是最常用的集合类框架之一，它实现了Map接口，所以存�
 
 在hashMap的size达到initialCapacity*loadFactor时会对hashMap进行扩容，值得注意的是hashMap的size大小总是2的幂次方。初始容量和加载因子的选取也是影响HashMap性能的原因之一，加载因子过高虽然减少了空间开销，但同时也增加了查找某个条目的时间；加载因子过低也可能容易导致HashMap执行rehash操作。
 
+保证hashMap的size大小总为2的幂次方的方法：
+
+	static final int tableSizeFor(int cap) {
+	    int n = cap - 1;
+	    n |= n >>> 1;
+	    n |= n >>> 2;
+	    n |= n >>> 4;
+	    n |= n >>> 8;
+	    n |= n >>> 16;
+	    return (n < 0) ? 1 : (n >= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : 	n + 1;
+	}
+
+通过对（n - 1）无符号右移，最终会返回一个2的幂次方的值。
+
+**为什么要保证hashMap的size的大小为2的幂次方？**
+
+在往hashMap中添加值(putVal())，要获取添加的值得index的时候，hashMap中使用了hashMap中Node数组的length:n与key的hash值‘相与’ `(n - 1) & hash`来计算，当hashMap的size：n为2的幂时，n - 1 转化为全为1的二进制格式，和hash‘相与’时就是hash的值，因为做与运算要比做mod运算快很多，所以保证hashMap的size的大小为2的幂次方时会提高确定key的index位置的效率。
+
+	final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+	                   boolean evict) {
+	    Node<K,V>[] tab; Node<K,V> p; int n, i;
+	    if ((tab = table) == null || (n = tab.length) == 0)
+	        n = (tab = resize()).length;
+	    if ((p = tab[i = (n - 1) & hash]) == null)
+	        tab[i] = newNode(hash, key, value, null);
+	    ...
+	}
+	
+**HashMap能不能放入大于Integer_Max_Value个元素？**
+
+	static final int MAXIMUM_CAPACITY = 1 << 30;//1073741824
+我们知道hashMap中的最大的size为1073741824，而Integer的Max_Value为2147483647，那么还能放Integer_Max_Value个元素吗？研究源码发现是可以的。
+
+	final Node<K,V>[] resize() {
+	    Node<K,V>[] oldTab = table;
+	    int oldCap = (oldTab == null) ? 0 : oldTab.length;
+	    int oldThr = threshold;
+	    int newCap, newThr = 0;
+	    if (oldCap > 0) {
+	        if (oldCap >= MAXIMUM_CAPACITY) {
+	            threshold = Integer.MAX_VALUE;
+	            return oldTab;
+	        }
+	    ...
+	    }
+	    ...
+	}
+在扩容的resize()方法中，如果`oldCap >= MAXIMUM_CAPACITY`，不会对threshold扩容，而是直接将其赋值为Integer.MAX_VALUE，将冲突的值放在链表或红黑树中。
+
+**当链表的大小大于8的时候就一定会转化为红黑树吗？**
+
+	final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+	                   boolean evict) {
+	    Node<K,V>[] tab; Node<K,V> p; int n, i;
+	    if ((tab = table) == null || (n = tab.length) == 0)
+	        n = (tab = resize()).length;
+	    if ((p = tab[i = (n - 1) & hash]) == null)
+	        tab[i] = newNode(hash, key, value, null);
+	    else {
+	        Node<K,V> e; K k;
+	        if (p.hash == hash &&
+	            ((k = p.key) == key || (key != null && key.equals(k))))
+	            e = p;
+	        else if (p instanceof TreeNode)
+	            e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
+	        else {
+	            for (int binCount = 0; ; ++binCount) {
+	                if ((e = p.next) == null) {
+	                    p.next = newNode(hash, key, value, null);
+	                    //TREEIFY_THRESHOLD默认为8，当链表的大小大于8的时候就一定会转化为红黑树吗？
+	                    if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
+	                        treeifyBin(tab, hash);
+	                    break;
+	                }
+	    ...
+	}
+
+答案是不一定，hashMap在treeifyBin方法中将链表转换为红黑树，但会有一个判断，如果当前的hashMap长度小于64是，会对hashMap进行扩容resize()。
+	
+	final void treeifyBin(Node<K,V>[] tab, int hash) {
+	    int n, index; Node<K,V> e;
+	    //MIN_TREEIFY_CAPACITY 64
+	    if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY)
+	        resize();
+	    ...
+	}
+
 在HashMap中我们直接接触的最常用的两个方法就是get和put方法
 
 	public V put(K key, V value) {
