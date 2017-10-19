@@ -5,9 +5,161 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 15 Sep 2017 00:54:37 +0800</pubDate>
-    <lastBuildDate>Fri, 15 Sep 2017 00:54:37 +0800</lastBuildDate>
+    <pubDate>Thu, 19 Oct 2017 13:34:56 +0800</pubDate>
+    <lastBuildDate>Thu, 19 Oct 2017 13:34:56 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>论文笔记-在学生作文中自动识别篇章结构</title>
+        <description>&lt;p&gt;最近在研究基于自然语言处理的作文自动评分系统，现在对其中一篇与篇章结构分析相关的论文：《Finding the WRITE stuff： Automatic identification of discourse structure in student essays》作一个大概总结。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1 为什么要研究篇章结构？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;现在国内外都有很多自动评分系统，这些自动评分系统大多从拼写检查、语法检查、内容分析等来帮助学生提高写作质量，学生通过这些类型的自动评分系统的反馈来改进他们写作的某些方面：语法、拼写等。这些系统将会继续受到学生的重视，因为在这些方面的改善对于学生写出高质量文章依然是至关重要的。&lt;/p&gt;
+
+&lt;p&gt;随着学生深入学习英文写作，便需要开始思考文章的篇章结构。不同类型的作文一般具有不同类型的篇章结构，比如信件、议论文等，它们拥有不同的篇章结构且篇章结构的优良在很大程度上影响作文的评分。分析篇章结构的自动评分系统为学生提供作文篇章结构的反馈，它使得学生对作文的篇章结构有了全面的分析，例如，如果系统反馈出学生的作文没有结论部分，那么学生可以在作文的结论部分多下功夫。这种类似于传统教师的自动化反馈可以帮助学生提高他们在篇章结构的组织和把控能力。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2 什么是篇章结构？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;就议论文而言，现在普遍将篇章结构分为8类：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Title 文章标题&lt;/li&gt;
+  &lt;li&gt;Introduction 介绍文章背景&lt;/li&gt;
+  &lt;li&gt;Prompt 主题总述或汇总提示&lt;/li&gt;
+  &lt;li&gt;Thesis 阐述了作者对他/她正在争论的问题的主要矛盾&lt;/li&gt;
+  &lt;li&gt;Main idea 提出与文章相关的主要思想/论点&lt;/li&gt;
+  &lt;li&gt;Supporting idea 提供证据来解释或支持文章的主要思想&lt;/li&gt;
+  &lt;li&gt;Conclusion 总结全文的主要思想&lt;/li&gt;
+  &lt;li&gt;Other/Irrelevant 不适用于上述要素，也不构成任何有意义的贡献&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img title=&quot;论文笔记-在学生作文中自动识别篇章结构&quot; 图片1=&quot;&quot; src=&quot;http://img.mukewang.com/59e821a300018fef06730510.png&quot; alt=&quot;一篇标记好的议论文作文&quot; style=&quot;display:block; margin:auto&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图1 一篇标记好的议论文作文&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3 如何分析篇章结构？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;篇章结构的研究分析可分为微观和宏观两个角度。微观篇章结构指的是篇章中一个句子内部的结构或两个连续的句子之间的结构，宏观篇章结构是指更高层次的结构，表现为句群、段落之间的结构。&lt;/p&gt;
+
+&lt;p&gt;微观角度的篇章结构理论主要包括：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;浅层衔接理论&lt;/li&gt;
+  &lt;li&gt;Hobbs模型&lt;/li&gt;
+  &lt;li&gt;修辞结构理论（RST）&lt;/li&gt;
+  &lt;li&gt;宾州篇章树库理论&lt;/li&gt;
+  &lt;li&gt;意图结构理论&lt;/li&gt;
+  &lt;li&gt;信息结构理论&lt;/li&gt;
+  &lt;li&gt;基于连接依存数&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;宏观角度的篇章结构理论则相对较少，主要包括：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;篇章模式&lt;/li&gt;
+  &lt;li&gt;超主位理论&lt;/li&gt;
+  &lt;li&gt;篇章宏观结构理论&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;3.1 基于决策的篇章结构分析方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;核心思想是：使用一系列特征提取的方法提取文章中每个句子的与篇章结构相关的特征，将这些特征向量输入C5.0（一种决策树的机器学习算法）中来对句子所属类别进行分类。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3.1.1 基于RST提取修辞特征和核心与边界状态&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;按照修辞结构理论（RST），可以将任何一篇议论文按照图2的形式构建RST篇章树。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;论文笔记-在学生作文中自动识别篇章结构_&quot; 图片2=&quot;&quot; src=&quot;http://img.mukewang.com/59e821f70001070610190341.png&quot; alt=&quot;RST篇章树&quot; style=&quot;display:block; margin:auto&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图2 RST篇章树&lt;/p&gt;
+
+&lt;p&gt;树的叶子节点表示文章中的篇章单位（Discourse Unit），在连接篇章单位的弧线上标明文本间的修辞关系；箭头指向的篇章单位在该关系中为核心（nucleus），否则为边界（satellite）；水平线表示文本范围（span）；垂直线对应的文本范围为该修辞关系的“核心”。比如图2中A和B两个篇章单位的修辞关系是：B是A的背景描述，A在“背景”修辞关系中为“核心”，B为“边界”。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3.1.2 提取核心单词、术语等词汇特征&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;提取句子中核心单词或术语的特征，比如A，becauseB，because表示对A这种结果的一种增强；First的出现可能意味着一个新的论点或论据的出现。“opinion”,“feel”相对“Should”, “might” ,“agree” ,“disagree” 与 “I”连接的时候更有可能与Thesis相关。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3.1.3 提取句法结构与语法特征&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;五种句法结构与语法：主从复合句、补语从句、不定式分句、关系从句以及助动词。一个不定式短语出现在一个句子或一个段落的开始往往标志一个新论点（Main idea）的出现。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3.1.4 基于位置的特征&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;这种方法制定了一系列句子位置对应篇章结构类别的规则：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Introductory：作文的第一句；&lt;/li&gt;
+  &lt;li&gt;Thesis：第一段中除第一句以外的所有文本；&lt;/li&gt;
+  &lt;li&gt;Main ideas：所有正文段落的第一句；&lt;/li&gt;
+  &lt;li&gt;Supporting ideas：正文段落中除第一句以外的所有文本；&lt;/li&gt;
+  &lt;li&gt;Conclusion：最后一段中的所有文本。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;3.1.5 基于标点符号的特征&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;句号、问号、感叹号等。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3.2 基于概率的篇章结构分析方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;核心思想：基于概率的篇章结构分析方法希望给一篇作文中越可能的标签序列分配更高的概率，越不可能的标签序列分配越低的概率。&lt;/p&gt;
+
+&lt;p&gt;步骤一：有限状态机使用极大似然估计技术从训练数据中估计每个句子的标签概率，比如，如果句子中包含“conclusion”单词时，这个句子是Conclusion标签的概率要比Introduction标签的概率大；&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;论文笔记-在学生作文中自动识别篇章结构_&quot; 图片3=&quot;&quot; src=&quot;http://img.mukewang.com/59e8222b0001993b06720307.png&quot; alt=&quot;正确标记的训练数据的标签序列&quot; style=&quot;display:block; margin:auto&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图3 正确标记的训练数据的标签序列&lt;/p&gt;
+
+&lt;p&gt;步骤二：接下来我们需要为有步骤一组成的标签序列评估其概率，选择最有可能的一组标签序列。局部语言模型评估某个标签序列的概率公式为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;论文笔记-在学生作文中自动识别篇章结构_&quot; 图片4=&quot;&quot; src=&quot;http://img.mukewang.com/59e822520001be8008620048.png&quot; alt=&quot;评估某个标签序列的概率公式&quot; style=&quot;display:block; margin:auto&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;假设每个句子标签的概率都依赖其前两个句子标签，&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;论文笔记-在学生作文中自动识别篇章结构_&quot; 图片5=&quot;&quot; src=&quot;http://img.mukewang.com/59e8225f00011d4107260064.png&quot; alt=&quot;每个句子标签的概率&quot; style=&quot;display:block; margin:auto&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;局部语言模型无法捕捉全局特征，预测的标签序列缺乏全局连贯性，比如：96%的Thesis句出现在一个单独的段落中，一个总结句可能出现在Thesis后的n个Main idea/Supporting idea语句块之后，如果n&amp;gt;2，这种可能性高达88%。使用EM算法来训练全局语言模型捕捉这种全局特征。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;论文笔记-在学生作文中自动识别篇章结构_&quot; 图片6=&quot;&quot; src=&quot;http://img.mukewang.com/59e8226d0001e76c06730296.png&quot; alt=&quot;语言模型&quot; style=&quot;display:block; margin:auto&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图4 语言模型&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;L表示标签序列，W表示其对应的单词序列，P(L)表示标签序列L的概率，而P(W&lt;/td&gt;
+      &lt;td&gt;L)表示序列L产生序列W的概率&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;基于概率的篇章结构分析方法以文章中每个句子的单词序列W作为输入，使用极大似然估计技术和EM算法来计算出最大概率的标签序列L。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;论文笔记-在学生作文中自动识别篇章结构_&quot; 图片7=&quot;&quot; src=&quot;http://img.mukewang.com/59e8228b0001819002940032.png&quot; alt=&quot;最大概率的标签序列L&quot; style=&quot;display:block; margin:auto&quot; /&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;P(L)表示标签序列L的概率，而P(W&lt;/td&gt;
+      &lt;td&gt;L)表示标签序列L产生序列W的概率。&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+        <pubDate>Thu, 19 Oct 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2017/10/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9C%A8%E5%AD%A6%E7%94%9F%E4%BD%9C%E6%96%87%E4%B8%AD%E8%87%AA%E5%8A%A8%E8%AF%86%E5%88%AB%E7%AF%87%E7%AB%A0%E7%BB%93%E6%9E%84.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2017/10/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9C%A8%E5%AD%A6%E7%94%9F%E4%BD%9C%E6%96%87%E4%B8%AD%E8%87%AA%E5%8A%A8%E8%AF%86%E5%88%AB%E7%AF%87%E7%AB%A0%E7%BB%93%E6%9E%84.html</guid>
+        
+        <category>论文笔记</category>
+        
+        <category>作文自动评分系统</category>
+        
+        <category>篇章结构</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>死磕数据库调优-数据库优化的几点思考</title>
