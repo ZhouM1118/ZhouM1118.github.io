@@ -7,16 +7,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-    <meta content="论文笔记-在学生作文中自动识别篇章结构" name="description">
+    <meta content="论文笔记-基于全局和局部内聚的学生论文中的篇章结构识别" name="description">
   
   
-    <meta name="keywords" content="论文笔记, 作文自动评分系统, 篇章结构">
+    <meta name="keywords" content="论文笔记, 全局, 局部, 篇章结构识别">
   
   <meta name="author" content="周明">
 
   <title>
     
-        周明的技术博客|论文笔记-在学生作文中自动识别篇章结构
+        周明的技术博客|论文笔记-基于全局和局部内聚的学生论文中的篇章结构识别
     
   </title>
   <!-- favicon -->
@@ -254,143 +254,60 @@
                     <div class="text-center article-title">
                     <span class="text-muted"><i class="fa fa-clock-o"></i> 19 Oct 2017</span>
                         <h1>
-                            论文笔记-在学生作文中自动识别篇章结构
+                            论文笔记-基于全局和局部内聚的学生论文中的篇章结构识别
                         </h1>
                     </div>
-                    	<p>最近在研究基于自然语言处理的作文自动评分系统，现在对其中一篇与篇章结构分析相关的论文：《Finding the WRITE stuff： Automatic identification of discourse structure in student essays》作一个大概总结。</p>
+                    	<p>找技术路线很头大啊，明天还要做一个技术分享（压力山大）…这篇论文《Discourse Element Identification in Student Essays based on Global and Local Cohesion》的训练集是中国学生写的中文文章，虽然对我研究的托福雅思的英文议论文不同，但我想思路和技术方法可能是有一定借鉴作用的。</p>
 
-<p><strong>1 为什么要研究篇章结构？</strong></p>
+<p>论文主要是通过探索整篇文章中句子与句子之间关系的内聚性来分析文章的篇章结构。通过这种方式能更好的识别Thesis、Main idea和Conclusion标签类别。论文将篇章结构的识别作为一个分类问题来看待，文章中的每个句子使用分类器（朴树贝叶斯、决策树和SVM等）独立分类，论文主要使用SVM模型和基于线性链的条件随机场模型（CRF）来对句子进行篇章结构标签分类。</p>
 
-<p>现在国内外都有很多自动评分系统，这些自动评分系统大多从拼写检查、语法检查、内容分析等来帮助学生提高写作质量，学生通过这些类型的自动评分系统的反馈来改进他们写作的某些方面：语法、拼写等。这些系统将会继续受到学生的重视，因为在这些方面的改善对于学生写出高质量文章依然是至关重要的。</p>
-
-<p>随着学生深入学习英文写作，便需要开始思考文章的篇章结构。不同类型的作文一般具有不同类型的篇章结构，比如信件、议论文等，它们拥有不同的篇章结构且篇章结构的优良在很大程度上影响作文的评分。分析篇章结构的自动评分系统为学生提供作文篇章结构的反馈，它使得学生对作文的篇章结构有了全面的分析，例如，如果系统反馈出学生的作文没有结论部分，那么学生可以在作文的结论部分多下功夫。这种类似于传统教师的自动化反馈可以帮助学生提高他们在篇章结构的组织和把控能力。</p>
-
-<p><strong>2 什么是篇章结构？</strong></p>
-
-<p>就议论文而言，现在普遍将篇章结构分为8类：</p>
+<p><strong>1 基本特征：</strong></p>
 
 <ul>
-  <li>Title 文章标题</li>
-  <li>Introduction 介绍文章背景</li>
-  <li>Prompt 主题总述或汇总提示</li>
-  <li>Thesis 阐述了作者对他/她正在争论的问题的主要矛盾</li>
-  <li>Main idea 提出与文章相关的主要思想/论点</li>
-  <li>Supporting idea 提供证据来解释或支持文章的主要思想</li>
-  <li>Conclusion 总结全文的主要思想</li>
-  <li>Other/Irrelevant 不适用于上述要素，也不构成任何有意义的贡献</li>
+  <li>位置特征</li>
+  <li>指示单词特征：in my opinion，in conclusion，should，hope等</li>
+  <li>非文本特征：单词的长度，段落句子个数，标点符号特征等</li>
+  <li>主题和提示信息特征：对每个句子提取与文章标题和提示信息的余弦相似性的特征</li>
 </ul>
 
-<p><img title="论文笔记-在学生作文中自动识别篇章结构" 图片1="" src="http://img.mukewang.com/59e821a300018fef06730510.png" alt="一篇标记好的议论文作文" style="display:block; margin:auto" /></p>
+<p><strong>2 内聚链</strong></p>
 
-<p style="text-align:center">图1 一篇标记好的议论文作文</p>
-
-<p><strong>3 如何分析篇章结构？</strong></p>
-
-<p>篇章结构的研究分析可分为微观和宏观两个角度。微观篇章结构指的是篇章中一个句子内部的结构或两个连续的句子之间的结构，宏观篇章结构是指更高层次的结构，表现为句群、段落之间的结构。</p>
-
-<p>微观角度的篇章结构理论主要包括：</p>
+<p>这里主要挖掘关系与词汇的内聚特征，主要构建的是在文章所有句子范围内单词的身份链（identity chains）和词汇链（lexical chains）。</p>
 
 <ul>
-  <li>浅层衔接理论</li>
-  <li>Hobbs模型</li>
-  <li>修辞结构理论（RST）</li>
-  <li>宾州篇章树库理论</li>
-  <li>意图结构理论</li>
-  <li>信息结构理论</li>
-  <li>基于连接依存数</li>
+  <li>身份链（identity chains）：通过挖掘每个句子中的人物名称，第一、二、三人称等特征，将同属一类身份的部分组成一个身份链；</li>
+  <li>词汇链（lexical chains）：通过挖掘每个句子中不同词汇的重复，单词的同义表达等特征，将同属一类单词的部分组成一个词汇链。</li>
 </ul>
 
-<p>宏观角度的篇章结构理论则相对较少，主要包括：</p>
+<p><strong>3 全局链（global chains）与局部链（local chains）</strong></p>
+
+<p>基于第二部分的内聚链来构造一个句子链（Sentence Chains），一个句子链包含那些相似的身份链和词汇链。</p>
+
+<p>局部链是那些只包含单一子主题的句子链，全局链那些只包含多个子主题的句子链。</p>
+
+<p><img title="基于全局和局部内聚的学生论文中的篇章结构识别_" 图片1="" src="http://img.mukewang.com/59eb38b30001999f09180520.png" alt="图片描述" style="display:block; margin:auto" /></p>
+
+<p style="text-align:center">图1 训练样本中全局链与局部链图</p>
+
+<p>网格中的每个实体节点表示一个句子中包含来自内聚链的单词。
+文章假设一个段落就是一个子主题，所以将那些跨越三个段落的句子链分类为全局链，只在一个段落中的句子链为局部链。</p>
+
+<p><strong>4 基于句子链的内聚特征：</strong></p>
 
 <ul>
-  <li>篇章模式</li>
-  <li>超主位理论</li>
-  <li>篇章宏观结构理论</li>
+  <li>链类型特征：global-identity, local-identity, global-lexical 和 local-lexical chains</li>
+  <li>全局标题特征：全局链中的某个句子如果包含题目中的关键字，那么可能将这条句子分类为thesis标签</li>
+  <li>相互作用特征：如果两个句子链中有超过1个共同句子，则认为两个句子链相互作用</li>
+  <li>结构特征：句子链覆盖句子或段落的最大数和平均数</li>
 </ul>
 
-<p><strong>3.1 基于决策的篇章结构分析方法</strong></p>
+<p>使用条件随机场（CRF）模型对三个不同主题的六种篇章结构分类效果如下图所示：</p>
 
-<p>核心思想是：使用一系列特征提取的方法提取文章中每个句子的与篇章结构相关的特征，将这些特征向量输入C5.0（一种决策树的机器学习算法）中来对句子所属类别进行分类。</p>
+<p><img title="基于全局和局部内聚的学生论文中的篇章结构识别_" 图片2="" src="http://img.mukewang.com/59eb38f50001cbbf18600658.png" alt="图片描述" style="display:block; margin:auto; width:100%" /></p>
 
-<p><strong>3.1.1 基于RST提取修辞特征和核心与边界状态</strong></p>
+<p style="text-align:center">图2 分类效果图</p>
 
-<p>按照修辞结构理论（RST），可以将任何一篇议论文按照图2的形式构建RST篇章树。</p>
-
-<p><img title="论文笔记-在学生作文中自动识别篇章结构_" 图片2="" src="http://img.mukewang.com/59e821f70001070610190341.png" alt="RST篇章树" style="display:block; margin:auto" /></p>
-
-<p style="text-align:center">图2 RST篇章树</p>
-
-<p>树的叶子节点表示文章中的篇章单位（Discourse Unit），在连接篇章单位的弧线上标明文本间的修辞关系；箭头指向的篇章单位在该关系中为核心（nucleus），否则为边界（satellite）；水平线表示文本范围（span）；垂直线对应的文本范围为该修辞关系的“核心”。比如图2中A和B两个篇章单位的修辞关系是：B是A的背景描述，A在“背景”修辞关系中为“核心”，B为“边界”。</p>
-
-<p><strong>3.1.2 提取核心单词、术语等词汇特征</strong></p>
-
-<p>提取句子中核心单词或术语的特征，比如A，becauseB，because表示对A这种结果的一种增强；First的出现可能意味着一个新的论点或论据的出现。“opinion”,“feel”相对“Should”, “might” ,“agree” ,“disagree” 与 “I”连接的时候更有可能与Thesis相关。</p>
-
-<p><strong>3.1.3 提取句法结构与语法特征</strong></p>
-
-<p>五种句法结构与语法：主从复合句、补语从句、不定式分句、关系从句以及助动词。一个不定式短语出现在一个句子或一个段落的开始往往标志一个新论点（Main idea）的出现。</p>
-
-<p><strong>3.1.4 基于位置的特征</strong></p>
-
-<p>这种方法制定了一系列句子位置对应篇章结构类别的规则：</p>
-
-<ul>
-  <li>Introductory：作文的第一句；</li>
-  <li>Thesis：第一段中除第一句以外的所有文本；</li>
-  <li>Main ideas：所有正文段落的第一句；</li>
-  <li>Supporting ideas：正文段落中除第一句以外的所有文本；</li>
-  <li>Conclusion：最后一段中的所有文本。</li>
-</ul>
-
-<p><strong>3.1.5 基于标点符号的特征</strong></p>
-
-<p>句号、问号、感叹号等。</p>
-
-<p><strong>3.2 基于概率的篇章结构分析方法</strong></p>
-
-<p>核心思想：基于概率的篇章结构分析方法希望给一篇作文中越可能的标签序列分配更高的概率，越不可能的标签序列分配越低的概率。</p>
-
-<p>步骤一：有限状态机使用极大似然估计技术从训练数据中估计每个句子的标签概率，比如，如果句子中包含“conclusion”单词时，这个句子是Conclusion标签的概率要比Introduction标签的概率大；</p>
-
-<p><img title="论文笔记-在学生作文中自动识别篇章结构_" 图片3="" src="http://img.mukewang.com/59e8222b0001993b06720307.png" alt="正确标记的训练数据的标签序列" style="display:block; margin:auto" /></p>
-
-<p style="text-align:center">图3 正确标记的训练数据的标签序列</p>
-
-<p>步骤二：接下来我们需要为由步骤一组成的标签序列评估其概率，选择最有可能的一组标签序列。局部语言模型评估某个标签序列的概率公式为：</p>
-
-<p><img title="论文笔记-在学生作文中自动识别篇章结构_" 图片4="" src="http://img.mukewang.com/59e822520001be8008620048.png" alt="评估某个标签序列的概率公式" style="display:block; margin:auto" /></p>
-
-<p>假设每个句子标签的概率都依赖其前两个句子标签，</p>
-
-<p><img title="论文笔记-在学生作文中自动识别篇章结构_" 图片5="" src="http://img.mukewang.com/59e8225f00011d4107260064.png" alt="每个句子标签的概率" style="display:block; margin:auto" /></p>
-
-<p>局部语言模型无法捕捉全局特征，预测的标签序列缺乏全局连贯性，比如：96%的Thesis句出现在一个单独的段落中，一个总结句可能出现在Thesis后的n个Main idea/Supporting idea语句块之后，如果n&gt;2，这种可能性高达88%。使用EM算法来训练全局语言模型捕捉这种全局特征。</p>
-
-<p><img title="论文笔记-在学生作文中自动识别篇章结构_" 图片6="" src="http://img.mukewang.com/59e8226d0001e76c06730296.png" alt="语言模型" style="display:block; margin:auto" /></p>
-
-<p style="text-align:center">图4 语言模型</p>
-
-<table>
-  <tbody>
-    <tr>
-      <td>L表示标签序列，W表示其对应的单词序列，P(L)表示标签序列L的概率，而P(W</td>
-      <td>L)表示序列L产生序列W的概率</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>基于概率的篇章结构分析方法以文章中每个句子的单词序列W作为输入，使用极大似然估计技术和EM算法来计算出最大概率的标签序列L。</p>
-
-<p><img title="论文笔记-在学生作文中自动识别篇章结构_" 图片7="" src="http://img.mukewang.com/59e8228b0001819002940032.png" alt="最大概率的标签序列L" style="display:block; margin:auto" /></p>
-
-<table>
-  <tbody>
-    <tr>
-      <td>P(L)表示标签序列L的概率，而P(W</td>
-      <td>L)表示标签序列L产生序列W的概率。</td>
-    </tr>
-  </tbody>
-</table>
+<p>我们可以发现添加了内聚特征的模型可以明显提升识别Main idea 和 Thesis类别标签的精确度。</p>
 
                     <hr>
                     <div class="row">
@@ -399,9 +316,11 @@
                                 
                                     <button class="btn btn-white btn-xs" type="button">论文笔记</button>
                                 
-                                    <button class="btn btn-white btn-xs" type="button">作文自动评分系统</button>
+                                    <button class="btn btn-white btn-xs" type="button">全局</button>
                                 
-                                    <button class="btn btn-white btn-xs" type="button">篇章结构</button>
+                                    <button class="btn btn-white btn-xs" type="button">局部</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">篇章结构识别</button>
                                 
                         </div>
                         <div class="col-md-6">
