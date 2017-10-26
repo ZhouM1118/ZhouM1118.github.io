@@ -283,7 +283,7 @@
 
 <h3 id="112-词汇特征">1.1.2 词汇特征</h3>
 
-<p>这部分的特征主要使用Stanford POS-Tagger来进行预处理阶段的词性标注，词汇特征主要包括：动词（verbs）、副词（adverbs）和情态动词（modals）</p>
+<p>这部分的特征主要使用<code class="highlighter-rouge">Stanford POS-Tagger</code>来进行预处理阶段的词性标注，词汇特征主要包括：动词（verbs）、副词（adverbs）和情态动词（modals），常用的技术有：词类区分（POS: Part-of-Speech tagging）和命名实体识别（NE: named entity tagging）。</p>
 
 <p>动词和副词在识别篇章单元上有重要的作用，比如，某些动词（believe、think、agree等）标志着一个主论点的出现，某些副词（also、often、really等）就可能是论据的表达方式，某些情态动词（should、could等）通常用来预示分论点的出现。</p>
 
@@ -293,7 +293,7 @@
 
 <h3 id="114-指示词特征">1.1.4 指示词特征</h3>
 
-<p>论点经常有这些指示词：therefore、thus、consequently等引出，然而论据可能包含这些词：because、reason、furthermore等。本论文使用Penn Discourse Treebank 2.0 Annotation Manual来收集类似上面指示词，剔除掉与识别论证结构无关的指示词，最终收集到55个指示词。</p>
+<p>论点经常有这些指示词：therefore、thus、consequently等引出，然而论据可能包含这些词：because、reason、furthermore等。本论文使用<code class="highlighter-rouge">Penn Discourse Treebank 2.0 Annotation Manual</code>来收集类似上面指示词，剔除掉与识别论证结构无关的指示词，最终收集到55个指示词。</p>
 
 <p>除此之外还定义了5个Boolean特征来表示是否包含这五个第一人称：I，me，my，mine，myself。本论文认为这些特征与主论点有很强的关联性，因为这些词的出现常常表达了作者的个人立场。</p>
 
@@ -379,7 +379,6 @@
 <p style="text-align:center">表6 论证关系分类效果表</p>
 
 <p><img title="论文笔记-识别议论文中论证性篇章结构_" 图片7="" src="http://img.mukewang.com/59ef28200001c04d06140224.png" alt="论证关系分类效果表" style="display:block; margin:auto" /></p>
-
 
                     <hr>
                     <div class="row">
