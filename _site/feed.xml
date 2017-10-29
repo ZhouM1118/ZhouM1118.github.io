@@ -5,9 +5,80 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 26 Oct 2017 23:14:42 +0800</pubDate>
-    <lastBuildDate>Thu, 26 Oct 2017 23:14:42 +0800</lastBuildDate>
+    <pubDate>Sun, 29 Oct 2017 19:55:50 +0800</pubDate>
+    <lastBuildDate>Sun, 29 Oct 2017 19:55:50 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>如何阅读一篇英文论文？</title>
+        <description>&lt;p&gt;刚拿到一篇英文论文的时候，很多人可能是通读全文，读到哪里不懂就停下来仔细去抠细节，我开始也这样，但发现效率有点低，下面是我总结的看英文论文的一般步骤。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;第一遍（5-10 mins）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;第一遍先大概看下全文的各个大大小小的标题，对于论文的组织结构以及研究方向与重点有一个大概的把握。&lt;/p&gt;
+
+&lt;p&gt;在进行这一遍阅读之前，脑海里先带着这五个问题，在阅读完第一遍之后，你应该要能回答这五个问题：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;文章类型：你现在阅读的论文是什么类型的文章？综述类文章？对现有系统的分析还是测量统计类文章？&lt;/li&gt;
+  &lt;li&gt;研究背景：有没有哪些其它的与之相关的论文？基于哪些理论来解决这篇论文的问题？&lt;/li&gt;
+  &lt;li&gt;假设正确：论文会有一些假设性的条件，这些假设是否正确合理？&lt;/li&gt;
+  &lt;li&gt;论文贡献：论文对其研究方向有哪些主要贡献？&lt;/li&gt;
+  &lt;li&gt;逻辑清晰：这篇论文写得好吗？结构清晰吗？&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;方法论：有了这几个疑问之后，第一遍的阅读具体应该怎么来做？&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;仔细阅读标题（title）、摘要（abstract）、介绍（introduction）&lt;/li&gt;
+  &lt;li&gt;阅读章节的标题，第一遍先忽略其内容&lt;/li&gt;
+  &lt;li&gt;阅读总结部分&lt;/li&gt;
+  &lt;li&gt;浏览下参考文献目录，试着勾勒出你阅读过的内容的逻辑&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当你读完第一遍后，&lt;strong&gt;你不应该过于陷入细节中&lt;/strong&gt;，你只需要对到底要不要阅读这篇论文以及理解这篇论文需要什么样的知识积累做到心中有数即可。&lt;/p&gt;
+
+&lt;p&gt;理解这一步对我们自己写paper的时候也有很大的帮助，在自己写paper的时候也要思考应该在读者第一遍粗略阅读时给读者提供简洁易懂的信息，不然的话，读者扫了一遍文章发现不能理解文章的大致内容，那你的论文可能就没什么人看了。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;第二遍（1 hour）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在第二遍的时候应该要仔细阅读论文，但对于一些类似于证明等细节就不必过于纠结。这样的阅读方式有利于我们在脑海里&lt;strong&gt;迅速构建论文的关键点&lt;/strong&gt;，注意在论文的空白处做下标记，哪怕是很简短的词。&lt;/p&gt;
+
+&lt;p&gt;方法论：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;仔细看论文中的图、表以及其他插图。图的坐标轴分别代表着什么，有没有标错，图表等细节也可以在一定程度上体现论文的优劣；&lt;/li&gt;
+  &lt;li&gt;在阅读论文的过程中标记那些还未阅读的参考文献，以便进一步阅读来了解论文的背景。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;通过第二遍的阅读，你应该能够掌握论文的内容，可以总结论文的主旨和论据。有时候你读完第二遍的时候发现对论文还是一知半解，这可能是因为论文中提到的技术与理论你还没掌握，那么你有三个选择：第一是放弃这篇论文，祈祷上天这对你未来学业与职业影响不大（上天听不听得到就不在这里的讨论范围啦[笑哭]）；第二是先去积累论文中那些你还未掌握的技术与理论，然后再回到论文来；第三是你也可以勇往直前进行第三遍阅读。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;第三遍（小白4-5 hour，老司机1 hour）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;如果你认为这篇论文很有用且你还未完全理解这篇论文，那么建议你再读一遍。第三遍的关键是你需要把自己作为本文的作者，作出与作者相同的假设，然后&lt;strong&gt;重新构建论文&lt;/strong&gt;。通过将这种重构与实际文章进行比较，你可以轻松地识别论文的创新，也可以轻松识别其隐藏的缺陷。在这一遍中，你通过这种重构的方式会更多的关注到论文的细节部分，你应该尝试着去明白为什么要作这些假设，为什么要用这种理论或技术，这对你未来这个方向的研究工作打下了良好的基础。&lt;/p&gt;
+
+&lt;p&gt;在第三遍阅读后，你应该再重新根据你的标记以及记忆来重新审视这篇论文，总结出其优缺点，明确文章中隐含的假设，以及实验或分析技术的潜在问题。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;如何做文献搜索？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;第一，利用&lt;strong&gt;Google学术、百度学术或中国知网&lt;/strong&gt;等搜索工具搜索你要想领域的文章，建议是先看些综述类的文章，这样你能直观的对研究方向的发展现状有一个大概的了解，对相关的理论也有一定的理解。如果你英文够好可以直接看英文论文，如果功力还不够，建议先找中文论文看看，对一些专有名词有一定积累后再看国外的文献会轻松些。&lt;/p&gt;
+
+&lt;p&gt;第二，在一些论文中的参考书目中找到&lt;strong&gt;共同引用和重复的作者姓名&lt;/strong&gt;。在每个领域都会有一些核心的papers和researchers，直接在网上下载那些核心papers，在上述论文搜索工具中搜索researchers的姓名，看看他们最近在研究什么，这样有利于你掌握这个领域的最新研究成果。&lt;/p&gt;
+
+&lt;p&gt;第三，访问那些顶级会议的网站，并查看它们最近的会议记录。寻找和你研究方向相关的高质量论文，这些论文以及之前找到的论文&lt;strong&gt;构成了你文献搜索的第一个论文集&lt;/strong&gt;。对每篇论文都读两遍，如果它们都引用了你之前没有找到的关键论文，那么把它并入到你的论文集中，然后再根据新加入的论文来更新你的论文集。&lt;/p&gt;
+</description>
+        <pubDate>Sun, 29 Oct 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/life/2017/10/29/%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E4%B8%80%E7%AF%87%E8%8B%B1%E6%96%87%E8%AE%BA%E6%96%87.html</link>
+        <guid isPermaLink="true">http://localhost:4000/life/2017/10/29/%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E4%B8%80%E7%AF%87%E8%8B%B1%E6%96%87%E8%AE%BA%E6%96%87.html</guid>
+        
+        <category>阅读</category>
+        
+        <category>英文论文</category>
+        
+        
+        <category>Life</category>
+        
+      </item>
     
       <item>
         <title>论文笔记-识别议论文中论证性篇章结构</title>
