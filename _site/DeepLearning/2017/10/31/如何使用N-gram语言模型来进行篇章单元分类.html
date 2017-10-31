@@ -7,16 +7,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-    <meta content="论文笔记-在学生作文中自动识别篇章结构" name="description">
+    <meta content="如何使用N-gram语言模型来进行篇章单元分类？" name="description">
   
   
-    <meta name="keywords" content="论文笔记, 作文自动评分系统, 篇章结构">
+    <meta name="keywords" content="N-gram, 篇章单元分类">
   
   <meta name="author" content="周明">
 
   <title>
     
-        周明的技术博客|论文笔记-在学生作文中自动识别篇章结构
+        周明的技术博客|如何使用N-gram语言模型来进行篇章单元分类？
     
   </title>
   <!-- favicon -->
@@ -252,158 +252,141 @@
                         
                     </div>
                     <div class="text-center article-title">
-                    <span class="text-muted"><i class="fa fa-clock-o"></i> 16 Oct 2017</span>
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 31 Oct 2017</span>
                         <h1>
-                            论文笔记-在学生作文中自动识别篇章结构
+                            如何使用N-gram语言模型来进行篇章单元分类？
                         </h1>
                     </div>
-                    	<p>最近在研究基于自然语言处理的作文自动评分系统，现在对其中一篇与篇章结构分析相关的论文：《Finding the WRITE stuff： Automatic identification of discourse structure in student essays》作一个大概总结。</p>
+                    	<h2 id="一-什么是n-gram语言模型language-model"><strong>一、 什么是N-gram语言模型(Language Model)</strong></h2>
 
-<p><strong>1 为什么要研究篇章结构？</strong></p>
+<p>N-gram是自然语言处理（NLP）中一个非常重要的概念，通常在NLP中，人们基于一定的语料库，可以利用N-gram来做以下几类事情：</p>
 
-<p>现在国内外都有很多自动评分系统，这些自动评分系统大多从拼写检查、语法检查、内容分析等来帮助学生提高写作质量，学生通过这些类型的自动评分系统的反馈来改进他们写作的某些方面：语法、拼写等。这些系统将会继续受到学生的重视，因为在这些方面的改善对于学生写出高质量文章依然是至关重要的。</p>
+<ol>
+  <li>预计或者评估一个句子是否合理；</li>
+  <li>评估两个字符串之间的差异程度，这也是模糊匹配中常用的一种手段；</li>
+  <li>语音识别；</li>
+  <li>机器翻译；</li>
+  <li>文本分类。</li>
+</ol>
 
-<p>随着学生深入学习英文写作，便需要开始思考文章的篇章结构。不同类型的作文一般具有不同类型的篇章结构，比如信件、议论文等，它们拥有不同的篇章结构且篇章结构的优良在很大程度上影响作文的评分。分析篇章结构的自动评分系统为学生提供作文篇章结构的反馈，它使得学生对作文的篇章结构有了全面的分析，例如，如果系统反馈出学生的作文没有结论部分，那么学生可以在作文的结论部分多下功夫。这种类似于传统教师的自动化反馈可以帮助学生提高他们在篇章结构的组织和把控能力。</p>
+<p>我们主要使用N-gram语言模型来进行文本分类。假定S表示某个有意义的句子，由一串特定顺序排列的词w1,w2,w3,..,wn组成，n是句子的长度。想知道S在文本中(语料库)出现的可能性，也就是数学上所说的概率P(S)：</p>
 
-<p><strong>2 什么是篇章结构？</strong></p>
+<p>P(S)=P(w1,w2,w3,..,wn)=P(W1)P(W2|W1)P(W3|W1,W2)..P(Wn|W1,W2,..,Wn−1)</p>
 
-<p>就议论文而言，现在普遍将篇章结构分为8类：</p>
-
-<ul>
-  <li>Title 文章标题</li>
-  <li>Introduction 介绍文章背景</li>
-  <li>Prompt 主题总述或汇总提示</li>
-  <li>Thesis 阐述了作者对他/她正在争论的问题的主要矛盾</li>
-  <li>Main idea 提出与文章相关的主要思想/论点</li>
-  <li>Supporting idea 提供证据来解释或支持文章的主要思想</li>
-  <li>Conclusion 总结全文的主要思想</li>
-  <li>Other/Irrelevant 不适用于上述要素，也不构成任何有意义的贡献</li>
-</ul>
-
-<p><img title="论文笔记-在学生作文中自动识别篇章结构" 图片1="" src="http://img.mukewang.com/59e821a300018fef06730510.png" alt="一篇标记好的议论文作文" style="display:block; margin:auto" /></p>
-
-<p style="text-align:center">图1 一篇标记好的议论文作文</p>
-
-<p><strong>3 如何分析篇章结构？</strong></p>
-
-<p>篇章结构的研究分析可分为微观和宏观两个角度。微观篇章结构指的是篇章中一个句子内部的结构或两个连续的句子之间的结构，宏观篇章结构是指更高层次的结构，表现为句群、段落之间的结构。</p>
-
-<p>微观角度的篇章结构理论主要包括：</p>
+<p>由于要计算wi出现的概率，就要去统计前i-1词出现的情况，假设词库中有n个词，就有n^(i-1)种可能，这样每增加一个单词，模型的计算成本都指数倍的增长。于是，我们做一个简单的马尔科夫假设（Markov Assumption）来简化问题：假设第i个词出现的概率只与前面的N-1个词有关，这就是N-gram语言模型的由来。比如计算的概率时候，我们假设单词wi出现的概率只与前面出现的N个词有关：</p>
 
 <ul>
-  <li>浅层衔接理论</li>
-  <li>Hobbs模型</li>
-  <li>修辞结构理论（RST）</li>
-  <li>宾州篇章树库理论（PDTB）</li>
-  <li>意图结构理论</li>
-  <li>信息结构理论</li>
-  <li>基于连接依存数</li>
+  <li>当N=1的时候，为一元模型（Unigram model）：P(S)=P(w1,w2,w3,..,wn)=P(W1)*P(W2)*…*P(Wn)</li>
+  <li>当N=2的时候，叫二元模型（Bigram model）：P(S)=P(w1,w2,w3,..,wn)=P(W1|start)*P(W2|W1)*…*P(Wn|Wn-1)</li>
+  <li>当N=3的时候，叫 三元模型（trigram model）：P(S)=P(w1,w2,w3,..,wn)=P(W2|start,W1)*P(W3|W1,W2)*…*P(Wn|Wn-1,Wn-2)</li>
 </ul>
 
-<p>宏观角度的篇章结构理论则相对较少，主要包括：</p>
+<p>也许你已经意识到，N是一个超参数，在面临实际问题时，我们应该如何选择依赖词的个数？</p>
 
 <ul>
-  <li>篇章模式</li>
-  <li>超主位理论</li>
-  <li>篇章宏观结构理论</li>
+  <li>更大的n：对下一个词出现的约束信息更多，具有更大的辨别力；</li>
+  <li>更小的n：在训练语料库中出现的次数更多，具有更可靠的统计信息，具有更高的可靠性。</li>
 </ul>
 
-<p><strong>3.1 基于决策的篇章结构分析方法</strong></p>
+<p>理论上，n越大越好，但在经验上看，trigram用的最多，尽管如此，原则上，能用bigram解决，绝不使用trigram。</p>
 
-<p>核心思想是：使用一系列特征提取的算法提取文章中每个句子的与篇章结构相关的特征，将这些特征向量输入C5.0（一种决策树的机器学习算法）中来对句子所属类别进行分类。</p>
+<p>对于每一个概率计算我们使用最大似然估计法（Maximum Likelihood Estimate）来做：</p>
 
-<p><strong>3.1.1 基于RST提取修辞特征和核心与边界状态</strong></p>
+<p>p(w1|wi-1) = count(wi-1, wi) / count(wi-1)</p>
 
-<p>按照修辞结构理论（RST），可以将任何一篇议论文按照图2的形式构建RST篇章树。</p>
+<p>如给定句子集：</p>
 
-<p><img title="论文笔记-在学生作文中自动识别篇章结构_" 图片2="" src="http://img.mukewang.com/59e821f70001070610190341.png" alt="RST篇章树" style="display:block; margin:auto" /></p>
+<p>&lt;s&gt; I am Sam &lt;/s&gt;</p>
 
-<p style="text-align:center">图2 RST篇章树</p>
+<p>&lt;s&gt; Sam I am &lt;/s&gt;</p>
 
-<p>树的叶子节点表示文章中的篇章单位（Discourse Unit），在连接篇章单位的弧线上标明文本间的修辞关系；箭头指向的篇章单位在该关系中为核心（nucleus），否则为边界（satellite）；水平线表示文本范围（span）；垂直线对应的文本范围为该修辞关系的“核心”。比如图2中A和B两个篇章单位的修辞关系是：B是A的背景描述，A在“背景”修辞关系中为“核心”，B为“边界”。</p>
+<p>&lt;s&gt; I do not like green eggs and ham &lt;/s&gt;</p>
 
-<p>修辞特征可以反映两个篇章单位之间的语义、所包含的含义以及文本之间的关系，一般来说这种由不同篇章单位以及它们之间的修辞特征关系构成的修辞结构树可以由Marcu的<code class="highlighter-rouge">cue-phrase-based discourse parser</code>来构建。</p>
+<p>部分bigram语言模型如下所示：</p>
 
-<p><strong>3.1.2 提取核心单词、术语等词汇特征</strong></p>
+<p><img title="如何使用N-gram语言模型来进行篇章单元分类？_" 图片1="" src="http://img.mukewang.com/59f83efa0001a1d108820096.jpg" alt="bigram语言模型" style="display:block; margin:auto; width:80%" /></p>
 
-<p>提取句子中核心单词或术语的特征，比如A，becauseB，because表示对A这种结果的一种增强；First的出现可能意味着一个新的论点或论据的出现。“opinion”,“feel”相对“Should”, “might” ,“agree” ,“disagree” 与 “I”连接的时候更有可能与Thesis相关。</p>
+<h2 id="二-基于n-gram模型的篇章单元分类器"><strong>二、 基于N-gram模型的篇章单元分类器</strong></h2>
 
-<p><strong>3.1.3 提取句法结构与语法特征</strong></p>
+<p>NLP领域大牛Dan Jurafsky 和 Chirs Manning在他们的斯坦福大学自然语言处理课程中，他们用训练集的9222个句子来统计的部分二元单词分布情况：</p>
 
-<p>五种句法结构与语法：主从复合句、补语从句、不定式分句、关系从句以及助动词。一个不定式短语出现在一个句子或一个段落的开始往往标志一个新论点（Main idea）的出现。</p>
+<p style="text-align:center">表1 部分二元单词分布情况表</p>
 
-<p><strong>3.1.4 基于位置的特征</strong></p>
+<p><img title="如何使用N-gram语言模型来进行篇章单元分类？_" 图片2="" src="http://img.mukewang.com/59f83f06000153fb13360446.jpg" alt="部分二元单词分布情况表" style="display:block; margin:auto; width:80%" /></p>
 
-<p>这种方法制定了一系列句子位置对应篇章结构类别的规则：</p>
+<p>第一行，第二列表示给定前一个词是 “i” 时，当前词为“want”的情况一共出现了827次。据此，我们便可以算得相应的频率分布表如下：</p>
 
-<ul>
-  <li>Introductory：作文的第一句；</li>
-  <li>Thesis：第一段中除第一句以外的所有文本；</li>
-  <li>Main ideas：所有正文段落的第一句；</li>
-  <li>Supporting ideas：正文段落中除第一句以外的所有文本；</li>
-  <li>Conclusion：最后一段中的所有文本。</li>
-</ul>
+<p style="text-align:center">表2 频率分布表</p>
 
-<p><strong>3.1.5 基于标点符号的特征</strong></p>
+<p><img title="如何使用N-gram语言模型来进行篇章单元分类？_" 图片3="" src="http://img.mukewang.com/59f83f12000164bf13060436.png" alt="频率分布表" style="display:block; margin:auto; width:80%" /></p>
 
-<p>句号、问号、感叹号等。</p>
+<p>因为我们从表1中知道 “i” 一共出现了2533次，而其后出现 “want” 的情况一共有827次，所以<code class="highlighter-rouge">P(want|i)=827/2533≈0.33</code>。</p>
 
-<p><strong>3.2 基于概率的篇章结构分析方法</strong></p>
+<p>假设我们现在有一个标记为背景（Background）语料库（由于现在只有两句，所以我们就不画上面的单词分布情况表以及频率分布表了）如下，其中&lt;BG&gt;是句首标记，&lt;/BG&gt;是句尾标记：</p>
 
-<p>核心思想：基于概率的篇章结构分析方法希望给一篇作文中越可能的标签序列分配更高的概率，越不可能的标签序列分配越低的概率。</p>
+<p>&lt;BG&gt;yes no no no no yes&lt;/BG&gt;</p>
 
-<p>步骤一：有限状态机使用极大似然估计技术从训练数据中估计每个句子的标签概率，比如，如果句子中包含“conclusion”单词时，这个句子是Conclusion标签的概率要比Introduction标签的概率大；</p>
+<p>&lt;BG&gt;no no no yes yes yes no&lt;/BG&gt;</p>
 
-<p><img title="论文笔记-在学生作文中自动识别篇章结构_" 图片3="" src="http://img.mukewang.com/59e8222b0001993b06720307.png" alt="正确标记的训练数据的标签序列" style="display:block; margin:auto" /></p>
+<p>下面我们的任务是来评估如下这个句子属于“背景”这个篇章单元类别的概率：</p>
 
-<p style="text-align:center">图3 正确标记的训练数据的标签序列</p>
+<p>s=&lt;BG&gt;yes no no yes&lt;/BG&gt;（先假设这句话的所属篇章单元类别为“背景”，这样我们可以提取第一个单词和最后一个单词的与“背景”相关的特征）</p>
 
-<p>步骤二：接下来我们需要为由步骤一组成的标签序列评估其概率，选择最有可能的一组标签序列。局部语言模型评估某个标签序列的概率公式为：</p>
+<p>我们来演示利用trigram模型来计算概率的结果：</p>
 
-<p><img title="论文笔记-在学生作文中自动识别篇章结构_" 图片4="" src="http://img.mukewang.com/59e822520001be8008620048.png" alt="评估某个标签序列的概率公式" style="display:block; margin:auto" /></p>
+<p>P(yes|&lt;BG&gt;) = 1/2</p>
 
-<p>假设每个句子标签的概率都依赖其前两个句子标签，</p>
+<p>P(no|&lt;BG&gt;,yes) = 1</p>
 
-<p><img title="论文笔记-在学生作文中自动识别篇章结构_" 图片5="" src="http://img.mukewang.com/59e8225f00011d4107260064.png" alt="每个句子标签的概率" style="display:block; margin:auto" /></p>
+<p>P(no|yes,no) = 1/2</p>
 
-<p>局部语言模型无法捕捉全局特征，预测的标签序列缺乏全局连贯性，比如：96%的Thesis句出现在一个单独的段落中，一个总结句可能出现在Thesis后的n个Main idea/Supporting idea语句块之后，如果n&gt;2，这种可能性高达88%。使用EM算法来训练全局语言模型捕捉这种全局特征。</p>
+<p>P(yes|no,no) = 2/5</p>
 
-<p><img title="论文笔记-在学生作文中自动识别篇章结构_" 图片6="" src="http://img.mukewang.com/59e8226d0001e76c06730296.png" alt="语言模型" style="display:block; margin:auto" /></p>
+<p>P(&lt;/BG&gt;|no,yes) = 1/2</p>
 
-<p style="text-align:center">图4 语言模型</p>
+<p>P(s) = 1/2*1*1/2*2/5*1/2 = 0.05，即句子s属于“背景”的概率为0.05。</p>
 
-<table>
-  <tbody>
-    <tr>
-      <td>L表示标签序列，W表示其对应的单词序列，P(L)表示标签序列L的概率，而P(W</td>
-      <td>L)表示序列L产生序列W的概率</td>
-    </tr>
-  </tbody>
-</table>
+<p>为了避免数据溢出、提高性能，通常会使用取log后使用加法运算替代乘法运算。</p>
 
-<p>基于概率的篇章结构分析方法以文章中每个句子的单词序列W作为输入，使用极大似然估计技术和EM算法来计算出最大概率的标签序列L。</p>
+<p>log(p1*p2*p3*p4) = log(p1) + log(p2) + log(p3) + log(p4)</p>
 
-<p><img title="论文笔记-在学生作文中自动识别篇章结构_" 图片7="" src="http://img.mukewang.com/59e8228b0001819002940032.png" alt="最大概率的标签序列L" style="display:block; margin:auto" /></p>
+<p>那么我们如何用N-gram来做篇章单元的分类器呢？其实很简单了，只要根据每个类别的语料库训练各自的语言模型，也就是上面的频率分布表，实质上就是每一个篇章单元的类别都有一个概率分布，当新来一个篇章单元的时候，只要根据各自的语言模型，计算出每个语言模型下这个篇章单元的发生概率，篇章单元在哪个模型的概率大，这篇文本就属于哪个类别了。</p>
 
-<table>
-  <tbody>
-    <tr>
-      <td>P(L)表示标签序列L的概率，而P(W</td>
-      <td>L)表示标签序列L产生序列W的概率。</td>
-    </tr>
-  </tbody>
-</table>
+<h2 id="三-工具与数据集"><strong>三、 工具与数据集</strong></h2>
+
+<p>推荐开源语言模型工具：</p>
+
+<ol>
+  <li>SRILM（http://www.speech.sri.com/projects/srilm/）</li>
+  <li>IRSTLM（http://hlt.fbk.eu/en/irstlm）</li>
+  <li>MITLM（http://code.google.com/p/mitlm/）</li>
+  <li>BerkeleyLM（http://code.google.com/p/berkeleylm/）</li>
+</ol>
+
+<p>推荐开源n-gram数据集：</p>
+
+<ol>
+  <li>Google Web1T5-gram（http://googleresearch.blogspot.com/2006/08/all-our-n-gram-are-belong-to-you.html）</li>
+  <li>Google Book N-grams（http://books.google.com/ngrams/）</li>
+  <li>Chinese Web 5-gram（http://www.ldc.upenn.edu/Catalog/catalogEntry.jsp?catalogId=LDC2010T06）</li>
+</ol>
+
+<h2 id="四-参考文献"><strong>四、 参考文献</strong></h2>
+
+<ol>
+  <li>斯坦福大学自然语言处理第四课“语言模型（Language Modeling）：http://52opencourse.com/111/%E6%96%AF%E5%9D%A6%E7%A6%8F%E5%A4%A7%E5%AD%A6%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86%E7%AC%AC%E5%9B%9B%E8%AF%BE-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%EF%BC%88language-modeling%EF%BC%89</li>
+  <li>N-gram语言模型文本分类器：http://blog.csdn.net/shiwei1003462571/article/details/43482881</li>
+  <li>Ngram语言模型：https://flystarhe.github.io/2016/08/16/ngram/</li>
+</ol>
 
                     <hr>
                     <div class="row">
                         <div class="col-md-6">
                                 <h5 style="display: inline;">Tags:</h5>
                                 
-                                    <button class="btn btn-white btn-xs" type="button">论文笔记</button>
+                                    <button class="btn btn-white btn-xs" type="button">N-gram</button>
                                 
-                                    <button class="btn btn-white btn-xs" type="button">作文自动评分系统</button>
-                                
-                                    <button class="btn btn-white btn-xs" type="button">篇章结构</button>
+                                    <button class="btn btn-white btn-xs" type="button">篇章单元分类</button>
                                 
                         </div>
                         <div class="col-md-6">

@@ -5,9 +5,146 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 29 Oct 2017 19:55:50 +0800</pubDate>
-    <lastBuildDate>Sun, 29 Oct 2017 19:55:50 +0800</lastBuildDate>
+    <pubDate>Tue, 31 Oct 2017 17:31:55 +0800</pubDate>
+    <lastBuildDate>Tue, 31 Oct 2017 17:31:55 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>如何使用N-gram语言模型来进行篇章单元分类？</title>
+        <description>&lt;h2 id=&quot;一-什么是n-gram语言模型language-model&quot;&gt;&lt;strong&gt;一、 什么是N-gram语言模型(Language Model)&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;N-gram是自然语言处理（NLP）中一个非常重要的概念，通常在NLP中，人们基于一定的语料库，可以利用N-gram来做以下几类事情：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;预计或者评估一个句子是否合理；&lt;/li&gt;
+  &lt;li&gt;评估两个字符串之间的差异程度，这也是模糊匹配中常用的一种手段；&lt;/li&gt;
+  &lt;li&gt;语音识别；&lt;/li&gt;
+  &lt;li&gt;机器翻译；&lt;/li&gt;
+  &lt;li&gt;文本分类。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;我们主要使用N-gram语言模型来进行文本分类。假定S表示某个有意义的句子，由一串特定顺序排列的词w1,w2,w3,..,wn组成，n是句子的长度。想知道S在文本中(语料库)出现的可能性，也就是数学上所说的概率P(S)：&lt;/p&gt;
+
+&lt;p&gt;P(S)=P(w1,w2,w3,..,wn)=P(W1)P(W2|W1)P(W3|W1,W2)..P(Wn|W1,W2,..,Wn−1)&lt;/p&gt;
+
+&lt;p&gt;由于要计算wi出现的概率，就要去统计前i-1词出现的情况，假设词库中有n个词，就有n^(i-1)种可能，这样每增加一个单词，模型的计算成本都指数倍的增长。于是，我们做一个简单的马尔科夫假设（Markov Assumption）来简化问题：假设第i个词出现的概率只与前面的N-1个词有关，这就是N-gram语言模型的由来。比如计算的概率时候，我们假设单词wi出现的概率只与前面出现的N个词有关：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;当N=1的时候，为一元模型（Unigram model）：P(S)=P(w1,w2,w3,..,wn)=P(W1)*P(W2)*…*P(Wn)&lt;/li&gt;
+  &lt;li&gt;当N=2的时候，叫二元模型（Bigram model）：P(S)=P(w1,w2,w3,..,wn)=P(W1|start)*P(W2|W1)*…*P(Wn|Wn-1)&lt;/li&gt;
+  &lt;li&gt;当N=3的时候，叫 三元模型（trigram model）：P(S)=P(w1,w2,w3,..,wn)=P(W2|start,W1)*P(W3|W1,W2)*…*P(Wn|Wn-1,Wn-2)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;也许你已经意识到，N是一个超参数，在面临实际问题时，我们应该如何选择依赖词的个数？&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;更大的n：对下一个词出现的约束信息更多，具有更大的辨别力；&lt;/li&gt;
+  &lt;li&gt;更小的n：在训练语料库中出现的次数更多，具有更可靠的统计信息，具有更高的可靠性。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;理论上，n越大越好，但在经验上看，trigram用的最多，尽管如此，原则上，能用bigram解决，绝不使用trigram。&lt;/p&gt;
+
+&lt;p&gt;对于每一个概率计算我们使用最大似然估计法（Maximum Likelihood Estimate）来做：&lt;/p&gt;
+
+&lt;p&gt;p(w1|wi-1) = count(wi-1, wi) / count(wi-1)&lt;/p&gt;
+
+&lt;p&gt;如给定句子集：&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;s&amp;gt; I am Sam &amp;lt;/s&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;s&amp;gt; Sam I am &amp;lt;/s&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;s&amp;gt; I do not like green eggs and ham &amp;lt;/s&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;部分bigram语言模型如下所示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;如何使用N-gram语言模型来进行篇章单元分类？_&quot; 图片1=&quot;&quot; src=&quot;http://img.mukewang.com/59f83efa0001a1d108820096.jpg&quot; alt=&quot;bigram语言模型&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;二-基于n-gram模型的篇章单元分类器&quot;&gt;&lt;strong&gt;二、 基于N-gram模型的篇章单元分类器&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;NLP领域大牛Dan Jurafsky 和 Chirs Manning在他们的斯坦福大学自然语言处理课程中，他们用训练集的9222个句子来统计的部分二元单词分布情况：&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;表1 部分二元单词分布情况表&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;如何使用N-gram语言模型来进行篇章单元分类？_&quot; 图片2=&quot;&quot; src=&quot;http://img.mukewang.com/59f83f06000153fb13360446.jpg&quot; alt=&quot;部分二元单词分布情况表&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;第一行，第二列表示给定前一个词是 “i” 时，当前词为“want”的情况一共出现了827次。据此，我们便可以算得相应的频率分布表如下：&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;表2 频率分布表&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;如何使用N-gram语言模型来进行篇章单元分类？_&quot; 图片3=&quot;&quot; src=&quot;http://img.mukewang.com/59f83f12000164bf13060436.png&quot; alt=&quot;频率分布表&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;因为我们从表1中知道 “i” 一共出现了2533次，而其后出现 “want” 的情况一共有827次，所以&lt;code class=&quot;highlighter-rouge&quot;&gt;P(want|i)=827/2533≈0.33&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设我们现在有一个标记为背景（Background）语料库（由于现在只有两句，所以我们就不画上面的单词分布情况表以及频率分布表了）如下，其中&amp;lt;BG&amp;gt;是句首标记，&amp;lt;/BG&amp;gt;是句尾标记：&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;BG&amp;gt;yes no no no no yes&amp;lt;/BG&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;BG&amp;gt;no no no yes yes yes no&amp;lt;/BG&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;下面我们的任务是来评估如下这个句子属于“背景”这个篇章单元类别的概率：&lt;/p&gt;
+
+&lt;p&gt;s=&amp;lt;BG&amp;gt;yes no no yes&amp;lt;/BG&amp;gt;（先假设这句话的所属篇章单元类别为“背景”，这样我们可以提取第一个单词和最后一个单词的与“背景”相关的特征）&lt;/p&gt;
+
+&lt;p&gt;我们来演示利用trigram模型来计算概率的结果：&lt;/p&gt;
+
+&lt;p&gt;P(yes|&amp;lt;BG&amp;gt;) = 1/2&lt;/p&gt;
+
+&lt;p&gt;P(no|&amp;lt;BG&amp;gt;,yes) = 1&lt;/p&gt;
+
+&lt;p&gt;P(no|yes,no) = 1/2&lt;/p&gt;
+
+&lt;p&gt;P(yes|no,no) = 2/5&lt;/p&gt;
+
+&lt;p&gt;P(&amp;lt;/BG&amp;gt;|no,yes) = 1/2&lt;/p&gt;
+
+&lt;p&gt;P(s) = 1/2*1*1/2*2/5*1/2 = 0.05，即句子s属于“背景”的概率为0.05。&lt;/p&gt;
+
+&lt;p&gt;为了避免数据溢出、提高性能，通常会使用取log后使用加法运算替代乘法运算。&lt;/p&gt;
+
+&lt;p&gt;log(p1*p2*p3*p4) = log(p1) + log(p2) + log(p3) + log(p4)&lt;/p&gt;
+
+&lt;p&gt;那么我们如何用N-gram来做篇章单元的分类器呢？其实很简单了，只要根据每个类别的语料库训练各自的语言模型，也就是上面的频率分布表，实质上就是每一个篇章单元的类别都有一个概率分布，当新来一个篇章单元的时候，只要根据各自的语言模型，计算出每个语言模型下这个篇章单元的发生概率，篇章单元在哪个模型的概率大，这篇文本就属于哪个类别了。&lt;/p&gt;
+
+&lt;h2 id=&quot;三-工具与数据集&quot;&gt;&lt;strong&gt;三、 工具与数据集&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;推荐开源语言模型工具：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;SRILM（http://www.speech.sri.com/projects/srilm/）&lt;/li&gt;
+  &lt;li&gt;IRSTLM（http://hlt.fbk.eu/en/irstlm）&lt;/li&gt;
+  &lt;li&gt;MITLM（http://code.google.com/p/mitlm/）&lt;/li&gt;
+  &lt;li&gt;BerkeleyLM（http://code.google.com/p/berkeleylm/）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;推荐开源n-gram数据集：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Google Web1T5-gram（http://googleresearch.blogspot.com/2006/08/all-our-n-gram-are-belong-to-you.html）&lt;/li&gt;
+  &lt;li&gt;Google Book N-grams（http://books.google.com/ngrams/）&lt;/li&gt;
+  &lt;li&gt;Chinese Web 5-gram（http://www.ldc.upenn.edu/Catalog/catalogEntry.jsp?catalogId=LDC2010T06）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;四-参考文献&quot;&gt;&lt;strong&gt;四、 参考文献&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;斯坦福大学自然语言处理第四课“语言模型（Language Modeling）：http://52opencourse.com/111/%E6%96%AF%E5%9D%A6%E7%A6%8F%E5%A4%A7%E5%AD%A6%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86%E7%AC%AC%E5%9B%9B%E8%AF%BE-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%EF%BC%88language-modeling%EF%BC%89&lt;/li&gt;
+  &lt;li&gt;N-gram语言模型文本分类器：http://blog.csdn.net/shiwei1003462571/article/details/43482881&lt;/li&gt;
+  &lt;li&gt;Ngram语言模型：https://flystarhe.github.io/2016/08/16/ngram/&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        <pubDate>Tue, 31 Oct 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2017/10/31/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8N-gram%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E8%BF%9B%E8%A1%8C%E7%AF%87%E7%AB%A0%E5%8D%95%E5%85%83%E5%88%86%E7%B1%BB.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2017/10/31/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8N-gram%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%9D%A5%E8%BF%9B%E8%A1%8C%E7%AF%87%E7%AB%A0%E5%8D%95%E5%85%83%E5%88%86%E7%B1%BB.html</guid>
+        
+        <category>N-gram</category>
+        
+        <category>篇章单元分类</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>如何阅读一篇英文论文？</title>
@@ -84,7 +221,7 @@
         <title>论文笔记-识别议论文中论证性篇章结构</title>
         <description>&lt;p&gt;现在看这种类型的英文论文开始有点感觉了，大部分术语积累的差不多之后看论文确实相对刚开始看要快一些，一遍过下来也掌握的信息也比较多，如果你和我一样都在看英文论文的道路上挣扎，建议你看下这篇帖子的内容，&lt;a href=&quot;https://www.zhihu.com/question/27375221&quot;&gt;如何看懂英文文献？&lt;/a&gt; 还是有些帮助的，也欢迎你留言，我们一起交流，共同进步。&lt;/p&gt;
 
-&lt;p&gt;本文主要研究的是议论文中论证部分的篇章结构分析，研究工作分两部分，第一部分为议论文中论证性篇章结构类别识别，第二部分为在第一部分的论证类别识别的基础上对论证关系进行研究。论文将数据集中的文章句子的类别分为：主论点（major claim）、分论点（claim）、论据（premise）以及非论证部分（none），在主论点、分论点以及论据之间有两种论证关系：支持（support）与反对（attack）。数据集来自Stab和Gurevych在2014年编译的议论文语料库。表1表示的是语料库中各种类别的分布情况，语料库包含90个主论点（基本上是每篇文章包含一个主论点），429个分论点和1033个论据。&lt;/p&gt;
+&lt;p&gt;本文《Identifying Argumentative Discourse Structures in Persuasive Essays》主要研究的是议论文中论证部分的篇章结构分析，研究工作分两部分，第一部分为议论文中论证性篇章结构类别识别，第二部分为在第一部分的论证类别识别的基础上对论证关系进行研究。论文将数据集中的文章句子的类别分为：&lt;strong&gt;主论点（major claim）、分论点（claim）、论据（premise）以及非论证部分（none）&lt;/strong&gt;，在主论点、分论点以及论据之间有两种论证关系：支持（support）与反对（attack）。数据集来自Stab和Gurevych在2014年编译的议论文语料库。表1表示的是语料库中各种类别的分布情况，语料库包含90个主论点（基本上是每篇文章包含一个主论点），429个分论点和1033个论据。&lt;/p&gt;
 
 &lt;p style=&quot;text-align:center&quot;&gt;表1 数据集中类别分布情况&lt;/p&gt;
 
@@ -94,7 +231,7 @@
 
 &lt;p&gt;论文使用Weka数据挖掘软件中的分类器进行分类，使用DKPro框架中的Stanford POS-Tagger和Parser进行数据预处理，使用使DKPro-TC文本分类框架来提取论文句子的特征。&lt;/p&gt;
 
-&lt;h2 id=&quot;11-特征提取&quot;&gt;&lt;strong&gt;1.1 特征提取&lt;/strong&gt;&lt;/h2&gt;
+&lt;h2 id=&quot;11-特征选择&quot;&gt;&lt;strong&gt;1.1 特征选择&lt;/strong&gt;&lt;/h2&gt;
 
 &lt;h3 id=&quot;111-结构特征&quot;&gt;1.1.1 结构特征&lt;/h3&gt;
 
@@ -108,23 +245,29 @@
 
 &lt;h3 id=&quot;112-词汇特征&quot;&gt;1.1.2 词汇特征&lt;/h3&gt;
 
+&lt;p&gt;最小语义粒度：在中文中，最小语义粒度为字，但是一个单字所表示的语义信息太少，一般的，大多都以词作为最基本的语素，在实际的交流中也正是如此。但是用词作为最小的语义粒度也有一个问题，就是词和词之间的关系随着分词而丢失了，其实这部分信息非常重要。为了减小这种隐性的语义损失，有人提出了N-gram模型。N-gram模型基于这样一种假设，第n个词的出现只与前面N-1个词相关，而与其它任何词都不相关。简单来说，unigram模型对应的最小语素就是单字，bigram模型是二字串，举例说明：“我爱北京天安门”的bigram表示形式就是“我爱 爱北 北京 京天 天安 安门”，以此类推。由于N-gram存在致命的缺陷——产生的结果过于稀疏，假设正常分词的词表中有1000个词，如果是bigram那么可能的N-gram就有1000000个，如果是trigram，那么可能的N-gram就有1000000000个，其维度增长是指数级的。一般在使用中只使用二字串或三字串作为最小的语义粒度，并且需要其他处理来缩减维度，减少计算资源的消耗。本文定义了长度为1-3的n-gram作为一个布尔特征，用n-gram来判断是否包含那些某些篇章结构类别的指示词。&lt;/p&gt;
+
 &lt;p&gt;这部分的特征主要使用&lt;code class=&quot;highlighter-rouge&quot;&gt;Stanford POS-Tagger&lt;/code&gt;来进行预处理阶段的词性标注，词汇特征主要包括：动词（verbs）、副词（adverbs）和情态动词（modals），常用的技术有：词类区分（POS: Part-of-Speech tagging）和命名实体识别（NE: named entity tagging）。&lt;/p&gt;
 
 &lt;p&gt;动词和副词在识别篇章单元上有重要的作用，比如，某些动词（believe、think、agree等）标志着一个主论点的出现，某些副词（also、often、really等）就可能是论据的表达方式，某些情态动词（should、could等）通常用来预示分论点的出现。&lt;/p&gt;
 
 &lt;h3 id=&quot;113-句法特征&quot;&gt;1.1.3 句法特征&lt;/h3&gt;
 
-&lt;p&gt;这部分主要提取：篇章单元的每个句子中包含子从句的数量特征；分析树（parse tree）的深度；分析树中的产生式（production rules），NP、VP、PP是名词、动词、介词短语（短语级别）；N、V、P分别是名词、动词、介词；每个篇章单元中句子的主要动词的时态，论据一般使用过去时，而论点一般使用现在时。&lt;/p&gt;
+&lt;p&gt;这部分主要提取的特征有：&lt;/p&gt;
+
+&lt;p&gt;句子的子从句数量，分析树（parse tree）的深度，分析树中的产生式（production rules）是否出现在篇章单元的子树中。NP、VP、PP是名词、动词、介词短语（短语级别）；N、V、P分别是名词、动词、介词。&lt;/p&gt;
+
+&lt;p&gt;每个篇章单元中句子的主要动词的时态，论据一般使用过去时，而论点一般使用现在时。&lt;/p&gt;
 
 &lt;h3 id=&quot;114-指示词特征&quot;&gt;1.1.4 指示词特征&lt;/h3&gt;
 
-&lt;p&gt;论点经常有这些指示词：therefore、thus、consequently等引出，然而论据可能包含这些词：because、reason、furthermore等。本论文使用&lt;code class=&quot;highlighter-rouge&quot;&gt;Penn Discourse Treebank 2.0 Annotation Manual&lt;/code&gt;来收集类似上面指示词，剔除掉与识别论证结构无关的指示词，最终收集到55个指示词。&lt;/p&gt;
+&lt;p&gt;论点经常有这些指示词：therefore、thus、consequently等引出，然而论据可能包含这些词：because、reason、furthermore等。本论文使用&lt;code class=&quot;highlighter-rouge&quot;&gt;Penn Discourse Treebank 2.0 Annotation Manual&lt;/code&gt;来收集类似上面指示词，剔除掉与识别论证结构无关的指示词，最终收集到55个指示词。将这些作为一个布尔特征集来代表这55个指示词是否在一个篇章单位中。&lt;/p&gt;
 
 &lt;p&gt;除此之外还定义了5个Boolean特征来表示是否包含这五个第一人称：I，me，my，mine，myself。本论文认为这些特征与主论点有很强的关联性，因为这些词的出现常常表达了作者的个人立场。&lt;/p&gt;
 
 &lt;h3 id=&quot;115-上下文特征&quot;&gt;1.1.5 上下文特征&lt;/h3&gt;
 
-&lt;p&gt;论文认为一个论点的出现，后面往往跟着有论据。所以会从篇章单位的上下句子提取相关特征来表述上下文特征。&lt;/p&gt;
+&lt;p&gt;论文认为一个论点的出现，后面往往跟着有论据。所以会从篇章单位的上下句子提取相关特征（标点符号的数量，单词数，子从句数以及一个代表是否存在情态动词的布尔特征）来表述上下文特征。&lt;/p&gt;
 
 &lt;h2 id=&quot;12-篇章单元分类&quot;&gt;&lt;strong&gt;1.2 篇章单元分类&lt;/strong&gt;&lt;/h2&gt;
 
@@ -169,7 +312,7 @@
 
 &lt;p&gt;&lt;img title=&quot;论文笔记-识别议论文中论证性篇章结构_&quot; 图片5=&quot;&quot; src=&quot;http://img.mukewang.com/59ef27e20001369a04640076.png&quot; alt=&quot;Support和Non-support分布情况表&quot; style=&quot;display:block; margin:auto&quot; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;22-特征提取&quot;&gt;&lt;strong&gt;2.2 特征提取&lt;/strong&gt;&lt;/h2&gt;
+&lt;h2 id=&quot;22-特征选择&quot;&gt;&lt;strong&gt;2.2 特征选择&lt;/strong&gt;&lt;/h2&gt;
 
 &lt;h3 id=&quot;221-结构特征&quot;&gt;2.2.1 结构特征&lt;/h3&gt;
 
@@ -332,7 +475,7 @@
   &lt;li&gt;浅层衔接理论&lt;/li&gt;
   &lt;li&gt;Hobbs模型&lt;/li&gt;
   &lt;li&gt;修辞结构理论（RST）&lt;/li&gt;
-  &lt;li&gt;宾州篇章树库理论&lt;/li&gt;
+  &lt;li&gt;宾州篇章树库理论（PDTB）&lt;/li&gt;
   &lt;li&gt;意图结构理论&lt;/li&gt;
   &lt;li&gt;信息结构理论&lt;/li&gt;
   &lt;li&gt;基于连接依存数&lt;/li&gt;
