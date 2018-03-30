@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="循环神经网络你需要知道的几个基本概念" name="description">
+  
+  
+    <meta name="keywords" content="循环神经网络">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|循环神经网络你需要知道的几个基本概念
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 12 Feb 2018</span>
+                        <h1>
+                            循环神经网络你需要知道的几个基本概念
+                        </h1>
+                    </div>
+                    	<h2 id="11-为什么有了全连接神经网络和cnn还需要rnn">1.1 为什么有了全连接神经网络和CNN还需要RNN？</h2>
+
+<p>我们通过前两篇博文知道了全连接神经网络和卷积神经网络的基本工作原理，这两种网络结构的层与层之间是全连接或部分连接的，<strong>但在每层之间的节点是无连接的，这样的网络结构并不能很好的处理序列数据</strong>。当我们要建立一个模型来预测句子的下一个单词是什么时，结合n-gram语言模型思想，一般是需要用到当前单词以及前面单词，因为一个句子中每个单词的出现并不是独立的。比如，如果第一个词是“天空”，接下来的词是“很”，那么下一个词很大概率会是“蓝”，RNN则可以处理类似这样的序列数据。<strong>RNN通过每层之间节点的连接结构来记忆之前的信息，并利用这些信息来影响后面节点的输出。RNN可充分挖掘序列数据中的时序信息以及语义信息，这种在处理时序数据时比全连接神经网络和CNN更具有深度表达能力</strong>，RNN已广泛应用于语音识别、语言模型、机器翻译、时序分析等各个领域。</p>
+
+<h2 id="12-rnn模型">1.2 RNN模型</h2>
+
+<p>我们先来看一个RNN经典结构，图1展示了一个典型按时间展开后的RNN结构。</p>
+
+<p><img title="循环神经网络你需要知道的几个基本概念_" 图片1="" src="https://img.mukewang.com/5aa64138000175ef07820220.png" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+<p style="text-align:center">图1 按时间展开后的RNN结构</p>
+
+<p>从图1可以看出，RNN在每一个时刻都有一个输入<code class="highlighter-rouge">Xt</code>，然后根据当前节点的状态<code class="highlighter-rouge">At</code>计算输出值<code class="highlighter-rouge">ht</code>，而<code class="highlighter-rouge">At</code>是根据上一时刻的状态<code class="highlighter-rouge">At-1</code>和当前的输入<code class="highlighter-rouge">Xt</code>共同决定的。<strong>和卷积神经网络卷积核或池化核的参数共享类似，这里RNN结构中的参数在不同时刻中也是共享的</strong>。</p>
+
+<h3 id="121-rnn前向传播过程">1.2.1 RNN前向传播过程</h3>
+
+<p>图2展示了RNN的前向传播的计算过程。
+<img title="循环神经网络你需要知道的几个基本概念_" 图片2="" src="https://img.mukewang.com/5aa641ab00010acc07730469.png" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+<p style="text-align:center">图2 RNN的前向传播的计算过程</p>
+
+<p>如图2所示，假设节点状态的维度为<code class="highlighter-rouge">2</code>，节点的输入和输出维度为<code class="highlighter-rouge">1</code>，那么在循环体的全连接层神经网络的输入维度为<code class="highlighter-rouge">3</code>，<strong>也就是将上一时刻的状态与当前时刻的输入拼接成一维向量作为循环体的全连接层神经网络的输入</strong>，在这里<code class="highlighter-rouge">t0</code>时刻的节点状态初始化为<code class="highlighter-rouge">[0.0, 0.0]</code>，<code class="highlighter-rouge">t0</code>时刻的节点输入为<code class="highlighter-rouge">[1.0]</code>，拼接之后循环体的全连接层神经网络的输入为<code class="highlighter-rouge">[0.0, 0.0, 1.0]</code>，循环体中的全连接层的权重表示为二维矩阵<code class="highlighter-rouge">[[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]]</code>，偏置项为<code class="highlighter-rouge">[0.1, -0.1]</code>，我们可以看到权重矩阵和偏置项在<code class="highlighter-rouge">t0</code>和<code class="highlighter-rouge">t1</code>时刻的循环体中是一样的，<strong>这也说明了RNN结构中的参数在不同时刻中也是共享的</strong>。经过循环体中的全连接层神经网络后节点的状态改变为<code class="highlighter-rouge">tanh([0.6, 0.5]) = [0.537, 0.462]</code>，当前节点状态的输出作为下一个节点状态的输入。</p>
+
+<p><strong>为了将当前时刻的状态转变为节点的最终输出，RNN中还有另外一个全连接神经网络来计算节点输出</strong>，在图2中被表示为<code class="highlighter-rouge">[0.537, 0.462] * [1.0, 2.0] + [0.1] = [1.56]</code>，用于输出的全连接层权重为<code class="highlighter-rouge">[1.0, 2.0]</code>，偏置项为<code class="highlighter-rouge">[0.1]</code>，<code class="highlighter-rouge">1.56</code>表示为<code class="highlighter-rouge">t0</code>时刻节点的最终输出。</p>
+
+<p>得到RNN的前向传播结果之后，和其他神经网络类似，定义损失函数，使用反向传播算法和梯度下降算法训练模型，但RNN唯一的区别在于：<strong>由于它每个时刻的节点都有一个输出，所以RNN的总损失为所有时刻（或部分时刻）上的损失和</strong>。</p>
+
+<h2 id="13-lstm结构">1.3 LSTM结构</h2>
+
+<p>上节介绍的RNN模型，<strong>存在“长期依赖”的问题</strong>。模型在预测“大海的颜色是”下一个单词时，很容易判断为“蓝色”，因为这里相关信息与待预测词的位置相差不大，模型不需要记忆这个短句子之前更长的上下文信息。但当模型预测“十年前，北京的天空很蓝，但随着大量工厂的开设，废气排放监控不力，空气污染开始变得越来越严重，渐渐地，这里的天空变成了”下一个单词时，依靠“短期依赖”就不能很好的解决这类问题，因为仅仅根据“这里的天空变成了”这一小段，后一个单词可以是“蓝色”，也可以是“灰色”。上节描述的简单RNN结构可能无法学习到这种“长期依赖”的信息，LSTM可以很好的解决这类问题。图3展示了LSTM单元结构图。</p>
+
+<p><img title="循环神经网络你需要知道的几个基本概念_" 图片3="" src="https://img.mukewang.com/5aa642150001827705950366.png" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+<p style="text-align:center">图3 LSTM单元结构图</p>
+
+<p>与简单RNN结构中单一tanh循环体不同的是，LSTM使用三个“门”结构来控制不同时刻的状态和输出。<strong>所谓的“门”结构就是使用了sigmoid激活函数的全连接神经网络和一个按位做乘法的操作</strong>，sigmoid激活函数会输出一个0~1之间的数值，这个数值描述的是当前有多少信息能通过“门”，0表示任何信息都无法通过，1表示全部信息都可以通过。其中，“遗忘门”和“输入门”是LSTM单元结构的核心。下面我们来详细分析下三种“门”结构。</p>
+
+<p><strong>遗忘门，用来让RNN“忘记”之前没有用的信息。</strong>比如“十年前，北京的天空是蓝色的”，但当看到“空气污染开始变得越来越严重”后，RNN应该忘记“北京的天空是蓝色的”这个信息。遗忘门会根据当前时刻节点的输入<code class="highlighter-rouge">Xt</code>、上一时刻节点的状态<code class="highlighter-rouge">C(t-1)</code>和上一时刻节点的输出<code class="highlighter-rouge">h(t-1)</code>来决定哪些信息将被遗忘。</p>
+
+<p><strong>输入门，用来让RNN决定当前输入数据中哪些信息将被留下来。</strong>在RNN使用遗忘门“忘记”部分之前的信息后，还需要从当前的输入补充最新的记忆。输入门会根据当前时刻节点的输入<code class="highlighter-rouge">Xt</code>、上一时刻节点的状态<code class="highlighter-rouge">C(t-1)</code>和上一时刻节点的输出<code class="highlighter-rouge">h(t-1)</code>来决定哪些信息将进入当前时刻节点的状态<code class="highlighter-rouge">Ct</code>，比如看到“空气污染开始变得越来越严重”后，模型需要记忆这个最新的信息。</p>
+
+<p><strong>输出门，LSTM在得到最新节点状态<code class="highlighter-rouge">Ct</code>后，结合上一时刻节点的输出<code class="highlighter-rouge">h(t-1)</code>和当前时刻节点的输入<code class="highlighter-rouge">Xt</code>来决定当前时刻节点的输出。</strong>比如当前时刻节点状态为被污染，那么“天空的颜色”后面的单词应该是“灰色”。</p>
+
+<p>在TensorFlow中可以使用<code class="highlighter-rouge">lstm = rnn_cell.BasicLSTMCell(lstm_hidden_size)</code>来声明一个LSTM结构。</p>
+
+<h2 id="14-双向循环神经网络brnn">1.4 双向循环神经网络（BRNN）</h2>
+
+<p>RNN和LSTM都只能依据之前时刻的时序信息来预测下一时刻的输出，但在有些问题中，<strong>当前时刻的输出不仅和之前的状态有关，还可能和未来的状态有关系</strong>。比如预测一句话中缺失的单词不仅需要根据前文来判断，还需要考虑它后面的内容，真正做到基于上下文判断。BRNN有两个RNN上下叠加在一起组成的，输出由这两个RNN的状态共同决定。BRNN结构图如图4所示。</p>
+
+<p><img title="循环神经网络你需要知道的几个基本概念_" 图片4="" src="https://img.mukewang.com/5aa6424f0001485b07120276.png" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+<p style="text-align:center">图4 BRNN结构图</p>
+
+<p>对于每个时刻<code class="highlighter-rouge">t</code>，输入会同时提供给两个方向相反的RNN，输出由这两个单向RNN共同决定。</p>
+
+<h2 id="15-深层循环神经网络drnn">1.5 深层循环神经网络（DRNN）</h2>
+
+<p><strong>DRNN可以增强模型的表达能力，主要是将每个时刻上的循环体重复多次</strong>，每一层循环体中参数是共享的，但不同层之间的参数可以不同。DRNN结构图如图5所示。
+<img title="循环神经网络你需要知道的几个基本概念_" 图片5="" src="https://img.mukewang.com/5aa6426f0001c71204910466.png" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+<p style="text-align:center">图5 DRNN结构图</p>
+
+<p>TensorFlow中可以通过<code class="highlighter-rouge">rnn_cell.MultiRNNCell([lstm] * number_of_layer)</code>来构建DRNN，其中<code class="highlighter-rouge">number_of_layer</code>表示了有多少层。</p>
+
+<p>在我们构建自己的任务模型时，往往会设置dropout来让构建的网络模型更加健壮，类似在卷积神经网络只在最后全连接层使用dropout，<strong>DRNN一般只在不同层循环体结构中使用dropout，而不在同一层的循环体结构中使用</strong>。即从时刻<code class="highlighter-rouge">t-1</code>传递到<code class="highlighter-rouge">t</code>时刻时，RNN不进行状态的dropout，但在同一时刻t中，不同层循环体之间会使用dropout，图6展示了DRNN中使用dropout，其中实线箭头表示不使用dropout，虚线箭头表示使用dropout。
+<img title="循环神经网络你需要知道的几个基本概念_" 图片6="" src="https://img.mukewang.com/5aa642940001932204600364.png" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+<p style="text-align:center">图6 DRNN中使用dropout</p>
+
+<p>TensorFlow中可以使用<code class="highlighter-rouge">tf.nn.rnn_cell.DropoutWrapper</code>类来实现dropout功能。</p>
+
+<p>在实际编程中，我们可以通过TensorFlow的高层封装工具TFLearn来自定义模型，<strong>TFLearn封装了一些常用的神经网络模型</strong>，有兴趣的可以找找教程。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<p>[1]郑泽宇，顾思宇. Tensorflow：实战Google深度学习框架[M]. 电子工业出版社, 2017.</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">循环神经网络</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>

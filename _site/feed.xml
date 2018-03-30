@@ -5,9 +5,429 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 31 Oct 2017 17:31:55 +0800</pubDate>
-    <lastBuildDate>Tue, 31 Oct 2017 17:31:55 +0800</lastBuildDate>
+    <pubDate>Fri, 30 Mar 2018 11:49:23 +0800</pubDate>
+    <lastBuildDate>Fri, 30 Mar 2018 11:49:23 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>机器阅读理解中几个经典数据集</title>
+        <description>&lt;h2 id=&quot;一2013mctest&quot;&gt;一、2013，MCTest&lt;/h2&gt;
+
+&lt;p&gt;论文：&lt;code class=&quot;highlighter-rouge&quot;&gt;《MCTest：A Challenge Dataset for the Open-Domain Machine Comprehension of Test》&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;数据以json格式给出。小规模，大部分在这个数据集上的研究都是基于特征工程的工作。&lt;/p&gt;
+
+&lt;p&gt;下载链接：&lt;a href=&quot;&quot;&gt;http://www.msmarco.org/dataset.aspx&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;二2015cnndailymail&quot;&gt;二、2015，CNN&amp;amp;Dailymail&lt;/h2&gt;
+
+&lt;p&gt;论文：&lt;code class=&quot;highlighter-rouge&quot;&gt;《Teaching Machines to Read and Comprehend》&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;填空型大规模英文机器理解数据集，答案是原文中的某一个词。&lt;/p&gt;
+
+&lt;p&gt;CNN数据集包含美国有线电视新闻网的新闻文章和相关问题。大约有90k文章和380k问题。&lt;/p&gt;
+
+&lt;p&gt;Dailymail数据集包含每日新闻的文章和相关问题。大约有197k文章和879k问题。&lt;/p&gt;
+
+&lt;p&gt;下载链接：&lt;a href=&quot;&quot;&gt;https://github.com/deepmind/rc-data&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;三2016squad&quot;&gt;三、2016，SQuAD&lt;/h2&gt;
+
+&lt;p&gt;论文：&lt;code class=&quot;highlighter-rouge&quot;&gt;《SQuAD:100000+ Question for Machine Comprehension of Test》&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;机器理解领域的ImageNet，数据来源于对维基百科文章的问题的整理，在500多篇文章中有超过100000个问题答案对，答案不是原文的一个词，而是原文的一个连续文本片段。数据以json格式给出，只给出了训练集以及验证集，如果要获取在测试集上的效果，需要上传模型，官方会把你的模型在测试集上跑，得出结果后再反馈给你。&lt;/p&gt;
+
+&lt;p&gt;下载链接：&lt;a href=&quot;&quot;&gt;https://rajpurkar.github.io/SQuAD-explorer/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;四2017race&quot;&gt;四、2017，RACE&lt;/h2&gt;
+
+&lt;p&gt;论文：&lt;code class=&quot;highlighter-rouge&quot;&gt;《RACE：Large-scale Reading Comprehension Dataset From Examinations》&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;数据集为中国中学生英语阅读理解题目，给定一篇文章和 5 道 4 选 1 的题目，包括了 28000+ passages 和 100,000 问题。与MCTest同为选择题形式的机器阅读数据集，但规模比MCTest大，且相对CNN&amp;amp;Dailymail和SQuAD，RACE更注重推理能力。&lt;/p&gt;
+
+&lt;p&gt;数据以txt格式给出，数据集的high文件夹下有20794篇文章，每篇文章有4个问题；middle文件夹下有7139篇文章，每篇文章有5个问题。&lt;/p&gt;
+
+&lt;p&gt;训练集的high文件夹下有18728篇文章，占比90%，middle文件夹下有6409篇文章，占比90%；&lt;/p&gt;
+
+&lt;p&gt;验证集的high文件夹下有1021篇文章，占比5%，middle文件夹下有368篇文章，占比5%；&lt;/p&gt;
+
+&lt;p&gt;测试集的high文件夹下有1045篇文章，占比5%，middle文件夹下有362篇文章，占比5%。&lt;/p&gt;
+
+&lt;p&gt;需要发送email，官方会给你的邮箱发下载链接，申请地址：&lt;a href=&quot;&quot;&gt;http://www.cs.cmu.edu/~glai1/data/race/
+&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;样本数据展示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器阅读理解中你需要知道的几个经典数据集_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5abdaed1000156fe12840826.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:60%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器阅读理解中你需要知道的几个经典数据集_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5abdaee50001000b12780800.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:60%&quot; /&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 30 Mar 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/03/30/%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E4%B8%AD%E5%87%A0%E4%B8%AA%E7%BB%8F%E5%85%B8%E6%95%B0%E6%8D%AE%E9%9B%86.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/03/30/%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E4%B8%AD%E5%87%A0%E4%B8%AA%E7%BB%8F%E5%85%B8%E6%95%B0%E6%8D%AE%E9%9B%86.html</guid>
+        
+        <category>机器阅读理解</category>
+        
+        <category>数据集</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
+    
+      <item>
+        <title>机器学习中的正则化</title>
+        <description>&lt;h2 id=&quot;11-竹篮打水一场空-过拟合&quot;&gt;1.1 竹篮打水一场空-过拟合&lt;/h2&gt;
+
+&lt;p&gt;如果你发现在训练集上你的模型无比的完美，请晚一点再开心，因为很有可能你的模型已经过拟合了，那么这个模型就算废了。&lt;strong&gt;过拟合的直观解释是模型在训练集上性能完美，但在验证集或测试集上效果却不那么尽人意了&lt;/strong&gt;。机器学习中一个核心任务就是防止模型过拟合，当模型的参数个数远大于数据集样本数量时，&lt;strong&gt;模型则可很好的“记忆”每一个训练数据的随机噪声而忘了去学习训练数据中通用的趋势，这就有可能导致过拟合&lt;/strong&gt;，这个时候你可以简单的扩充数据集中的样本来降低过拟合的影响，但这需要一定的时间和人力成本，且效果可能不那么明显。那么如何用最小的成本来防止模型过拟合呢，即如何使训练错误率与测试错误率的差距尽可能小呢？答案就是本文主要讨论的内容：正则化。&lt;/p&gt;
+
+&lt;h2 id=&quot;12-正则化&quot;&gt;1.2 正则化&lt;/h2&gt;
+
+&lt;p&gt;我们都知道正则化可以降低泛化错误率，降低模型过拟合几率，但Why？How？下面我们来详细分析下正则化。正则化策略主要的目的是限制学习算法的能力，主要的方法可以是：限制网络模型的神经元数量、限制模型参数（连接权重W，偏置项B等）的数目、在目标函数添加一些额外的惩罚项等。添加惩罚项可看成是对损失函数中的某些参数做一些限制，根据惩罚项的不同可分为：&lt;strong&gt;L0范数惩罚、L1范数惩罚（参数稀疏性惩罚）、L2范数惩罚（权重衰减惩罚）&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;121-l0范数惩罚&quot;&gt;1.2.1 L0范数惩罚&lt;/h2&gt;
+
+&lt;p&gt;L0范数惩罚是最“严格”的参数限制策略，它&lt;strong&gt;将模型参数不等于0的个数控制在&lt;code class=&quot;highlighter-rouge&quot;&gt;c&lt;/code&gt;以内来达到限制模型能力的目的。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;122-l1范数惩罚&quot;&gt;1.2.2 L1范数惩罚&lt;/h2&gt;
+
+&lt;p&gt;L0范数惩罚在实际应用中不太友好，进一步放松限制，不要求参数的非零数量被限制在某个范围内，而&lt;strong&gt;要求参数数值的总和要小于某个数值&lt;/strong&gt;，具体公式可见《深度学习中你需要知道的几个基本概念》，这种对参数数值总和的限制被称为L1范数惩罚，又称参数稀疏性惩罚，&lt;strong&gt;那么参数稀疏在哪呢？&lt;/strong&gt;假设一个带L1正则化的损失函数为&lt;code class=&quot;highlighter-rouge&quot;&gt;J=J0+α∑|w|&lt;/code&gt;
+其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;J0&lt;/code&gt;是原始的损失函数，&lt;code class=&quot;highlighter-rouge&quot;&gt;α∑|w|&lt;/code&gt;是L1正则化项，&lt;code class=&quot;highlighter-rouge&quot;&gt;α&lt;/code&gt;是正则化系数。L1正则化项是带有绝对值符号的函数，因此加了L1正则化项的损失函数是不完全可微的。当我们在原始损失函数&lt;code class=&quot;highlighter-rouge&quot;&gt;J0&lt;/code&gt;后添加L1正则化项后，相当于对&lt;code class=&quot;highlighter-rouge&quot;&gt;J0&lt;/code&gt;做了一个约束。令&lt;code class=&quot;highlighter-rouge&quot;&gt;L=α∑|w|&lt;/code&gt;，则&lt;code class=&quot;highlighter-rouge&quot;&gt;J=J0+L&lt;/code&gt;，我们知道&lt;strong&gt;梯度下降算法的目的是使损失函数最小化&lt;/strong&gt;，那么我们的任务变成在L约束下求出&lt;code class=&quot;highlighter-rouge&quot;&gt;J0&lt;/code&gt;取最小值的解。假设在二维的情况，即只有两个权值&lt;code class=&quot;highlighter-rouge&quot;&gt;w1&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;w2&lt;/code&gt;，此时&lt;code class=&quot;highlighter-rouge&quot;&gt;L=|w1|+|w2|&lt;/code&gt;。损失函数的梯度等值线如图1中的实线等高椭圆所示，梯度的最小值为其中心点，如果没有加任何限制项，则&lt;strong&gt;模型学习过程就是每次沿着梯度等高线垂直的方向寻找极值点&lt;/strong&gt;。而L1正则化的函数L在&lt;code class=&quot;highlighter-rouge&quot;&gt;w1、w2&lt;/code&gt;的二维平面上画出来表示为图1中的黑色方形。如下图1所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器学习中的正则化_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aa9000a0001019f03180297.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:60%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图1 求解带L1正则化项的损失函数&lt;/p&gt;
+
+&lt;p&gt;上图中&lt;code class=&quot;highlighter-rouge&quot;&gt;J0&lt;/code&gt;与&lt;code class=&quot;highlighter-rouge&quot;&gt;L&lt;/code&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;L&lt;/code&gt;的一个顶点处&lt;code class=&quot;highlighter-rouge&quot;&gt;(0,w2)&lt;/code&gt;相交，这个顶点就是损失函数J的最优解。可以直观想象，因为L函数有很多“突出的角”（二维情况下四个，多维情况下更多），&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;J0&lt;/code&gt;与这些角接触的机率会远大于与&lt;code class=&quot;highlighter-rouge&quot;&gt;L&lt;/code&gt;其它部位接触的机率&lt;/strong&gt;，而&lt;strong&gt;在这些角上会有很多权值等于0，这就是为什么L1正则化可以产生稀疏模型。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在这里，我们在解释下&lt;strong&gt;为什么J0与这些角接触的机率会远大于与L其它部位接触的机率？&lt;/strong&gt;试着想象下，如果方形的四条边凹进去一定的弧度，那么除非梯度等高线在一些特殊的角度才会使得相交点落在四条边上而不是方形的角上。当在多维的情况下（模型参数不只有2个），那么这个时候的L可表示为一个多边形，当边数够多，即角很多，可以近似的看成是四条边凹进去一定弧度后的图形，这样梯度等高线与角相交的概率会远大于L其它部分相交的概率。同样，如果方形的四条边往外凸，当凸出一定弧度后，会转变成一个圆，即为L2正则化的图形，这个时候的&lt;code class=&quot;highlighter-rouge&quot;&gt;J0&lt;/code&gt;与&lt;code class=&quot;highlighter-rouge&quot;&gt;L&lt;/code&gt;的图形上每个点相交的概率都一样，所以L2正则化无法产生稀疏模型。求解带L2正则化项的损失函数如图2所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;那么得到稀疏模型有什么好处呢？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;稀疏模型是指模型参数矩阵中有很多参数为0，只有少数参数是非零值的。机器学习中特征向量的维数一般很大，在预测或分类时，那么多特征显然难以选择，但是如果代入这些特征得到的模型是一个稀疏模型，表示只有少数特征对这个模型有贡献，绝大部分特征很大程度上是噪声特征，其没有贡献或贡献微小（因为它们前面的系数是0或者是很小的值，即使去掉对模型也没有什么影响），此时我们就可以只关注系数是非零值的特征。这就是稀疏模型与特征选择的关系。&lt;/p&gt;
+
+&lt;h2 id=&quot;123-l2范数惩罚&quot;&gt;1.2.3 L2范数惩罚&lt;/h2&gt;
+
+&lt;p&gt;我们知道L1范数项不可微，所以我们&lt;strong&gt;将参数的绝对值求和改为参数平方和&lt;/strong&gt;，公式如《深度学习中你需要知道的几个基本概念》所示，这就是L2范数惩罚，即权重衰减惩罚。&lt;/p&gt;
+
+&lt;p&gt;这时一个带L2正则化的损失函数为J可表示为&lt;code class=&quot;highlighter-rouge&quot;&gt;J=J0+α∑w2&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;求解带L2正则化项的损失函数如下图所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器学习中的正则化_&quot; 图片2=&quot;&quot; src=&quot;https://img.mukewang.com/5aa900b0000123d303180297.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:60%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图2 求解带L2正则化项的损失函数&lt;/p&gt;
+
+&lt;p&gt;正则化前面的系数&lt;code class=&quot;highlighter-rouge&quot;&gt;α&lt;/code&gt;，可以控制&lt;code class=&quot;highlighter-rouge&quot;&gt;L&lt;/code&gt;图形的大小。&lt;code class=&quot;highlighter-rouge&quot;&gt;α&lt;/code&gt;过小，&lt;code class=&quot;highlighter-rouge&quot;&gt;L&lt;/code&gt;的半径则很大，就越容易达到损失函数的最小值（中心点），会发生过拟合现象；&lt;code class=&quot;highlighter-rouge&quot;&gt;α&lt;/code&gt;过大，&lt;code class=&quot;highlighter-rouge&quot;&gt;L&lt;/code&gt;的半径则很小，即对模型参数惩罚过重，模型的能力也就越弱，会发生欠拟合现象。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;模型在拟合过程中通常都会倾向于让权值尽可能小&lt;/strong&gt;，最终构造一个所有参数都比较小的模型。因为一般认为参数值小的模型比较简单，且能适应不同的数据集，在一定程度上可降低过拟合风险。比如，对于一个线性回归方程，若参数很大，那么只要数据偏移一点点，就会对结果造成很大的影响；但如果参数足够小，数据偏移得多一点也不会对结果造成什么影响，这就是常说的抗扰动能力强。&lt;/p&gt;
+
+&lt;h2 id=&quot;13-其它被视为正则化的策略&quot;&gt;1.3 其它被视为正则化的策略&lt;/h2&gt;
+
+&lt;p&gt;在深度学习中你听过的很多名词其实都是一种正则化策略，下面我们将介绍这些正则化策略。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;参数共享&lt;/strong&gt;，在卷积神经网络中，卷积操作其实就采用了参数共享，通过参数共享，减少模型参数，降低模型复杂度，从而减少模型过拟合风险，卷积神经网络的详细内容见《卷积神经网络你需要知道的几个基本概念》。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;噪声注入以及数据扩充&lt;/strong&gt;，降低泛化错误率直接的方法就是训练更多的数据，但有监督学习中，带标签的数据往往是有限的，我们可以通过噪声注入以及数据扩充方法在现有数据的基础上扩充数据集。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;稀疏表征&lt;/strong&gt;，这种正则化策略事通过某种惩罚措施来抑制神经网络隐藏层中大部分神经元，当信息输入神经网络时，只有关键部分神经元处于激活状态。这和1.2.2节的L1范数惩罚相似，只不过，L1范数是使模型参数稀疏化，而表征稀疏化是隐藏层输出大多数为零或接近零。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Dropout&lt;/strong&gt;，以dropout概率随机断开神经元连接，是一种非常高效的深度学习正则化措施。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;参考文献&quot;&gt;参考文献&lt;/h2&gt;
+
+&lt;p&gt;[1] 杨云、杜飞，清华大学出版社，深度学习实战&lt;/p&gt;
+</description>
+        <pubDate>Wed, 14 Mar 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/03/14/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84%E6%AD%A3%E5%88%99%E5%8C%96.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/03/14/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84%E6%AD%A3%E5%88%99%E5%8C%96.html</guid>
+        
+        <category>机器学习</category>
+        
+        <category>正则化</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
+    
+      <item>
+        <title>循环神经网络你需要知道的几个基本概念</title>
+        <description>&lt;h2 id=&quot;11-为什么有了全连接神经网络和cnn还需要rnn&quot;&gt;1.1 为什么有了全连接神经网络和CNN还需要RNN？&lt;/h2&gt;
+
+&lt;p&gt;我们通过前两篇博文知道了全连接神经网络和卷积神经网络的基本工作原理，这两种网络结构的层与层之间是全连接或部分连接的，&lt;strong&gt;但在每层之间的节点是无连接的，这样的网络结构并不能很好的处理序列数据&lt;/strong&gt;。当我们要建立一个模型来预测句子的下一个单词是什么时，结合n-gram语言模型思想，一般是需要用到当前单词以及前面单词，因为一个句子中每个单词的出现并不是独立的。比如，如果第一个词是“天空”，接下来的词是“很”，那么下一个词很大概率会是“蓝”，RNN则可以处理类似这样的序列数据。&lt;strong&gt;RNN通过每层之间节点的连接结构来记忆之前的信息，并利用这些信息来影响后面节点的输出。RNN可充分挖掘序列数据中的时序信息以及语义信息，这种在处理时序数据时比全连接神经网络和CNN更具有深度表达能力&lt;/strong&gt;，RNN已广泛应用于语音识别、语言模型、机器翻译、时序分析等各个领域。&lt;/p&gt;
+
+&lt;h2 id=&quot;12-rnn模型&quot;&gt;1.2 RNN模型&lt;/h2&gt;
+
+&lt;p&gt;我们先来看一个RNN经典结构，图1展示了一个典型按时间展开后的RNN结构。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;循环神经网络你需要知道的几个基本概念_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aa64138000175ef07820220.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图1 按时间展开后的RNN结构&lt;/p&gt;
+
+&lt;p&gt;从图1可以看出，RNN在每一个时刻都有一个输入&lt;code class=&quot;highlighter-rouge&quot;&gt;Xt&lt;/code&gt;，然后根据当前节点的状态&lt;code class=&quot;highlighter-rouge&quot;&gt;At&lt;/code&gt;计算输出值&lt;code class=&quot;highlighter-rouge&quot;&gt;ht&lt;/code&gt;，而&lt;code class=&quot;highlighter-rouge&quot;&gt;At&lt;/code&gt;是根据上一时刻的状态&lt;code class=&quot;highlighter-rouge&quot;&gt;At-1&lt;/code&gt;和当前的输入&lt;code class=&quot;highlighter-rouge&quot;&gt;Xt&lt;/code&gt;共同决定的。&lt;strong&gt;和卷积神经网络卷积核或池化核的参数共享类似，这里RNN结构中的参数在不同时刻中也是共享的&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h3 id=&quot;121-rnn前向传播过程&quot;&gt;1.2.1 RNN前向传播过程&lt;/h3&gt;
+
+&lt;p&gt;图2展示了RNN的前向传播的计算过程。
+&lt;img title=&quot;循环神经网络你需要知道的几个基本概念_&quot; 图片2=&quot;&quot; src=&quot;https://img.mukewang.com/5aa641ab00010acc07730469.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图2 RNN的前向传播的计算过程&lt;/p&gt;
+
+&lt;p&gt;如图2所示，假设节点状态的维度为&lt;code class=&quot;highlighter-rouge&quot;&gt;2&lt;/code&gt;，节点的输入和输出维度为&lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;，那么在循环体的全连接层神经网络的输入维度为&lt;code class=&quot;highlighter-rouge&quot;&gt;3&lt;/code&gt;，&lt;strong&gt;也就是将上一时刻的状态与当前时刻的输入拼接成一维向量作为循环体的全连接层神经网络的输入&lt;/strong&gt;，在这里&lt;code class=&quot;highlighter-rouge&quot;&gt;t0&lt;/code&gt;时刻的节点状态初始化为&lt;code class=&quot;highlighter-rouge&quot;&gt;[0.0, 0.0]&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;t0&lt;/code&gt;时刻的节点输入为&lt;code class=&quot;highlighter-rouge&quot;&gt;[1.0]&lt;/code&gt;，拼接之后循环体的全连接层神经网络的输入为&lt;code class=&quot;highlighter-rouge&quot;&gt;[0.0, 0.0, 1.0]&lt;/code&gt;，循环体中的全连接层的权重表示为二维矩阵&lt;code class=&quot;highlighter-rouge&quot;&gt;[[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]]&lt;/code&gt;，偏置项为&lt;code class=&quot;highlighter-rouge&quot;&gt;[0.1, -0.1]&lt;/code&gt;，我们可以看到权重矩阵和偏置项在&lt;code class=&quot;highlighter-rouge&quot;&gt;t0&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;t1&lt;/code&gt;时刻的循环体中是一样的，&lt;strong&gt;这也说明了RNN结构中的参数在不同时刻中也是共享的&lt;/strong&gt;。经过循环体中的全连接层神经网络后节点的状态改变为&lt;code class=&quot;highlighter-rouge&quot;&gt;tanh([0.6, 0.5]) = [0.537, 0.462]&lt;/code&gt;，当前节点状态的输出作为下一个节点状态的输入。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为了将当前时刻的状态转变为节点的最终输出，RNN中还有另外一个全连接神经网络来计算节点输出&lt;/strong&gt;，在图2中被表示为&lt;code class=&quot;highlighter-rouge&quot;&gt;[0.537, 0.462] * [1.0, 2.0] + [0.1] = [1.56]&lt;/code&gt;，用于输出的全连接层权重为&lt;code class=&quot;highlighter-rouge&quot;&gt;[1.0, 2.0]&lt;/code&gt;，偏置项为&lt;code class=&quot;highlighter-rouge&quot;&gt;[0.1]&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;1.56&lt;/code&gt;表示为&lt;code class=&quot;highlighter-rouge&quot;&gt;t0&lt;/code&gt;时刻节点的最终输出。&lt;/p&gt;
+
+&lt;p&gt;得到RNN的前向传播结果之后，和其他神经网络类似，定义损失函数，使用反向传播算法和梯度下降算法训练模型，但RNN唯一的区别在于：&lt;strong&gt;由于它每个时刻的节点都有一个输出，所以RNN的总损失为所有时刻（或部分时刻）上的损失和&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;13-lstm结构&quot;&gt;1.3 LSTM结构&lt;/h2&gt;
+
+&lt;p&gt;上节介绍的RNN模型，&lt;strong&gt;存在“长期依赖”的问题&lt;/strong&gt;。模型在预测“大海的颜色是”下一个单词时，很容易判断为“蓝色”，因为这里相关信息与待预测词的位置相差不大，模型不需要记忆这个短句子之前更长的上下文信息。但当模型预测“十年前，北京的天空很蓝，但随着大量工厂的开设，废气排放监控不力，空气污染开始变得越来越严重，渐渐地，这里的天空变成了”下一个单词时，依靠“短期依赖”就不能很好的解决这类问题，因为仅仅根据“这里的天空变成了”这一小段，后一个单词可以是“蓝色”，也可以是“灰色”。上节描述的简单RNN结构可能无法学习到这种“长期依赖”的信息，LSTM可以很好的解决这类问题。图3展示了LSTM单元结构图。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;循环神经网络你需要知道的几个基本概念_&quot; 图片3=&quot;&quot; src=&quot;https://img.mukewang.com/5aa642150001827705950366.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图3 LSTM单元结构图&lt;/p&gt;
+
+&lt;p&gt;与简单RNN结构中单一tanh循环体不同的是，LSTM使用三个“门”结构来控制不同时刻的状态和输出。&lt;strong&gt;所谓的“门”结构就是使用了sigmoid激活函数的全连接神经网络和一个按位做乘法的操作&lt;/strong&gt;，sigmoid激活函数会输出一个0~1之间的数值，这个数值描述的是当前有多少信息能通过“门”，0表示任何信息都无法通过，1表示全部信息都可以通过。其中，“遗忘门”和“输入门”是LSTM单元结构的核心。下面我们来详细分析下三种“门”结构。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;遗忘门，用来让RNN“忘记”之前没有用的信息。&lt;/strong&gt;比如“十年前，北京的天空是蓝色的”，但当看到“空气污染开始变得越来越严重”后，RNN应该忘记“北京的天空是蓝色的”这个信息。遗忘门会根据当前时刻节点的输入&lt;code class=&quot;highlighter-rouge&quot;&gt;Xt&lt;/code&gt;、上一时刻节点的状态&lt;code class=&quot;highlighter-rouge&quot;&gt;C(t-1)&lt;/code&gt;和上一时刻节点的输出&lt;code class=&quot;highlighter-rouge&quot;&gt;h(t-1)&lt;/code&gt;来决定哪些信息将被遗忘。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;输入门，用来让RNN决定当前输入数据中哪些信息将被留下来。&lt;/strong&gt;在RNN使用遗忘门“忘记”部分之前的信息后，还需要从当前的输入补充最新的记忆。输入门会根据当前时刻节点的输入&lt;code class=&quot;highlighter-rouge&quot;&gt;Xt&lt;/code&gt;、上一时刻节点的状态&lt;code class=&quot;highlighter-rouge&quot;&gt;C(t-1)&lt;/code&gt;和上一时刻节点的输出&lt;code class=&quot;highlighter-rouge&quot;&gt;h(t-1)&lt;/code&gt;来决定哪些信息将进入当前时刻节点的状态&lt;code class=&quot;highlighter-rouge&quot;&gt;Ct&lt;/code&gt;，比如看到“空气污染开始变得越来越严重”后，模型需要记忆这个最新的信息。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;输出门，LSTM在得到最新节点状态&lt;code class=&quot;highlighter-rouge&quot;&gt;Ct&lt;/code&gt;后，结合上一时刻节点的输出&lt;code class=&quot;highlighter-rouge&quot;&gt;h(t-1)&lt;/code&gt;和当前时刻节点的输入&lt;code class=&quot;highlighter-rouge&quot;&gt;Xt&lt;/code&gt;来决定当前时刻节点的输出。&lt;/strong&gt;比如当前时刻节点状态为被污染，那么“天空的颜色”后面的单词应该是“灰色”。&lt;/p&gt;
+
+&lt;p&gt;在TensorFlow中可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;lstm = rnn_cell.BasicLSTMCell(lstm_hidden_size)&lt;/code&gt;来声明一个LSTM结构。&lt;/p&gt;
+
+&lt;h2 id=&quot;14-双向循环神经网络brnn&quot;&gt;1.4 双向循环神经网络（BRNN）&lt;/h2&gt;
+
+&lt;p&gt;RNN和LSTM都只能依据之前时刻的时序信息来预测下一时刻的输出，但在有些问题中，&lt;strong&gt;当前时刻的输出不仅和之前的状态有关，还可能和未来的状态有关系&lt;/strong&gt;。比如预测一句话中缺失的单词不仅需要根据前文来判断，还需要考虑它后面的内容，真正做到基于上下文判断。BRNN有两个RNN上下叠加在一起组成的，输出由这两个RNN的状态共同决定。BRNN结构图如图4所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;循环神经网络你需要知道的几个基本概念_&quot; 图片4=&quot;&quot; src=&quot;https://img.mukewang.com/5aa6424f0001485b07120276.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图4 BRNN结构图&lt;/p&gt;
+
+&lt;p&gt;对于每个时刻&lt;code class=&quot;highlighter-rouge&quot;&gt;t&lt;/code&gt;，输入会同时提供给两个方向相反的RNN，输出由这两个单向RNN共同决定。&lt;/p&gt;
+
+&lt;h2 id=&quot;15-深层循环神经网络drnn&quot;&gt;1.5 深层循环神经网络（DRNN）&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;DRNN可以增强模型的表达能力，主要是将每个时刻上的循环体重复多次&lt;/strong&gt;，每一层循环体中参数是共享的，但不同层之间的参数可以不同。DRNN结构图如图5所示。
+&lt;img title=&quot;循环神经网络你需要知道的几个基本概念_&quot; 图片5=&quot;&quot; src=&quot;https://img.mukewang.com/5aa6426f0001c71204910466.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图5 DRNN结构图&lt;/p&gt;
+
+&lt;p&gt;TensorFlow中可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;rnn_cell.MultiRNNCell([lstm] * number_of_layer)&lt;/code&gt;来构建DRNN，其中&lt;code class=&quot;highlighter-rouge&quot;&gt;number_of_layer&lt;/code&gt;表示了有多少层。&lt;/p&gt;
+
+&lt;p&gt;在我们构建自己的任务模型时，往往会设置dropout来让构建的网络模型更加健壮，类似在卷积神经网络只在最后全连接层使用dropout，&lt;strong&gt;DRNN一般只在不同层循环体结构中使用dropout，而不在同一层的循环体结构中使用&lt;/strong&gt;。即从时刻&lt;code class=&quot;highlighter-rouge&quot;&gt;t-1&lt;/code&gt;传递到&lt;code class=&quot;highlighter-rouge&quot;&gt;t&lt;/code&gt;时刻时，RNN不进行状态的dropout，但在同一时刻t中，不同层循环体之间会使用dropout，图6展示了DRNN中使用dropout，其中实线箭头表示不使用dropout，虚线箭头表示使用dropout。
+&lt;img title=&quot;循环神经网络你需要知道的几个基本概念_&quot; 图片6=&quot;&quot; src=&quot;https://img.mukewang.com/5aa642940001932204600364.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图6 DRNN中使用dropout&lt;/p&gt;
+
+&lt;p&gt;TensorFlow中可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;tf.nn.rnn_cell.DropoutWrapper&lt;/code&gt;类来实现dropout功能。&lt;/p&gt;
+
+&lt;p&gt;在实际编程中，我们可以通过TensorFlow的高层封装工具TFLearn来自定义模型，&lt;strong&gt;TFLearn封装了一些常用的神经网络模型&lt;/strong&gt;，有兴趣的可以找找教程。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考文献&quot;&gt;参考文献&lt;/h2&gt;
+
+&lt;p&gt;[1]郑泽宇，顾思宇. Tensorflow：实战Google深度学习框架[M]. 电子工业出版社, 2017.&lt;/p&gt;
+</description>
+        <pubDate>Mon, 12 Feb 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/02/12/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E4%B8%AA%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/02/12/%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E4%B8%AA%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5.html</guid>
+        
+        <category>循环神经网络</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
+    
+      <item>
+        <title>卷积神经网络你需要知道的几个基本概念</title>
+        <description>&lt;h2 id=&quot;11-为什么有了全连接网络模型还要cnn&quot;&gt;1.1 为什么有了全连接网络模型还要CNN？&lt;/h2&gt;
+
+&lt;p&gt;全连接网络模型是指在神经网络中每两层之间的所有结点都是相连接的，但在处理图像数据时，全连接网络所需要的参数个数太多，比如处理一张单通道图片，图片大小为&lt;code class=&quot;highlighter-rouge&quot;&gt;28\*28&lt;/code&gt;，设隐藏层的节点数为&lt;code class=&quot;highlighter-rouge&quot;&gt;500&lt;/code&gt;个，则由其组成的全连接网络模型的参数有&lt;code class=&quot;highlighter-rouge&quot;&gt;28\*28*500+500=392500&lt;/code&gt;，“+500”是因为考虑了偏置项b的情况，而当图片更大时，参数会急剧增多，&lt;strong&gt;参数过多不仅会导致网络模型计算速度变慢，同时也容易导致过拟合问题&lt;/strong&gt;，CNN的出现就是为了在一定程度上改善这种情况。&lt;/p&gt;
+
+&lt;h2 id=&quot;12-卷积层和池化层&quot;&gt;1.2 卷积层和池化层&lt;/h2&gt;
+
+&lt;p&gt;图1展示了一个典型的CNN模型结构图。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;卷积神经网络你需要知道的几个基本概念_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aa4dad60001994208920253.jpg&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图1 典型的CNN模型结构图&lt;/p&gt;
+
+&lt;p&gt;从上图中可以看出，CNN的卷积层（Convolution）和池化层（Polling）中每个节点只与上一层的部分节点相连，卷积层的每个节点的输入只是上一层中的一小块，这个小块的大小由卷积核的窗口大小决定，通常来说，经过卷积层处理的节点矩阵会变得更深，具体的深度由卷积层中卷积核的多少来决定。&lt;strong&gt;卷积核的参数是共享可以使得图像上的内容不受位置的影响&lt;/strong&gt;，即图片中的猫不管是在图片的左上角或者右下角都应该被分类为猫，&lt;strong&gt;同时共享卷积核的参数可以大幅减少网络模型中的参数&lt;/strong&gt;，降低运算的复杂度。&lt;/p&gt;
+
+&lt;p&gt;池化层的每个节点的输入也是上一层（通常是卷积层）的一小块，这个小块的大小由池化核的窗口大小决定，池化层不会改变节点矩阵的深度，但它可以改变矩阵的大小，通俗来说，对于图像处理，&lt;strong&gt;池化层中池化操作可以理解为是将一张分辨率高的图片转化为分辨率低的图片&lt;/strong&gt;。常用的池化操作有最大池化、平均池化等，通过卷积层和池化层后，可以进一步缩小网络模型中的参数个数，下面我们来分析下CNN如何减少网络模型中的参数。&lt;/p&gt;
+
+&lt;h3 id=&quot;121-维度变化过程&quot;&gt;1.2.1 维度变化过程&lt;/h3&gt;
+
+&lt;p&gt;卷积层是CNN中重要的概念之一，通过卷积核对上一层进行卷积操作，完成特征抽取。本节主要分析卷积层和池化层的维度变化过程，在使用全0填充（如果步长为1则可避免节点矩阵通过卷积层后尺寸发生变化）时，卷积层\池化层的输出维度计算公式为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;卷积神经网络你需要知道的几个基本概念_&quot; 图片2=&quot;&quot; src=&quot;https://img.mukewang.com/5aa4db570001eadc02970089.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;out(longth)&lt;/code&gt;表示卷积层输出矩阵的长度，它等于输入层矩阵长度除以在长度方向上的步长的向上取整值，&lt;code class=&quot;highlighter-rouge&quot;&gt;out(width)&lt;/code&gt;表示卷积层输出矩阵的宽度，它等于输入层矩阵宽度除以在宽度方向上的步长的向上取整值。&lt;/p&gt;
+
+&lt;p&gt;如果不使用全0填充，则卷积层\池化层的输出维度计算公式为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;卷积神经网络你需要知道的几个基本概念_&quot; 图片3=&quot;&quot; src=&quot;https://img.mukewang.com/5aa4db780001caa904380078.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;filter(length)&lt;/code&gt;表示卷积核\池化核在在长度方向上的大小，&lt;code class=&quot;highlighter-rouge&quot;&gt;filter(width)&lt;/code&gt;表示卷积核\池化核在在宽度方向上的大小。
+假如输入层矩阵的维度为&lt;code class=&quot;highlighter-rouge&quot;&gt;32\*32\*1&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;代表灰度图像，第一层卷积核尺寸为&lt;code class=&quot;highlighter-rouge&quot;&gt;5\*5&lt;/code&gt;，深度为&lt;code class=&quot;highlighter-rouge&quot;&gt;6&lt;/code&gt;（即有6个卷积核），不使用全0填充，步长为&lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;。则卷积层的输出维度为&lt;code class=&quot;highlighter-rouge&quot;&gt;（32-5+1=28）&lt;/code&gt;，卷积层的参数共有&lt;code class=&quot;highlighter-rouge&quot;&gt;5\*5\*1\*6+6=156&lt;/code&gt;个，这里可以发现，&lt;strong&gt;卷积层的参数个数与图片大小无关，它只与卷积核尺寸、深度以及当前层节点矩阵的深度有关&lt;/strong&gt;，这使得CNN可以扩展到任意大小的图像数据上，卷积层的输出维度即下一层（通常是池化层）的输入维度有&lt;code class=&quot;highlighter-rouge&quot;&gt;28\*28\*6=4704&lt;/code&gt;个节点；池化层的池化核大小为&lt;code class=&quot;highlighter-rouge&quot;&gt;2\*2&lt;/code&gt;，步长为&lt;code class=&quot;highlighter-rouge&quot;&gt;2&lt;/code&gt;，池化层的输出维度为&lt;code class=&quot;highlighter-rouge&quot;&gt;（28-2+1）/2=13.5&lt;/code&gt;，向上取整的结果为14，池化层不影响节点矩阵的深度，则池化层的输出维度为&lt;code class=&quot;highlighter-rouge&quot;&gt;14\*14*6&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考文献&quot;&gt;参考文献&lt;/h2&gt;
+
+&lt;p&gt;[1]郑泽宇，顾思宇. Tensorflow：实战Google深度学习框架[M]. 电子工业出版社, 2017.&lt;/p&gt;
+</description>
+        <pubDate>Sun, 21 Jan 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/01/21/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E4%B8%AA%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/01/21/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E4%B8%AA%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5.html</guid>
+        
+        <category>卷积神经网络</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
+    
+      <item>
+        <title>深度学习中你需要知道的几个基本概念</title>
+        <description>&lt;p&gt;深度学习在一定程度上等同于深层神经网络，维基百科对深度学习的概念为：一类通过多层非线性变换对高复杂性数据建模算法的合集。从该定义中可以看出两个深度学习的特征：多层和非线性。&lt;/p&gt;
+
+&lt;h2 id=&quot;11-非线性与线性&quot;&gt;1.1 非线性与线性&lt;/h2&gt;
+
+&lt;p&gt;由于模型的输出被简单的表示为输入的加权和，线性模型只能通过直线来划分平面。任意线性模型的组合依旧是线性模型，所以如果没有激活函数，只通过线性变化，任意层的全连接神经网络和单层神经网络模型的表达能力没有区别，且其在解决复杂问题上显得吃力。下面使用TensorFlow官方提供的一个神经网络游乐场来分析线性模型的局限性。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;图1 非线性可分问题的线性模型图&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5a9de1a9000102bd11770710.png&quot; alt=&quot;图1 非线性可分问题的线性模型图&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图1 非线性可分问题的线性模型图&lt;/p&gt;
+
+&lt;p&gt;从图1可以看出，在正上方激活函数Activation一栏中我们选择了“Linear”线性函数，学习率Learning rate为0.03，全连接线性神经网络模型包含：输入层有两个节点，代表两个输入；隐藏层有三个节点；输出层为一个节点，表示分类结果。在输出图上方还给出了训练和测试的损失值（Test loss 和 Training loss），随着Epoch的增加，loss也会随之减少。在左边我们可以选择不同的数据集喂给定义好的模型，这里我们选择一个非线性可分的数据集。训练100epoch的模型结果如图2所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;图2 非线性可分问题的线性模型结果图&quot; 图片2=&quot;&quot; src=&quot;https://img.mukewang.com/5a9de1bc000175d811600697.png&quot; alt=&quot;图2 非线性可分问题的线性模型结果图&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图2 非线性可分问题的线性模型结果图&lt;/p&gt;
+
+&lt;p&gt;从图2模型结果图分析可知，训练100次后，模型并没有很好地拟合非线性任务，且在输出图中看出有一条直线来表示模型的划分方式，模型将在直线上方的点分类为蓝色，将直线下方的点分类为黄色，显然这种分类效果并不理想。为了对比线性模型与非线性模型在同一问题上的效果，我们将Activation改为Relu，其他超参数不变，实验结果如图3所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;图3 非线性可分问题的非线性模型结果图&quot; 图片3=&quot;&quot; src=&quot;https://img.mukewang.com/5a9de1e60001c15011620700.png&quot; alt=&quot;图3 非线性可分问题的非线性模型结果图&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图3 非线性可分问题的非线性模型结果图&lt;/p&gt;
+
+&lt;p&gt;从图3模型结果图分析可知，非线性模型的Test loss仅为0.033，说明非线性模型对处理非线性问题效果要比线性模型好。同时为了展现线性模型处理线性任务的有效性，我们选取线性可分的数据集进行线性模型实验，Activation选择Linear，且其它超参数保持不变，实验结果如图4所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;图4 线性可分问题的线性模型结果图&quot; 图片4=&quot;&quot; src=&quot;https://img.mukewang.com/5a9de2060001164611570692.png&quot; alt=&quot;图4 线性可分问题的线性模型结果图&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图4 线性可分问题的线性模型结果图&lt;/p&gt;
+
+&lt;p&gt;从图4模型结果图分析可知，Test loss可达到0.000，说明在线性可分问题中，线性模型可以很好的区分不同颜色的点，线性模型可以很好的处理线性可分任务。&lt;/p&gt;
+
+&lt;h2 id=&quot;12-激活函数&quot;&gt;1.2 激活函数&lt;/h2&gt;
+
+&lt;p&gt;但现实生活中，我们往往需要处理复杂的非线性可分的问题，这种问题无法通过直线或高维空间平面来划分，深度学习的出现可以处理这类问题。&lt;/p&gt;
+
+&lt;p&gt;线性模型的输出是所有输入的简单加权和，如果将加权和再通过一个非线性函数，则构建的神经网络模型不再是是线性模型，这个非线性函数就是我们常看到的激活函数，TensorFlow中封装了7中不同的非线性激活函数，如&lt;code class=&quot;highlighter-rouge&quot;&gt;tf.nn.relu，tf.sigmoid和tf.tanh&lt;/code&gt;等。&lt;/p&gt;
+
+&lt;h2 id=&quot;13-损失函数&quot;&gt;1.3 损失函数&lt;/h2&gt;
+
+&lt;p&gt;本节介绍两种常用的损失函数，一种是分类问题中的交叉熵，另一种则是回归问题的均方差。
+交叉熵（cross entropy）主要思想是通过刻画两个概率分布的距离，从而判断输出向量与期望向量的相似度。假设给定两个概率分布p和q，则交叉熵的公式可表示为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;交叉熵的公式&quot; 图片4=&quot;&quot; src=&quot;https://img.mukewang.com/5a9de23b00019ea202610058.png&quot; alt=&quot;交叉熵的公式&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;我们可以用softmax将神经网络前向传播的输出结果变成一个概率分布，比如神经网络有n个输出节点，即模型有n个类别的数据，假设有一个三分类问题，即n=3，且一个输入样本属于类别k=1，则模型输出结果越接近[0,1,0]越好。&lt;/p&gt;
+
+&lt;p&gt;我们举个例子来解释交叉熵的计算过程，某样本的期望向量为（1，0，0），模型1经过Softmax回归后的预测向量为（0.5，0.4，0.1），则预测向量与期望向量之间的交叉熵为：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;H((1,0,0),(0.5,0.4,0.1)) = -(1 * log(0.5) + 0 * log(0.4) + 0 * log(0.1)) = 0.3&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;模型2经过Softmax回归后的预测向量为（0.8，0.1，0.1），则预测向量与期望向量之间的交叉熵为：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;H((1,0,0),(0.8,0.1,0.1)) = -(1 * log(0.8) + 0 * log(0.1) + 0 * log(0.1)) = 0.1&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;交叉熵越小，说明模型的预测结果与期望结果越接近，由此可以看出，模型2的效果更好。
+TensorFlow中可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;tf.nn.softmax_cross_entropy_with_logits(y_pred, y)&lt;/code&gt;来计算预测向量与期望向量之间的交叉熵。&lt;/p&gt;
+
+&lt;p&gt;均方误差（Mean Squared Error，MSE）是回归问题常用的损失函数，MSE的公式如下所示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;MSE的公式&quot; 图片4=&quot;&quot; src=&quot;https://img.mukewang.com/5a9de2710001f30e02870073.png&quot; alt=&quot;MSE的公式&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在TensorFlow中可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;tf.reduce_mean(tf.square(y-y_pred))&lt;/code&gt;来计算MSE。当然我们也可以根据任务导向，自定义损失函数。&lt;/p&gt;
+
+&lt;h2 id=&quot;14-优化算法&quot;&gt;1.4 优化算法&lt;/h2&gt;
+
+&lt;p&gt;神经网络中需要知道的两个基本的优化概念：反向传播算法和梯度下降算法。反向传播算法主要思想是根据定义好的损失函数优化网络模型中所有的参数，使得神经网络在训练集上的损失函数达到最小值，反向传播算法使用梯度下降算法优化网络模型中的单个参数的取值。梯度下降算法形象的解释就好比我们下山，假如我们随意向上或向下走一步，根据之后与之前所处山的高度来判断我们是在向山顶走还是在向山谷走，如果我们走一步之后所处山的高度比之前低，则说明我们走的方向是正确的，那么下一步我们就接着往这个方向走。在这里还隐含着两个概念：梯度与学习率。参数的梯度通过求偏导的方式计算，如果是多层网络结果，则使用链式求导法则来更新模型参数。学习率（learning rate）用来定义每次网络参数更新的幅度，对比到下山的过程，我们没走一步的步长即为学习率，学习率过大可能导致我们直接跨过了最低山谷，而导致每次在最低山谷两边徘徊，但学习率过下可能导致陷入极小山谷而不是最小山谷。所以在训练网络模型时，参数的初始值和学习率初始值很大程度上会影响模型最后的结果，只有当损失函数为凸函数时，梯度下降算法才能保证模型能训练到最小值，即全局最优解。&lt;/p&gt;
+
+&lt;p&gt;除了不能保证取得全局最优解，梯度下降算法在海量数据下，计算所有训练数据的损失函数是非常耗时的。为了加速训练过程，可以选择随机梯度下降算法，随机梯度下降算法主要思想是在每一次迭代时，随机优化某一个batch训练数据的损失函数。&lt;/p&gt;
+
+&lt;h3 id=&quot;141-学习率衰减&quot;&gt;1.4.1 学习率衰减&lt;/h3&gt;
+
+&lt;p&gt;TensorFlow有一种灵活设置学习率的方法：指数衰减法，即在初始的时候使用一个较大的学习率以加快较优的解，然后随着迭代次数增加逐步减小学习率。&lt;code class=&quot;highlighter-rouge&quot;&gt;tf.train.exponential_decay&lt;/code&gt;方法实现了指数衰减学习率。&lt;/p&gt;
+
+&lt;h3 id=&quot;142-过拟合&quot;&gt;1.4.2 过拟合&lt;/h3&gt;
+
+&lt;p&gt;过拟合的思想是当一个模型过于复杂时（一般是模型的参数个数大于训练样本数），它可以很好的“记忆”每一个训练数据的随机噪声而忘了去学习训练数据中通用的趋势。如图5所示可以很形象的解释过拟合问题。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;图5 过拟合问题&quot; 图片5=&quot;&quot; src=&quot;https://img.mukewang.com/5a9de2a7000185a210180726.png&quot; alt=&quot;图5 过拟合问题&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center&quot;&gt;图5 过拟合问题&lt;/p&gt;
+
+&lt;p&gt;避免过拟合问题常用的方法为正则化，其基本思想是，在损失函数中加入刻画模型复杂程度部分，从而限制权重的大小，并使得网络模型不能过度拟合训练数据中的随机噪声。假设损失函数为L，加入正则化后，模型需要优化的损失函数为&lt;code class=&quot;highlighter-rouge&quot;&gt;L+c*R(w)&lt;/code&gt;，R(w)表示的是模型的复杂程度，c表示模型的复杂损失占总损失的比例，R(w)包含L1正则化与L2正则化，L1正则化的公式为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;L1正则化的公式&quot; 图片4=&quot;&quot; src=&quot;https://img.mukewang.com/5a9de2c60001728503920104.png&quot; alt=&quot;L1正则化的公式&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;L2正则化的公式为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;L2正则化的公式&quot; 图片4=&quot;&quot; src=&quot;https://img.mukewang.com/5a9de2d70001548204200116.png&quot; alt=&quot;L2正则化的公式&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;L1正则化会让参数变得更加稀疏，而L2正则化不会，且L2正则化可导，而L1正则化不可导，所以我们一般使用L2正则化。滑动平均模型通过控制模型更新速度可以使得模型在测试数据上更加健壮，在TensorFlow中可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;tf.train.ExponentialMovingAverage&lt;/code&gt;来实现滑动平均模型。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考文献&quot;&gt;参考文献&lt;/h2&gt;
+
+&lt;p&gt;[1]郑泽宇，顾思宇. Tensorflow：实战Google深度学习框架[M]. 电子工业出版社, 2017.&lt;/p&gt;
+</description>
+        <pubDate>Mon, 18 Dec 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2017/12/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%AD%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E4%B8%AA%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2017/12/18/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%AD%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E4%B8%AA%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5.html</guid>
+        
+        <category>深度学习</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
+    
+      <item>
+        <title>深度学习发展大事记</title>
+        <description>&lt;p&gt;现在所说的深度学习基本是深层神经网络的代名词，神经网络技术不是最近新发明的，其最早可以追溯到1943年。1943，神经网络早期的神经网络模型类似于仿生机器学习，受大脑的学习机理启发，模仿大脑神经元结构设计人工神经网络中的神经元。Warren McCulloch教授和Walter Pitts教授提出了McCulloch-Pills Neuron的计算结构。图1是大脑神经元结构与McCulloch-Pills Neuron结构对比图。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;深度学习-发展大事记_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5a9624c00001441117580544.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图1 大脑神经元结构与McCulloch-Pills Neuron结构对比图&lt;/p&gt;
+
+&lt;p&gt;McCulloch-Pills Neuron结构使用了简单的线性加权和来模拟大脑神经元输入与输出之间的变换，最终通过一个阈值函数得到一个0或1的输出，完成神经元的计算。&lt;/p&gt;
+
+&lt;p&gt;1958，McCulloch-Pills Neuron结构的权值还是通过简单的人工手动设置，这显然既费时又费力，让程序自动学习并调整权值就非常重要。Frank Rosenblatt教授在1958年提出感知机模型，它可被视为一种最简单形式的前馈神经网络（单层人工神经网络），是一种二元线性分类器。感知机利用梯度下降法对损失函数进行极小化，求出可将训练数据进行线性划分的分离超平面，从而求得感知机模型。&lt;/p&gt;
+
+&lt;p&gt;1969，McCulloch-Pills Neuron结构与感知机模型的提出让机器学习迎来第一春，但它们也存在较大的局限性，Marvin Minsky教授等证明感知机模型只能解决线性可分问题，同时也指出在当时的计算能力下，多层神经网络的实现是不可能的事情，这些局限性导致学术界开始抨击机器学习模型，降低了机器学习在学术界的热度。神经网络的研究在之后的十几年中几乎处于停滞状态。&lt;/p&gt;
+
+&lt;p&gt;20世纪80年代，分布式知识表达和神经网络反向传播算法的提出给了低迷的神经网络研究一剂兴奋剂。分布式知识表达的基本思想是现实世界中的知识和概念可以用多个神经元来表示，同时一个神经元也可以参与多个概念的表达，比如用一类神经元表示汽车的颜色，另一类神经元表示汽车的类型，那么对于“白色小轿车”便可以用两个神经元来表示，这种将单个神经元拓展到多个神经元的方式，大大加强了模型的表达能力，使得神经网络从宽度的方向走向了深度的方向。反向传播算法（Back Propagation，BP）降低了神经网络模型训练的时间成本，直到今天，BP算法都是训练神经网络模型的主要方法。&lt;/p&gt;
+
+&lt;p&gt;20世纪80年代末90年代初，神经网络的研究迎来了新一轮的发展高峰期，现在常用的网络模型，如卷积神经网络、循环神经网络、LSTM网络模型等都在这一时期获得了飞速发展，但受计算资源、数据量等影响，训练深层神经网络依旧非常困难。值得注意的是，在神经网络发展的同时，传统的机器学习算法也取得了突破性的进展，其热度逐步超越了神经网络，成为了机器学习领域最常用的方法。&lt;/p&gt;
+
+&lt;p&gt;随着计算机海量计算能力的进一步提高，以及云计算、GPU等的出现，神经网络的发展迎来的又一轮高潮，2012年李飞飞等人举办了ImageNet图像分类竞赛，随后深度学习的热度呈指数级上升，到2016年，深度学习已经成为了谷歌上最热门的搜索词。如今我们正处于一个深度学习飞速发展的时期，吴恩达在他的深度学习课程中说到，由于强大的计算资源、海量的数据、算法的飞速发展，深度学习将会在未来十年持续发展。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考文献&quot;&gt;参考文献&lt;/h2&gt;
+
+&lt;p&gt;[1] 郑泽宇、顾思宇，电子工业出版社，Tensorflow实战Goggle深度学习框架&lt;/p&gt;
+</description>
+        <pubDate>Tue, 21 Nov 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2017/11/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%8F%91%E5%B1%95%E5%A4%A7%E4%BA%8B%E8%AE%B0.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2017/11/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%8F%91%E5%B1%95%E5%A4%A7%E4%BA%8B%E8%AE%B0.html</guid>
+        
+        <category>深度学习</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>如何使用N-gram语言模型来进行篇章单元分类？</title>

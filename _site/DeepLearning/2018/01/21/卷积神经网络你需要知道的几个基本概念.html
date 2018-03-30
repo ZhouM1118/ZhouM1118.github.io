@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="卷积神经网络你需要知道的几个基本概念" name="description">
+  
+  
+    <meta name="keywords" content="卷积神经网络">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|卷积神经网络你需要知道的几个基本概念
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 21 Jan 2018</span>
+                        <h1>
+                            卷积神经网络你需要知道的几个基本概念
+                        </h1>
+                    </div>
+                    	<h2 id="11-为什么有了全连接网络模型还要cnn">1.1 为什么有了全连接网络模型还要CNN？</h2>
+
+<p>全连接网络模型是指在神经网络中每两层之间的所有结点都是相连接的，但在处理图像数据时，全连接网络所需要的参数个数太多，比如处理一张单通道图片，图片大小为<code class="highlighter-rouge">28\*28</code>，设隐藏层的节点数为<code class="highlighter-rouge">500</code>个，则由其组成的全连接网络模型的参数有<code class="highlighter-rouge">28\*28*500+500=392500</code>，“+500”是因为考虑了偏置项b的情况，而当图片更大时，参数会急剧增多，<strong>参数过多不仅会导致网络模型计算速度变慢，同时也容易导致过拟合问题</strong>，CNN的出现就是为了在一定程度上改善这种情况。</p>
+
+<h2 id="12-卷积层和池化层">1.2 卷积层和池化层</h2>
+
+<p>图1展示了一个典型的CNN模型结构图。</p>
+
+<p><img title="卷积神经网络你需要知道的几个基本概念_" 图片1="" src="https://img.mukewang.com/5aa4dad60001994208920253.jpg" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+<p style="text-align:center">图1 典型的CNN模型结构图</p>
+
+<p>从上图中可以看出，CNN的卷积层（Convolution）和池化层（Polling）中每个节点只与上一层的部分节点相连，卷积层的每个节点的输入只是上一层中的一小块，这个小块的大小由卷积核的窗口大小决定，通常来说，经过卷积层处理的节点矩阵会变得更深，具体的深度由卷积层中卷积核的多少来决定。<strong>卷积核的参数是共享可以使得图像上的内容不受位置的影响</strong>，即图片中的猫不管是在图片的左上角或者右下角都应该被分类为猫，<strong>同时共享卷积核的参数可以大幅减少网络模型中的参数</strong>，降低运算的复杂度。</p>
+
+<p>池化层的每个节点的输入也是上一层（通常是卷积层）的一小块，这个小块的大小由池化核的窗口大小决定，池化层不会改变节点矩阵的深度，但它可以改变矩阵的大小，通俗来说，对于图像处理，<strong>池化层中池化操作可以理解为是将一张分辨率高的图片转化为分辨率低的图片</strong>。常用的池化操作有最大池化、平均池化等，通过卷积层和池化层后，可以进一步缩小网络模型中的参数个数，下面我们来分析下CNN如何减少网络模型中的参数。</p>
+
+<h3 id="121-维度变化过程">1.2.1 维度变化过程</h3>
+
+<p>卷积层是CNN中重要的概念之一，通过卷积核对上一层进行卷积操作，完成特征抽取。本节主要分析卷积层和池化层的维度变化过程，在使用全0填充（如果步长为1则可避免节点矩阵通过卷积层后尺寸发生变化）时，卷积层\池化层的输出维度计算公式为：</p>
+
+<p><img title="卷积神经网络你需要知道的几个基本概念_" 图片2="" src="https://img.mukewang.com/5aa4db570001eadc02970089.png" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+
+<p><code class="highlighter-rouge">out(longth)</code>表示卷积层输出矩阵的长度，它等于输入层矩阵长度除以在长度方向上的步长的向上取整值，<code class="highlighter-rouge">out(width)</code>表示卷积层输出矩阵的宽度，它等于输入层矩阵宽度除以在宽度方向上的步长的向上取整值。</p>
+
+<p>如果不使用全0填充，则卷积层\池化层的输出维度计算公式为：</p>
+
+<p><img title="卷积神经网络你需要知道的几个基本概念_" 图片3="" src="https://img.mukewang.com/5aa4db780001caa904380078.png" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+
+<p><code class="highlighter-rouge">filter(length)</code>表示卷积核\池化核在在长度方向上的大小，<code class="highlighter-rouge">filter(width)</code>表示卷积核\池化核在在宽度方向上的大小。
+假如输入层矩阵的维度为<code class="highlighter-rouge">32\*32\*1</code>，<code class="highlighter-rouge">1</code>代表灰度图像，第一层卷积核尺寸为<code class="highlighter-rouge">5\*5</code>，深度为<code class="highlighter-rouge">6</code>（即有6个卷积核），不使用全0填充，步长为<code class="highlighter-rouge">1</code>。则卷积层的输出维度为<code class="highlighter-rouge">（32-5+1=28）</code>，卷积层的参数共有<code class="highlighter-rouge">5\*5\*1\*6+6=156</code>个，这里可以发现，<strong>卷积层的参数个数与图片大小无关，它只与卷积核尺寸、深度以及当前层节点矩阵的深度有关</strong>，这使得CNN可以扩展到任意大小的图像数据上，卷积层的输出维度即下一层（通常是池化层）的输入维度有<code class="highlighter-rouge">28\*28\*6=4704</code>个节点；池化层的池化核大小为<code class="highlighter-rouge">2\*2</code>，步长为<code class="highlighter-rouge">2</code>，池化层的输出维度为<code class="highlighter-rouge">（28-2+1）/2=13.5</code>，向上取整的结果为14，池化层不影响节点矩阵的深度，则池化层的输出维度为<code class="highlighter-rouge">14\*14*6</code>。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<p>[1]郑泽宇，顾思宇. Tensorflow：实战Google深度学习框架[M]. 电子工业出版社, 2017.</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">卷积神经网络</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>

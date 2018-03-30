@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="机器学习中正则化" name="description">
+  
+  
+    <meta name="keywords" content="机器学习, 正则化">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|机器学习中的正则化
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 14 Mar 2018</span>
+                        <h1>
+                            机器学习中的正则化
+                        </h1>
+                    </div>
+                    	<h2 id="11-竹篮打水一场空-过拟合">1.1 竹篮打水一场空-过拟合</h2>
+
+<p>如果你发现在训练集上你的模型无比的完美，请晚一点再开心，因为很有可能你的模型已经过拟合了，那么这个模型就算废了。<strong>过拟合的直观解释是模型在训练集上性能完美，但在验证集或测试集上效果却不那么尽人意了</strong>。机器学习中一个核心任务就是防止模型过拟合，当模型的参数个数远大于数据集样本数量时，<strong>模型则可很好的“记忆”每一个训练数据的随机噪声而忘了去学习训练数据中通用的趋势，这就有可能导致过拟合</strong>，这个时候你可以简单的扩充数据集中的样本来降低过拟合的影响，但这需要一定的时间和人力成本，且效果可能不那么明显。那么如何用最小的成本来防止模型过拟合呢，即如何使训练错误率与测试错误率的差距尽可能小呢？答案就是本文主要讨论的内容：正则化。</p>
+
+<h2 id="12-正则化">1.2 正则化</h2>
+
+<p>我们都知道正则化可以降低泛化错误率，降低模型过拟合几率，但Why？How？下面我们来详细分析下正则化。正则化策略主要的目的是限制学习算法的能力，主要的方法可以是：限制网络模型的神经元数量、限制模型参数（连接权重W，偏置项B等）的数目、在目标函数添加一些额外的惩罚项等。添加惩罚项可看成是对损失函数中的某些参数做一些限制，根据惩罚项的不同可分为：<strong>L0范数惩罚、L1范数惩罚（参数稀疏性惩罚）、L2范数惩罚（权重衰减惩罚）</strong>。</p>
+
+<h2 id="121-l0范数惩罚">1.2.1 L0范数惩罚</h2>
+
+<p>L0范数惩罚是最“严格”的参数限制策略，它<strong>将模型参数不等于0的个数控制在<code class="highlighter-rouge">c</code>以内来达到限制模型能力的目的。</strong></p>
+
+<h2 id="122-l1范数惩罚">1.2.2 L1范数惩罚</h2>
+
+<p>L0范数惩罚在实际应用中不太友好，进一步放松限制，不要求参数的非零数量被限制在某个范围内，而<strong>要求参数数值的总和要小于某个数值</strong>，具体公式可见《深度学习中你需要知道的几个基本概念》，这种对参数数值总和的限制被称为L1范数惩罚，又称参数稀疏性惩罚，<strong>那么参数稀疏在哪呢？</strong>假设一个带L1正则化的损失函数为<code class="highlighter-rouge">J=J0+α∑|w|</code>
+其中，<code class="highlighter-rouge">J0</code>是原始的损失函数，<code class="highlighter-rouge">α∑|w|</code>是L1正则化项，<code class="highlighter-rouge">α</code>是正则化系数。L1正则化项是带有绝对值符号的函数，因此加了L1正则化项的损失函数是不完全可微的。当我们在原始损失函数<code class="highlighter-rouge">J0</code>后添加L1正则化项后，相当于对<code class="highlighter-rouge">J0</code>做了一个约束。令<code class="highlighter-rouge">L=α∑|w|</code>，则<code class="highlighter-rouge">J=J0+L</code>，我们知道<strong>梯度下降算法的目的是使损失函数最小化</strong>，那么我们的任务变成在L约束下求出<code class="highlighter-rouge">J0</code>取最小值的解。假设在二维的情况，即只有两个权值<code class="highlighter-rouge">w1</code>和<code class="highlighter-rouge">w2</code>，此时<code class="highlighter-rouge">L=|w1|+|w2|</code>。损失函数的梯度等值线如图1中的实线等高椭圆所示，梯度的最小值为其中心点，如果没有加任何限制项，则<strong>模型学习过程就是每次沿着梯度等高线垂直的方向寻找极值点</strong>。而L1正则化的函数L在<code class="highlighter-rouge">w1、w2</code>的二维平面上画出来表示为图1中的黑色方形。如下图1所示。</p>
+
+<p><img title="机器学习中的正则化_" 图片1="" src="https://img.mukewang.com/5aa9000a0001019f03180297.png" alt="图片描述" style="display:block; margin:auto; width:60%" /></p>
+<p style="text-align:center">图1 求解带L1正则化项的损失函数</p>
+
+<p>上图中<code class="highlighter-rouge">J0</code>与<code class="highlighter-rouge">L</code>在<code class="highlighter-rouge">L</code>的一个顶点处<code class="highlighter-rouge">(0,w2)</code>相交，这个顶点就是损失函数J的最优解。可以直观想象，因为L函数有很多“突出的角”（二维情况下四个，多维情况下更多），<strong><code class="highlighter-rouge">J0</code>与这些角接触的机率会远大于与<code class="highlighter-rouge">L</code>其它部位接触的机率</strong>，而<strong>在这些角上会有很多权值等于0，这就是为什么L1正则化可以产生稀疏模型。</strong></p>
+
+<p>在这里，我们在解释下<strong>为什么J0与这些角接触的机率会远大于与L其它部位接触的机率？</strong>试着想象下，如果方形的四条边凹进去一定的弧度，那么除非梯度等高线在一些特殊的角度才会使得相交点落在四条边上而不是方形的角上。当在多维的情况下（模型参数不只有2个），那么这个时候的L可表示为一个多边形，当边数够多，即角很多，可以近似的看成是四条边凹进去一定弧度后的图形，这样梯度等高线与角相交的概率会远大于L其它部分相交的概率。同样，如果方形的四条边往外凸，当凸出一定弧度后，会转变成一个圆，即为L2正则化的图形，这个时候的<code class="highlighter-rouge">J0</code>与<code class="highlighter-rouge">L</code>的图形上每个点相交的概率都一样，所以L2正则化无法产生稀疏模型。求解带L2正则化项的损失函数如图2所示。</p>
+
+<p><strong>那么得到稀疏模型有什么好处呢？</strong></p>
+
+<p>稀疏模型是指模型参数矩阵中有很多参数为0，只有少数参数是非零值的。机器学习中特征向量的维数一般很大，在预测或分类时，那么多特征显然难以选择，但是如果代入这些特征得到的模型是一个稀疏模型，表示只有少数特征对这个模型有贡献，绝大部分特征很大程度上是噪声特征，其没有贡献或贡献微小（因为它们前面的系数是0或者是很小的值，即使去掉对模型也没有什么影响），此时我们就可以只关注系数是非零值的特征。这就是稀疏模型与特征选择的关系。</p>
+
+<h2 id="123-l2范数惩罚">1.2.3 L2范数惩罚</h2>
+
+<p>我们知道L1范数项不可微，所以我们<strong>将参数的绝对值求和改为参数平方和</strong>，公式如《深度学习中你需要知道的几个基本概念》所示，这就是L2范数惩罚，即权重衰减惩罚。</p>
+
+<p>这时一个带L2正则化的损失函数为J可表示为<code class="highlighter-rouge">J=J0+α∑w2</code></p>
+
+<p>求解带L2正则化项的损失函数如下图所示。</p>
+
+<p><img title="机器学习中的正则化_" 图片2="" src="https://img.mukewang.com/5aa900b0000123d303180297.png" alt="图片描述" style="display:block; margin:auto; width:60%" /></p>
+<p style="text-align:center">图2 求解带L2正则化项的损失函数</p>
+
+<p>正则化前面的系数<code class="highlighter-rouge">α</code>，可以控制<code class="highlighter-rouge">L</code>图形的大小。<code class="highlighter-rouge">α</code>过小，<code class="highlighter-rouge">L</code>的半径则很大，就越容易达到损失函数的最小值（中心点），会发生过拟合现象；<code class="highlighter-rouge">α</code>过大，<code class="highlighter-rouge">L</code>的半径则很小，即对模型参数惩罚过重，模型的能力也就越弱，会发生欠拟合现象。</p>
+
+<p><strong>模型在拟合过程中通常都会倾向于让权值尽可能小</strong>，最终构造一个所有参数都比较小的模型。因为一般认为参数值小的模型比较简单，且能适应不同的数据集，在一定程度上可降低过拟合风险。比如，对于一个线性回归方程，若参数很大，那么只要数据偏移一点点，就会对结果造成很大的影响；但如果参数足够小，数据偏移得多一点也不会对结果造成什么影响，这就是常说的抗扰动能力强。</p>
+
+<h2 id="13-其它被视为正则化的策略">1.3 其它被视为正则化的策略</h2>
+
+<p>在深度学习中你听过的很多名词其实都是一种正则化策略，下面我们将介绍这些正则化策略。</p>
+
+<ol>
+  <li>
+    <p><strong>参数共享</strong>，在卷积神经网络中，卷积操作其实就采用了参数共享，通过参数共享，减少模型参数，降低模型复杂度，从而减少模型过拟合风险，卷积神经网络的详细内容见《卷积神经网络你需要知道的几个基本概念》。</p>
+  </li>
+  <li>
+    <p><strong>噪声注入以及数据扩充</strong>，降低泛化错误率直接的方法就是训练更多的数据，但有监督学习中，带标签的数据往往是有限的，我们可以通过噪声注入以及数据扩充方法在现有数据的基础上扩充数据集。</p>
+  </li>
+  <li>
+    <p><strong>稀疏表征</strong>，这种正则化策略事通过某种惩罚措施来抑制神经网络隐藏层中大部分神经元，当信息输入神经网络时，只有关键部分神经元处于激活状态。这和1.2.2节的L1范数惩罚相似，只不过，L1范数是使模型参数稀疏化，而表征稀疏化是隐藏层输出大多数为零或接近零。</p>
+  </li>
+  <li>
+    <p><strong>Dropout</strong>，以dropout概率随机断开神经元连接，是一种非常高效的深度学习正则化措施。</p>
+  </li>
+</ol>
+
+<h2 id="参考文献">参考文献</h2>
+
+<p>[1] 杨云、杜飞，清华大学出版社，深度学习实战</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">机器学习</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">正则化</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="深度学习发展大事记" name="description">
+  
+  
+    <meta name="keywords" content="深度学习">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|深度学习发展大事记
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 21 Nov 2017</span>
+                        <h1>
+                            深度学习发展大事记
+                        </h1>
+                    </div>
+                    	<p>现在所说的深度学习基本是深层神经网络的代名词，神经网络技术不是最近新发明的，其最早可以追溯到1943年。1943，神经网络早期的神经网络模型类似于仿生机器学习，受大脑的学习机理启发，模仿大脑神经元结构设计人工神经网络中的神经元。Warren McCulloch教授和Walter Pitts教授提出了McCulloch-Pills Neuron的计算结构。图1是大脑神经元结构与McCulloch-Pills Neuron结构对比图。</p>
+
+<p><img title="深度学习-发展大事记_" 图片1="" src="https://img.mukewang.com/5a9624c00001441117580544.png" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+
+<p style="text-align:center">图1 大脑神经元结构与McCulloch-Pills Neuron结构对比图</p>
+
+<p>McCulloch-Pills Neuron结构使用了简单的线性加权和来模拟大脑神经元输入与输出之间的变换，最终通过一个阈值函数得到一个0或1的输出，完成神经元的计算。</p>
+
+<p>1958，McCulloch-Pills Neuron结构的权值还是通过简单的人工手动设置，这显然既费时又费力，让程序自动学习并调整权值就非常重要。Frank Rosenblatt教授在1958年提出感知机模型，它可被视为一种最简单形式的前馈神经网络（单层人工神经网络），是一种二元线性分类器。感知机利用梯度下降法对损失函数进行极小化，求出可将训练数据进行线性划分的分离超平面，从而求得感知机模型。</p>
+
+<p>1969，McCulloch-Pills Neuron结构与感知机模型的提出让机器学习迎来第一春，但它们也存在较大的局限性，Marvin Minsky教授等证明感知机模型只能解决线性可分问题，同时也指出在当时的计算能力下，多层神经网络的实现是不可能的事情，这些局限性导致学术界开始抨击机器学习模型，降低了机器学习在学术界的热度。神经网络的研究在之后的十几年中几乎处于停滞状态。</p>
+
+<p>20世纪80年代，分布式知识表达和神经网络反向传播算法的提出给了低迷的神经网络研究一剂兴奋剂。分布式知识表达的基本思想是现实世界中的知识和概念可以用多个神经元来表示，同时一个神经元也可以参与多个概念的表达，比如用一类神经元表示汽车的颜色，另一类神经元表示汽车的类型，那么对于“白色小轿车”便可以用两个神经元来表示，这种将单个神经元拓展到多个神经元的方式，大大加强了模型的表达能力，使得神经网络从宽度的方向走向了深度的方向。反向传播算法（Back Propagation，BP）降低了神经网络模型训练的时间成本，直到今天，BP算法都是训练神经网络模型的主要方法。</p>
+
+<p>20世纪80年代末90年代初，神经网络的研究迎来了新一轮的发展高峰期，现在常用的网络模型，如卷积神经网络、循环神经网络、LSTM网络模型等都在这一时期获得了飞速发展，但受计算资源、数据量等影响，训练深层神经网络依旧非常困难。值得注意的是，在神经网络发展的同时，传统的机器学习算法也取得了突破性的进展，其热度逐步超越了神经网络，成为了机器学习领域最常用的方法。</p>
+
+<p>随着计算机海量计算能力的进一步提高，以及云计算、GPU等的出现，神经网络的发展迎来的又一轮高潮，2012年李飞飞等人举办了ImageNet图像分类竞赛，随后深度学习的热度呈指数级上升，到2016年，深度学习已经成为了谷歌上最热门的搜索词。如今我们正处于一个深度学习飞速发展的时期，吴恩达在他的深度学习课程中说到，由于强大的计算资源、海量的数据、算法的飞速发展，深度学习将会在未来十年持续发展。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<p>[1] 郑泽宇、顾思宇，电子工业出版社，Tensorflow实战Goggle深度学习框架</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">深度学习</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="深度学习中你需要知道的几个基本概念" name="description">
+  
+  
+    <meta name="keywords" content="深度学习">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|深度学习中你需要知道的几个基本概念
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 18 Dec 2017</span>
+                        <h1>
+                            深度学习中你需要知道的几个基本概念
+                        </h1>
+                    </div>
+                    	<p>深度学习在一定程度上等同于深层神经网络，维基百科对深度学习的概念为：一类通过多层非线性变换对高复杂性数据建模算法的合集。从该定义中可以看出两个深度学习的特征：多层和非线性。</p>
+
+<h2 id="11-非线性与线性">1.1 非线性与线性</h2>
+
+<p>由于模型的输出被简单的表示为输入的加权和，线性模型只能通过直线来划分平面。任意线性模型的组合依旧是线性模型，所以如果没有激活函数，只通过线性变化，任意层的全连接神经网络和单层神经网络模型的表达能力没有区别，且其在解决复杂问题上显得吃力。下面使用TensorFlow官方提供的一个神经网络游乐场来分析线性模型的局限性。</p>
+
+<p><img title="图1 非线性可分问题的线性模型图" 图片1="" src="https://img.mukewang.com/5a9de1a9000102bd11770710.png" alt="图1 非线性可分问题的线性模型图" style="display:block; margin:auto; width:80%" /></p>
+<p style="text-align:center">图1 非线性可分问题的线性模型图</p>
+
+<p>从图1可以看出，在正上方激活函数Activation一栏中我们选择了“Linear”线性函数，学习率Learning rate为0.03，全连接线性神经网络模型包含：输入层有两个节点，代表两个输入；隐藏层有三个节点；输出层为一个节点，表示分类结果。在输出图上方还给出了训练和测试的损失值（Test loss 和 Training loss），随着Epoch的增加，loss也会随之减少。在左边我们可以选择不同的数据集喂给定义好的模型，这里我们选择一个非线性可分的数据集。训练100epoch的模型结果如图2所示。</p>
+
+<p><img title="图2 非线性可分问题的线性模型结果图" 图片2="" src="https://img.mukewang.com/5a9de1bc000175d811600697.png" alt="图2 非线性可分问题的线性模型结果图" style="display:block; margin:auto; width:80%" /></p>
+<p style="text-align:center">图2 非线性可分问题的线性模型结果图</p>
+
+<p>从图2模型结果图分析可知，训练100次后，模型并没有很好地拟合非线性任务，且在输出图中看出有一条直线来表示模型的划分方式，模型将在直线上方的点分类为蓝色，将直线下方的点分类为黄色，显然这种分类效果并不理想。为了对比线性模型与非线性模型在同一问题上的效果，我们将Activation改为Relu，其他超参数不变，实验结果如图3所示。</p>
+
+<p><img title="图3 非线性可分问题的非线性模型结果图" 图片3="" src="https://img.mukewang.com/5a9de1e60001c15011620700.png" alt="图3 非线性可分问题的非线性模型结果图" style="display:block; margin:auto; width:80%" /></p>
+<p style="text-align:center">图3 非线性可分问题的非线性模型结果图</p>
+
+<p>从图3模型结果图分析可知，非线性模型的Test loss仅为0.033，说明非线性模型对处理非线性问题效果要比线性模型好。同时为了展现线性模型处理线性任务的有效性，我们选取线性可分的数据集进行线性模型实验，Activation选择Linear，且其它超参数保持不变，实验结果如图4所示。</p>
+
+<p><img title="图4 线性可分问题的线性模型结果图" 图片4="" src="https://img.mukewang.com/5a9de2060001164611570692.png" alt="图4 线性可分问题的线性模型结果图" style="display:block; margin:auto; width:80%" /></p>
+<p style="text-align:center">图4 线性可分问题的线性模型结果图</p>
+
+<p>从图4模型结果图分析可知，Test loss可达到0.000，说明在线性可分问题中，线性模型可以很好的区分不同颜色的点，线性模型可以很好的处理线性可分任务。</p>
+
+<h2 id="12-激活函数">1.2 激活函数</h2>
+
+<p>但现实生活中，我们往往需要处理复杂的非线性可分的问题，这种问题无法通过直线或高维空间平面来划分，深度学习的出现可以处理这类问题。</p>
+
+<p>线性模型的输出是所有输入的简单加权和，如果将加权和再通过一个非线性函数，则构建的神经网络模型不再是是线性模型，这个非线性函数就是我们常看到的激活函数，TensorFlow中封装了7中不同的非线性激活函数，如<code class="highlighter-rouge">tf.nn.relu，tf.sigmoid和tf.tanh</code>等。</p>
+
+<h2 id="13-损失函数">1.3 损失函数</h2>
+
+<p>本节介绍两种常用的损失函数，一种是分类问题中的交叉熵，另一种则是回归问题的均方差。
+交叉熵（cross entropy）主要思想是通过刻画两个概率分布的距离，从而判断输出向量与期望向量的相似度。假设给定两个概率分布p和q，则交叉熵的公式可表示为：</p>
+
+<p><img title="交叉熵的公式" 图片4="" src="https://img.mukewang.com/5a9de23b00019ea202610058.png" alt="交叉熵的公式" style="display:block; margin:auto; width:80%" /></p>
+
+<p>我们可以用softmax将神经网络前向传播的输出结果变成一个概率分布，比如神经网络有n个输出节点，即模型有n个类别的数据，假设有一个三分类问题，即n=3，且一个输入样本属于类别k=1，则模型输出结果越接近[0,1,0]越好。</p>
+
+<p>我们举个例子来解释交叉熵的计算过程，某样本的期望向量为（1，0，0），模型1经过Softmax回归后的预测向量为（0.5，0.4，0.1），则预测向量与期望向量之间的交叉熵为：</p>
+
+<blockquote>
+  <p>H((1,0,0),(0.5,0.4,0.1)) = -(1 * log(0.5) + 0 * log(0.4) + 0 * log(0.1)) = 0.3</p>
+</blockquote>
+
+<p>模型2经过Softmax回归后的预测向量为（0.8，0.1，0.1），则预测向量与期望向量之间的交叉熵为：</p>
+
+<blockquote>
+  <p>H((1,0,0),(0.8,0.1,0.1)) = -(1 * log(0.8) + 0 * log(0.1) + 0 * log(0.1)) = 0.1</p>
+</blockquote>
+
+<p>交叉熵越小，说明模型的预测结果与期望结果越接近，由此可以看出，模型2的效果更好。
+TensorFlow中可以通过<code class="highlighter-rouge">tf.nn.softmax_cross_entropy_with_logits(y_pred, y)</code>来计算预测向量与期望向量之间的交叉熵。</p>
+
+<p>均方误差（Mean Squared Error，MSE）是回归问题常用的损失函数，MSE的公式如下所示：</p>
+
+<p><img title="MSE的公式" 图片4="" src="https://img.mukewang.com/5a9de2710001f30e02870073.png" alt="MSE的公式" style="display:block; margin:auto; width:80%" /></p>
+
+<p>在TensorFlow中可以通过<code class="highlighter-rouge">tf.reduce_mean(tf.square(y-y_pred))</code>来计算MSE。当然我们也可以根据任务导向，自定义损失函数。</p>
+
+<h2 id="14-优化算法">1.4 优化算法</h2>
+
+<p>神经网络中需要知道的两个基本的优化概念：反向传播算法和梯度下降算法。反向传播算法主要思想是根据定义好的损失函数优化网络模型中所有的参数，使得神经网络在训练集上的损失函数达到最小值，反向传播算法使用梯度下降算法优化网络模型中的单个参数的取值。梯度下降算法形象的解释就好比我们下山，假如我们随意向上或向下走一步，根据之后与之前所处山的高度来判断我们是在向山顶走还是在向山谷走，如果我们走一步之后所处山的高度比之前低，则说明我们走的方向是正确的，那么下一步我们就接着往这个方向走。在这里还隐含着两个概念：梯度与学习率。参数的梯度通过求偏导的方式计算，如果是多层网络结果，则使用链式求导法则来更新模型参数。学习率（learning rate）用来定义每次网络参数更新的幅度，对比到下山的过程，我们没走一步的步长即为学习率，学习率过大可能导致我们直接跨过了最低山谷，而导致每次在最低山谷两边徘徊，但学习率过下可能导致陷入极小山谷而不是最小山谷。所以在训练网络模型时，参数的初始值和学习率初始值很大程度上会影响模型最后的结果，只有当损失函数为凸函数时，梯度下降算法才能保证模型能训练到最小值，即全局最优解。</p>
+
+<p>除了不能保证取得全局最优解，梯度下降算法在海量数据下，计算所有训练数据的损失函数是非常耗时的。为了加速训练过程，可以选择随机梯度下降算法，随机梯度下降算法主要思想是在每一次迭代时，随机优化某一个batch训练数据的损失函数。</p>
+
+<h3 id="141-学习率衰减">1.4.1 学习率衰减</h3>
+
+<p>TensorFlow有一种灵活设置学习率的方法：指数衰减法，即在初始的时候使用一个较大的学习率以加快较优的解，然后随着迭代次数增加逐步减小学习率。<code class="highlighter-rouge">tf.train.exponential_decay</code>方法实现了指数衰减学习率。</p>
+
+<h3 id="142-过拟合">1.4.2 过拟合</h3>
+
+<p>过拟合的思想是当一个模型过于复杂时（一般是模型的参数个数大于训练样本数），它可以很好的“记忆”每一个训练数据的随机噪声而忘了去学习训练数据中通用的趋势。如图5所示可以很形象的解释过拟合问题。</p>
+
+<p><img title="图5 过拟合问题" 图片5="" src="https://img.mukewang.com/5a9de2a7000185a210180726.png" alt="图5 过拟合问题" style="display:block; margin:auto; width:80%" /></p>
+<p style="text-align:center">图5 过拟合问题</p>
+
+<p>避免过拟合问题常用的方法为正则化，其基本思想是，在损失函数中加入刻画模型复杂程度部分，从而限制权重的大小，并使得网络模型不能过度拟合训练数据中的随机噪声。假设损失函数为L，加入正则化后，模型需要优化的损失函数为<code class="highlighter-rouge">L+c*R(w)</code>，R(w)表示的是模型的复杂程度，c表示模型的复杂损失占总损失的比例，R(w)包含L1正则化与L2正则化，L1正则化的公式为：</p>
+
+<p><img title="L1正则化的公式" 图片4="" src="https://img.mukewang.com/5a9de2c60001728503920104.png" alt="L1正则化的公式" style="display:block; margin:auto; width:80%" /></p>
+
+<p>L2正则化的公式为：</p>
+
+<p><img title="L2正则化的公式" 图片4="" src="https://img.mukewang.com/5a9de2d70001548204200116.png" alt="L2正则化的公式" style="display:block; margin:auto; width:80%" /></p>
+
+<p>L1正则化会让参数变得更加稀疏，而L2正则化不会，且L2正则化可导，而L1正则化不可导，所以我们一般使用L2正则化。滑动平均模型通过控制模型更新速度可以使得模型在测试数据上更加健壮，在TensorFlow中可以使用<code class="highlighter-rouge">tf.train.ExponentialMovingAverage</code>来实现滑动平均模型。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<p>[1]郑泽宇，顾思宇. Tensorflow：实战Google深度学习框架[M]. 电子工业出版社, 2017.</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">深度学习</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
