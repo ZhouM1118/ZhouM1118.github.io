@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="DuReader：百度大规模的中文机器阅读理解数据集" name="description">
+  
+  
+    <meta name="keywords" content="中文机器阅读理解数据集, DuReader">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|DuReader：百度大规模的中文机器阅读理解数据集
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 1 Apr 2018</span>
+                        <h1>
+                            DuReader：百度大规模的中文机器阅读理解数据集
+                        </h1>
+                    </div>
+                    	<h2 id="0-什么是机器阅读理解"><strong>0 什么是机器阅读理解</strong></h2>
+
+<p>目前，深度学习在图像识别、语音识别等领域取得丰硕成果，<strong>机器阅读理解（Machine Reading Comprehension，MRC）成为了人工智能研究与应用领域的新热点</strong>。机器阅读理解是指让机器像人类一样阅读文本，提炼文本信息并回答相关问题。对人类而言，阅读理解是获取外部知识的一项基本且重要的能力。同样，对机器而言，机器阅读理解能力也是新一代机器人应具备的基础能力。</p>
+
+<p>机器阅读理解无论是在工业界还是学术界都有着很高的研究价值，它能够让计算机帮助人类在大量文本中找到想要的答案，从而减轻人们对信息的获取的成本。也许，未来的搜索引擎将不仅仅是返回用户相关的链接和网页，而是通过对互联网上的海量资源进行阅读理解，直接得出答案返回给用户。</p>
+
+<h2 id="1-现有机器阅读理解数据集"><strong>1 现有机器阅读理解数据集</strong></h2>
+
+<p>上一篇博文对MCTest、CNN&amp;Dailymail、SQuAD以及RACE等机器阅读理解数据集进行了简单的介绍，图1展示了更为全面的机器阅读理解数据集对比。</p>
+
+<p><img title="DuReader：百度大规模的中文机器阅读理解数据集_" 图片1="" src="https://img.mukewang.com/5ac0aaf6000135a517780524.png" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+
+<p style="text-align:center">图1 机器阅读理解数据集对比</p>
+
+<p>分析图1，对于完形填空风格的CNN&amp;Dailymail和HLF-RC数据集，其将复杂的及其阅读理解问题简化为对单词的简单预测；RACE通过对中国学生英语阅读理解考试数据的选项选择来测试机器阅读理解能力；基于问答的MRC数据集：NewsQA、SQuAD和TrivaQA将新闻文章、维基百科等数据转换为阅读理解题目，并定位答案出现的起始和结束位置。</p>
+
+<p>这些数据集的出现，激发了机器阅读理解的研究热情，基于这些数据集构建的模型也具有一定的效果，但<strong>存在以下缺点</strong>：</p>
+
+<ol>
+  <li>数据人工合成</li>
+  <li>任务简单</li>
+  <li>应用领域有限</li>
+</ol>
+
+<p>此外，最近的研究(Chen等人，2016；贾和梁，2017)表明，现有的MRC模型能够在这些数据集上实现高性能，但对这些数据的理解和推断有限。因此，建立真实世界的MRC数据集显得紧迫且重要。2016年，Nguyen等人发布了一个英文MRC数据集MS-Marco，其中的问题和文档是从搜索引擎收集的，答案由人工注释者生成。百度在2017年发布了大规模的中文MRC数据集：DuReader。</p>
+
+<p>相比以前的MRC数据集，<strong>DuReader有以下特点</strong>：</p>
+
+<ol>
+  <li>所有的问题、原文都来<strong>源于实际数据</strong>（百度搜索引擎数据和百度知道问答社区），<strong>答案是由人类回答的</strong>。</li>
+  <li>数据集中包含大量的之前很少研究的是非和观点类的样本。</li>
+  <li><strong>每个问题都对应多个答案</strong>，数据集包含200k问题、1000k原文和420k答案，是目前最大的中文MRC数据集。</li>
+</ol>
+
+<h2 id="2-dureaderquestion数据分析"><strong>2 DuReader“question”数据分析</strong></h2>
+
+<p>百度创造性从两个维度分析问题数据，图2展示了DuReader数据集的问题类型分布情况。</p>
+
+<p><img title="DuReader：百度大规模的中文机器阅读理解数据集_" 图片1="" src="https://img.mukewang.com/5ac0ab350001190808580296.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图2 DuReader数据集的问题类型分布情况</p>
+
+<p>根据答案类型，<strong>DuReader将问题分为：Entity（实体）、Description（描述）和YesNo（是非）</strong>。</p>
+
+<p><strong>对于实体类问题</strong>，其答案一般是单一确定的回答，比如：iPhone是哪天发布？</p>
+
+<p><strong>对于描述类问题</strong>，其答案一般较长，是多个句子的总结，典型的how/why类型的问题，比如：消防车为什么是红的？</p>
+
+<p><strong>对于是非类问题</strong>，其答案往往较简单，是或者否，比如：39.5度算高烧吗？</p>
+
+<p>同时，无论将问题分类以上哪种类型都可以<strong>进一步细分为是事实（Fact）类还是观点（Opinion）类</strong>。如图3展示了这两大类维度的划分方式。</p>
+
+<p><img title="DuReader：百度大规模的中文机器阅读理解数据集_" 图片1="" src="https://img.mukewang.com/5ac0ad1e000140e018540418.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图3 DuReader数据集问题划分方法</p>
+
+<p>通过这两个维度的划分方法，<strong>DuReader的问题类别共有6类</strong>。</p>
+
+<h2 id="3-dureader数据集"><strong>3 DuReader数据集</strong></h2>
+
+<p>DuReader数据集的样本可用一个四维数组表示：<code class="highlighter-rouge"><span class="p">{</span><span class="err">q,</span><span class="w"> </span><span class="err">t,</span><span class="w"> </span><span class="err">D,</span><span class="w"> </span><span class="err">A</span><span class="p">}</span></code>，其中<code class="highlighter-rouge">q</code>表示问题，<code class="highlighter-rouge">t</code>表示问题类型，<code class="highlighter-rouge">D</code>表示文档集合，<code class="highlighter-rouge">A</code>表示答案集合。一半的样本来源于百度搜索引擎，一半来源于百度知道。图4展示了DuReader数据集的不同类型样本。</p>
+
+<p><img title="DuReader：百度大规模的中文机器阅读理解数据集_" 图片1="" src="https://img.mukewang.com/5ac0ad4b0001dc8915141338.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图4 DuReader数据集的不同类型样本</p>
+
+<p>基于问题和文档来对答案进行标注，由于一个问题可能对应多个文档，所以一个问题可能有多个答案，但对于及其相似的答案则归为一个。其数据分布情况如图5所示。</p>
+
+<p><img title="DuReader：百度大规模的中文机器阅读理解数据集_" 图片1="" src="https://img.mukewang.com/5ac0ad6900012e5109700656.png" alt="图片描述" style="display:block; margin:auto; width:60%" /></p>
+
+<p style="text-align:center">图5 答案种类分布情况</p>
+
+<p>由图5可知，<strong>百度知道中含有多个答案的问题占比高于百度搜索引擎，而含有一个答案的问题占比却低于百度搜索引擎，说明在问答社区中用户生成内容的主观性和多样性</strong>。</p>
+
+<p>DuReader数据集问题的平均字数长度为4.8，答案的平均字数长度为69.6，文档的平均字数长度为396.0，是MS-MARCO的5倍。</p>
+
+<p>由于规模大且问题类型复杂，基于DuReader数据集的分析工作相比以往数据集都要难得多。<strong>百度通过计算人工答案和文档的最小编辑距离来判断回答问题的困难度</strong>。编辑距离越大，对文档的编辑修改就更多，回答问题的复杂度也就越高。对于答案直接来源于原文的数据集（如SQuAD），它们的编辑距离应该是0。图6展示了MS-MARCO和DuReader两个数据集答案与文档编辑距离分布情况。</p>
+
+<p><img title="DuReader：百度大规模的中文机器阅读理解数据集_" 图片1="" src="https://img.mukewang.com/5ac0ad9100011b2c09340636.png" alt="图片描述" style="display:block; margin:auto; width:60%" /></p>
+
+<p style="text-align:center">图6 MS-MARCO和DuReader两个数据集答案与文档编辑距离分布情况
+</p>
+<p>从图6可以看出，在同为人工标注的数据集MS-MARCO中，77.1%的样本的编辑距离低于3，而在DuReader中51.3%的样本的编辑距离高于10，这说明<strong>DuReader更为复杂</strong>。</p>
+
+<h2 id="4-基线模型"><strong>4 基线模型</strong></h2>
+
+<p>百度基于DuReader构建了<strong>两个基线模型：Match-LSTM和BiDAF</strong>。</p>
+
+<p>Match-LSTM是广泛应用的MRC模型，Match-LSTM为了在文章中找到答案，依次遍历文章，动态地将注意力权重与文章的每个标记进行匹配。最后，使用一个应答指针层来查找文章中的答案跨度。</p>
+
+<p>BiDAF既使用了语境对问题的注意，又使用了问题对上下文的注意，从而突出了问题和上下文中的重要部分。然后，利用注意流层融合所有有用的信息，从而得到每个位置的向量表示。</p>
+
+<p><strong>模型的相关参数：</strong></p>
+
+<ul>
+  <li>词向量维度：300</li>
+  <li>隐藏层节点大小：150</li>
+  <li>优化算法：Adam</li>
+  <li>初始学习率：0.001</li>
+  <li>batch size：32</li>
+</ul>
+
+<p>一个问题可能对应了多个文档，<strong>为了训练和测试的效率，在每个文档中选择具有代表意义的段落</strong>。在训练时，选择与答案相比较时可达到最高查全率的段落；在测试时，由于没有答案，则使用问题来计算查全率。</p>
+
+<p><strong>评价方法为：BLEU-4和Rouge-L</strong>。基于DuReader数据集模型实验结果如图7所示。基于不同问题类型模型实验结果如图8所示。</p>
+
+<p><img title="DuReader：百度大规模的中文机器阅读理解数据集_" 图片1="" src="https://img.mukewang.com/5ac0adc00001f1eb19440484.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图7 基于DuReader数据集模型实验结果对比</p>
+
+<p>由图7可知，<strong>构建的模型在百度搜索引擎的数据集的表现比百度知道的数据集要差</strong>。</p>
+
+<p><img title="DuReader：百度大规模的中文机器阅读理解数据集_" 图片1="" src="https://img.mukewang.com/5ac0addb0001c88317820336.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图8 基于不同问题类型模型实验结果对比</p>
+
+<p>由图8可知，<strong>模型在描述类问题普遍表现良好</strong>，但在是非问题上表现较差。分析可能是因为描述类问题答案往往是同一主题下的长文本，而是非问题的答案则较短（有时候只有Yes或No），且是非类问题的答案主观性强，答案之间往往是矛盾的。</p>
+
+<p><strong>BLEU和Rouge这两种评价指标对是非类问题并不友好，因为这两种评价指标不能很好的反应答案之间的一致性</strong>，比如两个完全相反的两个答案：“你可以做到”和“你不可以做到”，在BLEU和Rouge评价指标上，这两种矛盾的答案具有高一致性。</p>
+
+<p>为了解决以上出现在是非类问题的问题，<strong>建议模型不仅输出答案，同时还给出答案的标签（Yes、No或Depend）</strong>，最终只使用相同标签的答案来计算BLEU和Rouge评价指标。图9表示对YesNo类型问题添加和不添加标签模型的表现。</p>
+
+<p><img title="DuReader：百度大规模的中文机器阅读理解数据集_" 图片1="" src="https://img.mukewang.com/5ac0adf300011ef513760262.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图9 对YesNo问题的标签感知模型的表现</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">中文机器阅读理解数据集</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">DuReader</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>

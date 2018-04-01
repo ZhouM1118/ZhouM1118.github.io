@@ -5,9 +5,150 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 30 Mar 2018 11:49:23 +0800</pubDate>
-    <lastBuildDate>Fri, 30 Mar 2018 11:49:23 +0800</lastBuildDate>
+    <pubDate>Sun, 01 Apr 2018 18:19:06 +0800</pubDate>
+    <lastBuildDate>Sun, 01 Apr 2018 18:19:06 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>DuReader：百度大规模的中文机器阅读理解数据集</title>
+        <description>&lt;h2 id=&quot;0-什么是机器阅读理解&quot;&gt;&lt;strong&gt;0 什么是机器阅读理解&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;目前，深度学习在图像识别、语音识别等领域取得丰硕成果，&lt;strong&gt;机器阅读理解（Machine Reading Comprehension，MRC）成为了人工智能研究与应用领域的新热点&lt;/strong&gt;。机器阅读理解是指让机器像人类一样阅读文本，提炼文本信息并回答相关问题。对人类而言，阅读理解是获取外部知识的一项基本且重要的能力。同样，对机器而言，机器阅读理解能力也是新一代机器人应具备的基础能力。&lt;/p&gt;
+
+&lt;p&gt;机器阅读理解无论是在工业界还是学术界都有着很高的研究价值，它能够让计算机帮助人类在大量文本中找到想要的答案，从而减轻人们对信息的获取的成本。也许，未来的搜索引擎将不仅仅是返回用户相关的链接和网页，而是通过对互联网上的海量资源进行阅读理解，直接得出答案返回给用户。&lt;/p&gt;
+
+&lt;h2 id=&quot;1-现有机器阅读理解数据集&quot;&gt;&lt;strong&gt;1 现有机器阅读理解数据集&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;上一篇博文对MCTest、CNN&amp;amp;Dailymail、SQuAD以及RACE等机器阅读理解数据集进行了简单的介绍，图1展示了更为全面的机器阅读理解数据集对比。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;DuReader：百度大规模的中文机器阅读理解数据集_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac0aaf6000135a517780524.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图1 机器阅读理解数据集对比&lt;/p&gt;
+
+&lt;p&gt;分析图1，对于完形填空风格的CNN&amp;amp;Dailymail和HLF-RC数据集，其将复杂的及其阅读理解问题简化为对单词的简单预测；RACE通过对中国学生英语阅读理解考试数据的选项选择来测试机器阅读理解能力；基于问答的MRC数据集：NewsQA、SQuAD和TrivaQA将新闻文章、维基百科等数据转换为阅读理解题目，并定位答案出现的起始和结束位置。&lt;/p&gt;
+
+&lt;p&gt;这些数据集的出现，激发了机器阅读理解的研究热情，基于这些数据集构建的模型也具有一定的效果，但&lt;strong&gt;存在以下缺点&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;数据人工合成&lt;/li&gt;
+  &lt;li&gt;任务简单&lt;/li&gt;
+  &lt;li&gt;应用领域有限&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;此外，最近的研究(Chen等人，2016；贾和梁，2017)表明，现有的MRC模型能够在这些数据集上实现高性能，但对这些数据的理解和推断有限。因此，建立真实世界的MRC数据集显得紧迫且重要。2016年，Nguyen等人发布了一个英文MRC数据集MS-Marco，其中的问题和文档是从搜索引擎收集的，答案由人工注释者生成。百度在2017年发布了大规模的中文MRC数据集：DuReader。&lt;/p&gt;
+
+&lt;p&gt;相比以前的MRC数据集，&lt;strong&gt;DuReader有以下特点&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;所有的问题、原文都来&lt;strong&gt;源于实际数据&lt;/strong&gt;（百度搜索引擎数据和百度知道问答社区），&lt;strong&gt;答案是由人类回答的&lt;/strong&gt;。&lt;/li&gt;
+  &lt;li&gt;数据集中包含大量的之前很少研究的是非和观点类的样本。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;每个问题都对应多个答案&lt;/strong&gt;，数据集包含200k问题、1000k原文和420k答案，是目前最大的中文MRC数据集。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;2-dureaderquestion数据分析&quot;&gt;&lt;strong&gt;2 DuReader“question”数据分析&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;百度创造性从两个维度分析问题数据，图2展示了DuReader数据集的问题类型分布情况。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;DuReader：百度大规模的中文机器阅读理解数据集_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac0ab350001190808580296.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图2 DuReader数据集的问题类型分布情况&lt;/p&gt;
+
+&lt;p&gt;根据答案类型，&lt;strong&gt;DuReader将问题分为：Entity（实体）、Description（描述）和YesNo（是非）&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;对于实体类问题&lt;/strong&gt;，其答案一般是单一确定的回答，比如：iPhone是哪天发布？&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;对于描述类问题&lt;/strong&gt;，其答案一般较长，是多个句子的总结，典型的how/why类型的问题，比如：消防车为什么是红的？&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;对于是非类问题&lt;/strong&gt;，其答案往往较简单，是或者否，比如：39.5度算高烧吗？&lt;/p&gt;
+
+&lt;p&gt;同时，无论将问题分类以上哪种类型都可以&lt;strong&gt;进一步细分为是事实（Fact）类还是观点（Opinion）类&lt;/strong&gt;。如图3展示了这两大类维度的划分方式。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;DuReader：百度大规模的中文机器阅读理解数据集_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac0ad1e000140e018540418.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图3 DuReader数据集问题划分方法&lt;/p&gt;
+
+&lt;p&gt;通过这两个维度的划分方法，&lt;strong&gt;DuReader的问题类别共有6类&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;3-dureader数据集&quot;&gt;&lt;strong&gt;3 DuReader数据集&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;DuReader数据集的样本可用一个四维数组表示：&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;q,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;t,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;D,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;，其中&lt;code class=&quot;highlighter-rouge&quot;&gt;q&lt;/code&gt;表示问题，&lt;code class=&quot;highlighter-rouge&quot;&gt;t&lt;/code&gt;表示问题类型，&lt;code class=&quot;highlighter-rouge&quot;&gt;D&lt;/code&gt;表示文档集合，&lt;code class=&quot;highlighter-rouge&quot;&gt;A&lt;/code&gt;表示答案集合。一半的样本来源于百度搜索引擎，一半来源于百度知道。图4展示了DuReader数据集的不同类型样本。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;DuReader：百度大规模的中文机器阅读理解数据集_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac0ad4b0001dc8915141338.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图4 DuReader数据集的不同类型样本&lt;/p&gt;
+
+&lt;p&gt;基于问题和文档来对答案进行标注，由于一个问题可能对应多个文档，所以一个问题可能有多个答案，但对于及其相似的答案则归为一个。其数据分布情况如图5所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;DuReader：百度大规模的中文机器阅读理解数据集_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac0ad6900012e5109700656.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:60%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图5 答案种类分布情况&lt;/p&gt;
+
+&lt;p&gt;由图5可知，&lt;strong&gt;百度知道中含有多个答案的问题占比高于百度搜索引擎，而含有一个答案的问题占比却低于百度搜索引擎，说明在问答社区中用户生成内容的主观性和多样性&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;DuReader数据集问题的平均字数长度为4.8，答案的平均字数长度为69.6，文档的平均字数长度为396.0，是MS-MARCO的5倍。&lt;/p&gt;
+
+&lt;p&gt;由于规模大且问题类型复杂，基于DuReader数据集的分析工作相比以往数据集都要难得多。&lt;strong&gt;百度通过计算人工答案和文档的最小编辑距离来判断回答问题的困难度&lt;/strong&gt;。编辑距离越大，对文档的编辑修改就更多，回答问题的复杂度也就越高。对于答案直接来源于原文的数据集（如SQuAD），它们的编辑距离应该是0。图6展示了MS-MARCO和DuReader两个数据集答案与文档编辑距离分布情况。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;DuReader：百度大规模的中文机器阅读理解数据集_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac0ad9100011b2c09340636.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:60%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图6 MS-MARCO和DuReader两个数据集答案与文档编辑距离分布情况
+&lt;/p&gt;
+&lt;p&gt;从图6可以看出，在同为人工标注的数据集MS-MARCO中，77.1%的样本的编辑距离低于3，而在DuReader中51.3%的样本的编辑距离高于10，这说明&lt;strong&gt;DuReader更为复杂&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;4-基线模型&quot;&gt;&lt;strong&gt;4 基线模型&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;百度基于DuReader构建了&lt;strong&gt;两个基线模型：Match-LSTM和BiDAF&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;Match-LSTM是广泛应用的MRC模型，Match-LSTM为了在文章中找到答案，依次遍历文章，动态地将注意力权重与文章的每个标记进行匹配。最后，使用一个应答指针层来查找文章中的答案跨度。&lt;/p&gt;
+
+&lt;p&gt;BiDAF既使用了语境对问题的注意，又使用了问题对上下文的注意，从而突出了问题和上下文中的重要部分。然后，利用注意流层融合所有有用的信息，从而得到每个位置的向量表示。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;模型的相关参数：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;词向量维度：300&lt;/li&gt;
+  &lt;li&gt;隐藏层节点大小：150&lt;/li&gt;
+  &lt;li&gt;优化算法：Adam&lt;/li&gt;
+  &lt;li&gt;初始学习率：0.001&lt;/li&gt;
+  &lt;li&gt;batch size：32&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;一个问题可能对应了多个文档，&lt;strong&gt;为了训练和测试的效率，在每个文档中选择具有代表意义的段落&lt;/strong&gt;。在训练时，选择与答案相比较时可达到最高查全率的段落；在测试时，由于没有答案，则使用问题来计算查全率。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;评价方法为：BLEU-4和Rouge-L&lt;/strong&gt;。基于DuReader数据集模型实验结果如图7所示。基于不同问题类型模型实验结果如图8所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;DuReader：百度大规模的中文机器阅读理解数据集_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac0adc00001f1eb19440484.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图7 基于DuReader数据集模型实验结果对比&lt;/p&gt;
+
+&lt;p&gt;由图7可知，&lt;strong&gt;构建的模型在百度搜索引擎的数据集的表现比百度知道的数据集要差&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;DuReader：百度大规模的中文机器阅读理解数据集_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac0addb0001c88317820336.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图8 基于不同问题类型模型实验结果对比&lt;/p&gt;
+
+&lt;p&gt;由图8可知，&lt;strong&gt;模型在描述类问题普遍表现良好&lt;/strong&gt;，但在是非问题上表现较差。分析可能是因为描述类问题答案往往是同一主题下的长文本，而是非问题的答案则较短（有时候只有Yes或No），且是非类问题的答案主观性强，答案之间往往是矛盾的。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;BLEU和Rouge这两种评价指标对是非类问题并不友好，因为这两种评价指标不能很好的反应答案之间的一致性&lt;/strong&gt;，比如两个完全相反的两个答案：“你可以做到”和“你不可以做到”，在BLEU和Rouge评价指标上，这两种矛盾的答案具有高一致性。&lt;/p&gt;
+
+&lt;p&gt;为了解决以上出现在是非类问题的问题，&lt;strong&gt;建议模型不仅输出答案，同时还给出答案的标签（Yes、No或Depend）&lt;/strong&gt;，最终只使用相同标签的答案来计算BLEU和Rouge评价指标。图9表示对YesNo类型问题添加和不添加标签模型的表现。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;DuReader：百度大规模的中文机器阅读理解数据集_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac0adf300011ef513760262.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图9 对YesNo问题的标签感知模型的表现&lt;/p&gt;
+</description>
+        <pubDate>Sun, 01 Apr 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/04/01/DuReader-%E7%99%BE%E5%BA%A6%E5%A4%A7%E8%A7%84%E6%A8%A1%E7%9A%84%E4%B8%AD%E6%96%87%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E9%9B%86.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/04/01/DuReader-%E7%99%BE%E5%BA%A6%E5%A4%A7%E8%A7%84%E6%A8%A1%E7%9A%84%E4%B8%AD%E6%96%87%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E9%9B%86.html</guid>
+        
+        <category>中文机器阅读理解数据集</category>
+        
+        <category>DuReader</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>机器阅读理解中几个经典数据集</title>
