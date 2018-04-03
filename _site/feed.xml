@@ -5,9 +5,165 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 01 Apr 2018 18:19:06 +0800</pubDate>
-    <lastBuildDate>Sun, 01 Apr 2018 18:19:06 +0800</lastBuildDate>
+    <pubDate>Tue, 03 Apr 2018 20:59:37 +0800</pubDate>
+    <lastBuildDate>Tue, 03 Apr 2018 20:59:37 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>机器阅读理解Match-LSTM模型</title>
+        <description>&lt;h2 id=&quot;0-基于squad数据集的通用模型架构&quot;&gt;&lt;strong&gt;0 基于SQuAD数据集的通用模型架构&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;由于 SQuAD 的答案限定于来自原文，模型只需要判断原文中哪些词是答案即可，因此是&lt;strong&gt;一种抽取式的 QA 任务而不是生成式任务&lt;/strong&gt;。几乎所有做 SQuAD 的模型都可以概括为同一种框架：&lt;strong&gt;Embed 层，Encode 层，Interaction 层和 Answer 层&lt;/strong&gt;。Embed 层负责将原文和问题中的 tokens 映射为向量表示；Encode 层主要使用 RNN 来对原文和问题进行编码，这样编码后每个 token 的向量表示就蕴含了上下文的语义信息；Interaction 层是大多数研究工作聚焦的重点，该层主要负责捕捉问题和原文之间的交互关系，并输出编码了问题语义信息的原文表示，即 query-aware 的原文表示；最后 Answer 层则基于 query-aware 的原文表示来预测答案范围。图1展示了一个高层的神经 QA 系统基本框架。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac3707a0001da6806000337.jpg&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图1 一个高层的神经 QA 系统基本框架&lt;/p&gt;
+
+&lt;h2 id=&quot;1-match-lstm模型架构&quot;&gt;&lt;strong&gt;1 Match-LSTM模型架构&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;图2展示了Match-LSTM模型架构图。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac370b700015cfa16040904.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图2 Match-LSTM模型架构图&lt;/p&gt;
+
+&lt;p&gt;在模型实现上，Match-LSTM 的主要步骤如下：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Embed 层使用&lt;strong&gt;词向量表示原文和问题&lt;/strong&gt;；&lt;/li&gt;
+  &lt;li&gt;Encode 层使用单向 LSTM 编码原文和问题 embedding；&lt;/li&gt;
+  &lt;li&gt;Interaction层对原文中每个词，&lt;strong&gt;计算其关于问题的注意力分布&lt;/strong&gt;，并使用该注意力分布汇总问题表示，将原文该词表示和对应问题表示输入另一个 LSTM编码，得到&lt;strong&gt;该词的 query-aware 表示&lt;/strong&gt;；&lt;/li&gt;
+  &lt;li&gt;在反方向重复步骤 2，获得双向 query-aware 表示；&lt;/li&gt;
+  &lt;li&gt;Answer 层基于双向 query-aware 表示&lt;strong&gt;使用 Sequence Model 或 Boundary Model预测答案范围&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Match-LSTM模型的输入由两部分组成：段落（passage）和问题（question）。passage使用一个矩阵&lt;code class=&quot;highlighter-rouge&quot;&gt;P[d * P]&lt;/code&gt;表示，其中&lt;code class=&quot;highlighter-rouge&quot;&gt;d&lt;/code&gt;表示词向量维度大小，&lt;code class=&quot;highlighter-rouge&quot;&gt;P&lt;/code&gt;表示passage中tokens的个数；question使用矩阵&lt;code class=&quot;highlighter-rouge&quot;&gt;Q[d * Q]&lt;/code&gt;表示，其中&lt;code class=&quot;highlighter-rouge&quot;&gt;Q&lt;/code&gt;表示question中tokens的个数。&lt;/p&gt;
+
+&lt;p&gt;Match-LSTM模型的输出即问题的答案有两种表示方法，其一是使用一系列整数数组&lt;code class=&quot;highlighter-rouge&quot;&gt;a = (a1, a2,…)&lt;/code&gt;，其中&lt;code class=&quot;highlighter-rouge&quot;&gt;ai&lt;/code&gt;是&lt;code class=&quot;highlighter-rouge&quot;&gt;[1, P]&lt;/code&gt;中的一个整数，表示在段落中某个token具体的位置，这里的整数数组不一定是连续的，对应Sequence Model ；第二种表示方法是假设答案是段落中一段连续的token组合，即仅使用两个整数来表示答案&lt;code class=&quot;highlighter-rouge&quot;&gt;a = (as, ae)&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;as&lt;/code&gt;表示答案在段落中开始的位置，&lt;code class=&quot;highlighter-rouge&quot;&gt;ae&lt;/code&gt;则表示结束位置，&lt;code class=&quot;highlighter-rouge&quot;&gt;as&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;ae&lt;/code&gt;是&lt;code class=&quot;highlighter-rouge&quot;&gt;[1, P]&lt;/code&gt;中的整数，对应Boundary Model 。&lt;/p&gt;
+
+&lt;p&gt;故对Match-LSTM模型的训练集样本来说，其可用下面的&lt;strong&gt;三维数组&lt;/strong&gt;来表示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac3726700010b6b03200052.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:30%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;从图2可知，一个基本的Match-LSTM模型应该包含以下三层结构：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;LSTM preprocessing Layer&lt;/strong&gt;：这层对passage和question进行预处理，得到其向量表示；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Match-LSTM Layer&lt;/strong&gt;：这层试图在passage中匹配question；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Answer Pointer(Ans-Ptr) Layer&lt;/strong&gt;：使用Ptr-Net从passage中选取tokens作为question的answer， Sequence Model 和 Boundary Model的主要区别就在这一层。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;LSTM preprocessing Layer&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;LSTM preprocessing Layer的目的是将token的上下文信息包含到passage和question中的每个token的向量表示中。分别将passage和question输入LSTM preprocessing Layer，经过LSTM preprocessing Layer后，passage和question表示如下矩阵：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac372c600016a5706180078.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:60%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Hp&lt;/code&gt;是passage的向量矩阵表示，其大小为&lt;code class=&quot;highlighter-rouge&quot;&gt;[l * P]&lt;/code&gt;，l表示隐藏层的节点个数；&lt;code class=&quot;highlighter-rouge&quot;&gt;Hq&lt;/code&gt;是question的向量矩阵表示，其大小为&lt;code class=&quot;highlighter-rouge&quot;&gt;[l * Q]&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Match-LSTM Layer&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;将LSTM preprocessing Layer的输出作为这一层的输入，计算公式如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac372de0001273c09740152.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac373010001608707580052.png&quot; alt=&quot;图片描述&quot; style=&quot;width:60%&quot; /&gt;，这些参数都是模型需要训练的参数，&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac3733300010dc602000066.png&quot; alt=&quot;图片描述&quot; style=&quot;width:15%&quot; /&gt;是中间结果，&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac3734e0001d8fe02420066.png&quot; alt=&quot;图片描述&quot; style=&quot;width:15%&quot; /&gt;表示第&lt;code class=&quot;highlighter-rouge&quot;&gt;i-1&lt;/code&gt;个token的隐藏层输出，&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac373640001718c00900052.png&quot; alt=&quot;图片描述&quot; style=&quot;width:7%&quot; /&gt;表示在列方向拓展Q列。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;对于&lt;code class=&quot;highlighter-rouge&quot;&gt;Gi&lt;/code&gt;公式的维度变化：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;table&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td&gt;[l * Q] = [l * l] * [l * Q] + ([l * l] * [l * 1] + [l * l] * [l * 1] + [l * 1]) *&lt;/td&gt;
+        &lt;td&gt;Q&lt;/td&gt;
+        &lt;td&gt;；&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;对于ai公式的维度变化：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;table&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td&gt;[1 * Q] = ([1 * l] * [l * Q] + 1 *&lt;/td&gt;
+        &lt;td&gt;Q&lt;/td&gt;
+        &lt;td&gt;)。&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ai&lt;/code&gt;表示在passage的第&lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt;个token对question的注意力权重向量。&lt;/p&gt;
+
+&lt;p&gt;将注意力权重向量与question向量的乘积和passage中第&lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt;个token的隐藏层输出向量拼接成一维向量&lt;code class=&quot;highlighter-rouge&quot;&gt;Zi&lt;/code&gt;，公式如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac3738c000116a502740144.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:25%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，向量维度分别为：&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac373a30001165007100058.png&quot; alt=&quot;图片描述&quot; style=&quot;width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;将向量Zi作为一个LSTM层的输入，得到&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac373b60001352304780084.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，隐藏层向量维度为：&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac373ce000105a201900074.png&quot; alt=&quot;图片描述&quot; style=&quot;width:15%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;将&lt;code class=&quot;highlighter-rouge&quot;&gt;P&lt;/code&gt;个该隐藏层向量拼接成&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac373e10001516e02300058.png&quot; alt=&quot;图片描述&quot; style=&quot;width:15%&quot; /&gt;，为了提取上下文信息，反方向构建&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac373fa0001712a02420078.png&quot; alt=&quot;图片描述&quot; style=&quot;width:15%&quot; /&gt;，将两者拼接得到Match-LSTM Layer的输出：&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac37412000137bd02980154.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:20%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Answer Pointer Layer&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;将Match-LSTM Layer的输出&lt;code class=&quot;highlighter-rouge&quot;&gt;Hr&lt;/code&gt;作为这一层的输入。&lt;/p&gt;
+
+&lt;p&gt;Match-LSTM 的 Answer Pointer Layer 层包含了两种预测答案的模式，分别为 Sequence Model 和 Boundary Model。Sequence model提供的是一系列答案序列，但这些答案系列不一定在原文中是连续的；Boundary model是提供答案的开始与截止位置，在这两个位置中间所有的字就都是答案。Sequence Model 将答案看做是一个整数组成的序列，每个整数表示选中的 token 在原文中的位置，因此模型按顺序产生一系列条件概率，每个条件概率表示基于上轮预测的 token 产生的下个 token 的位置概率，最后答案总概率等于所有条件概率的乘积。Boundary Model 简化了整个预测答案的过程，只预测答案开始和答案结束位置，相比于 Sequence Model 极大地缩小了搜索答案的空间，最后的实验也显示简化的 Boundary Model 相比于复杂的 Sequence Model 效果更好，因此 Boundary Model 也成为后来的模型用来预测答案范围的标配。&lt;/p&gt;
+
+&lt;p&gt;Sequence Model的答案定位计算公式如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac374290001e74407560110.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:60%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;是&lt;code class=&quot;highlighter-rouge&quot;&gt;[1, P+1]&lt;/code&gt;中某个值，当&lt;code class=&quot;highlighter-rouge&quot;&gt;k=P+1&lt;/code&gt;时，表示答案迭代计算答案位置概率结束。&lt;/p&gt;
+
+&lt;p&gt;Boundary Model的答案定位计算公式如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac3744000019f4506120110.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:60%&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;2-实验&quot;&gt;&lt;strong&gt;2 实验&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;模型参数设置如下：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;隐藏层大小：&lt;code class=&quot;highlighter-rouge&quot;&gt;150&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;优化方法：&lt;code class=&quot;highlighter-rouge&quot;&gt;Adamax(β1 = 0.9，β2 = 0.999)&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;minibatch：&lt;code class=&quot;highlighter-rouge&quot;&gt;30&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;没有用&lt;code class=&quot;highlighter-rouge&quot;&gt;L2&lt;/code&gt;正则&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;实验结果对比如图3所示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;机器阅读理解Match-LSTM模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ac37472000179ad15620702.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图3 各模型实验对比结果&lt;/p&gt;
+
+&lt;h2 id=&quot;3-参考文献&quot;&gt;&lt;strong&gt;3 参考文献&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;[1] 目前（2017年）机器阅读技术发展得如何？能达到什么水平？有哪些应用？ [2017-05-22]. https://www.zhihu.com/question/59280791/answer/172363224&lt;/p&gt;
+
+&lt;p&gt;[2] Wang S, Jiang J. Machine Comprehension Using Match-LSTM and Answer Pointer[J]. 2016.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 03 Apr 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/04/03/%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3Match-LSTM%E6%A8%A1%E5%9E%8B.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/04/03/%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3Match-LSTM%E6%A8%A1%E5%9E%8B.html</guid>
+        
+        <category>机器阅读理解数据集</category>
+        
+        <category>Match-LSTM</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>DuReader：百度大规模的中文机器阅读理解数据集</title>

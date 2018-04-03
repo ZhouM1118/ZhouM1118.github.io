@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="机器阅读理解Match-LSTM模型" name="description">
+  
+  
+    <meta name="keywords" content="机器阅读理解数据集, Match-LSTM">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|机器阅读理解Match-LSTM模型
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 3 Apr 2018</span>
+                        <h1>
+                            机器阅读理解Match-LSTM模型
+                        </h1>
+                    </div>
+                    	<h2 id="0-基于squad数据集的通用模型架构"><strong>0 基于SQuAD数据集的通用模型架构</strong></h2>
+
+<p>由于 SQuAD 的答案限定于来自原文，模型只需要判断原文中哪些词是答案即可，因此是<strong>一种抽取式的 QA 任务而不是生成式任务</strong>。几乎所有做 SQuAD 的模型都可以概括为同一种框架：<strong>Embed 层，Encode 层，Interaction 层和 Answer 层</strong>。Embed 层负责将原文和问题中的 tokens 映射为向量表示；Encode 层主要使用 RNN 来对原文和问题进行编码，这样编码后每个 token 的向量表示就蕴含了上下文的语义信息；Interaction 层是大多数研究工作聚焦的重点，该层主要负责捕捉问题和原文之间的交互关系，并输出编码了问题语义信息的原文表示，即 query-aware 的原文表示；最后 Answer 层则基于 query-aware 的原文表示来预测答案范围。图1展示了一个高层的神经 QA 系统基本框架。</p>
+
+<p><img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac3707a0001da6806000337.jpg" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图1 一个高层的神经 QA 系统基本框架</p>
+
+<h2 id="1-match-lstm模型架构"><strong>1 Match-LSTM模型架构</strong></h2>
+
+<p>图2展示了Match-LSTM模型架构图。</p>
+
+<p><img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac370b700015cfa16040904.png" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+
+<p style="text-align:center">图2 Match-LSTM模型架构图</p>
+
+<p>在模型实现上，Match-LSTM 的主要步骤如下：</p>
+
+<ol>
+  <li>Embed 层使用<strong>词向量表示原文和问题</strong>；</li>
+  <li>Encode 层使用单向 LSTM 编码原文和问题 embedding；</li>
+  <li>Interaction层对原文中每个词，<strong>计算其关于问题的注意力分布</strong>，并使用该注意力分布汇总问题表示，将原文该词表示和对应问题表示输入另一个 LSTM编码，得到<strong>该词的 query-aware 表示</strong>；</li>
+  <li>在反方向重复步骤 2，获得双向 query-aware 表示；</li>
+  <li>Answer 层基于双向 query-aware 表示<strong>使用 Sequence Model 或 Boundary Model预测答案范围</strong>。</li>
+</ol>
+
+<p>Match-LSTM模型的输入由两部分组成：段落（passage）和问题（question）。passage使用一个矩阵<code class="highlighter-rouge">P[d * P]</code>表示，其中<code class="highlighter-rouge">d</code>表示词向量维度大小，<code class="highlighter-rouge">P</code>表示passage中tokens的个数；question使用矩阵<code class="highlighter-rouge">Q[d * Q]</code>表示，其中<code class="highlighter-rouge">Q</code>表示question中tokens的个数。</p>
+
+<p>Match-LSTM模型的输出即问题的答案有两种表示方法，其一是使用一系列整数数组<code class="highlighter-rouge">a = (a1, a2,…)</code>，其中<code class="highlighter-rouge">ai</code>是<code class="highlighter-rouge">[1, P]</code>中的一个整数，表示在段落中某个token具体的位置，这里的整数数组不一定是连续的，对应Sequence Model ；第二种表示方法是假设答案是段落中一段连续的token组合，即仅使用两个整数来表示答案<code class="highlighter-rouge">a = (as, ae)</code>，<code class="highlighter-rouge">as</code>表示答案在段落中开始的位置，<code class="highlighter-rouge">ae</code>则表示结束位置，<code class="highlighter-rouge">as</code>和<code class="highlighter-rouge">ae</code>是<code class="highlighter-rouge">[1, P]</code>中的整数，对应Boundary Model 。</p>
+
+<p>故对Match-LSTM模型的训练集样本来说，其可用下面的<strong>三维数组</strong>来表示：</p>
+
+<p><img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac3726700010b6b03200052.png" alt="图片描述" style="display:block; margin:auto; width:30%" /></p>
+
+<p>从图2可知，一个基本的Match-LSTM模型应该包含以下三层结构：</p>
+
+<ol>
+  <li><strong>LSTM preprocessing Layer</strong>：这层对passage和question进行预处理，得到其向量表示；</li>
+  <li><strong>Match-LSTM Layer</strong>：这层试图在passage中匹配question；</li>
+  <li><strong>Answer Pointer(Ans-Ptr) Layer</strong>：使用Ptr-Net从passage中选取tokens作为question的answer， Sequence Model 和 Boundary Model的主要区别就在这一层。</li>
+</ol>
+
+<p><strong>LSTM preprocessing Layer</strong></p>
+
+<p>LSTM preprocessing Layer的目的是将token的上下文信息包含到passage和question中的每个token的向量表示中。分别将passage和question输入LSTM preprocessing Layer，经过LSTM preprocessing Layer后，passage和question表示如下矩阵：</p>
+
+<p><img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac372c600016a5706180078.png" alt="图片描述" style="display:block; margin:auto; width:60%" /></p>
+
+<p><code class="highlighter-rouge">Hp</code>是passage的向量矩阵表示，其大小为<code class="highlighter-rouge">[l * P]</code>，l表示隐藏层的节点个数；<code class="highlighter-rouge">Hq</code>是question的向量矩阵表示，其大小为<code class="highlighter-rouge">[l * Q]</code>。</p>
+
+<p><strong>Match-LSTM Layer</strong></p>
+
+<p>将LSTM preprocessing Layer的输出作为这一层的输入，计算公式如下：</p>
+
+<p><img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac372de0001273c09740152.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p>其中，<img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac373010001608707580052.png" alt="图片描述" style="width:60%" />，这些参数都是模型需要训练的参数，<img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac3733300010dc602000066.png" alt="图片描述" style="width:15%" />是中间结果，<img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac3734e0001d8fe02420066.png" alt="图片描述" style="width:15%" />表示第<code class="highlighter-rouge">i-1</code>个token的隐藏层输出，<img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac373640001718c00900052.png" alt="图片描述" style="width:7%" />表示在列方向拓展Q列。</p>
+
+<p><strong>对于<code class="highlighter-rouge">Gi</code>公式的维度变化：</strong></p>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td>[l * Q] = [l * l] * [l * Q] + ([l * l] * [l * 1] + [l * l] * [l * 1] + [l * 1]) *</td>
+        <td>Q</td>
+        <td>；</td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<p><strong>对于ai公式的维度变化：</strong></p>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td>[1 * Q] = ([1 * l] * [l * Q] + 1 *</td>
+        <td>Q</td>
+        <td>)。</td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<p><code class="highlighter-rouge">ai</code>表示在passage的第<code class="highlighter-rouge">i</code>个token对question的注意力权重向量。</p>
+
+<p>将注意力权重向量与question向量的乘积和passage中第<code class="highlighter-rouge">i</code>个token的隐藏层输出向量拼接成一维向量<code class="highlighter-rouge">Zi</code>，公式如下：</p>
+
+<p><img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac3738c000116a502740144.png" alt="图片描述" style="display:block; margin:auto; width:25%" /></p>
+
+<p>其中，向量维度分别为：<img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac373a30001165007100058.png" alt="图片描述" style="width:50%" /></p>
+
+<p>将向量Zi作为一个LSTM层的输入，得到</p>
+
+<p><img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac373b60001352304780084.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>其中，隐藏层向量维度为：<img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac373ce000105a201900074.png" alt="图片描述" style="width:15%" /></p>
+
+<p>将<code class="highlighter-rouge">P</code>个该隐藏层向量拼接成<img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac373e10001516e02300058.png" alt="图片描述" style="width:15%" />，为了提取上下文信息，反方向构建<img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac373fa0001712a02420078.png" alt="图片描述" style="width:15%" />，将两者拼接得到Match-LSTM Layer的输出：<img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac37412000137bd02980154.png" alt="图片描述" style="display:block; margin:auto; width:20%" /></p>
+
+<p><strong>Answer Pointer Layer</strong></p>
+
+<p>将Match-LSTM Layer的输出<code class="highlighter-rouge">Hr</code>作为这一层的输入。</p>
+
+<p>Match-LSTM 的 Answer Pointer Layer 层包含了两种预测答案的模式，分别为 Sequence Model 和 Boundary Model。Sequence model提供的是一系列答案序列，但这些答案系列不一定在原文中是连续的；Boundary model是提供答案的开始与截止位置，在这两个位置中间所有的字就都是答案。Sequence Model 将答案看做是一个整数组成的序列，每个整数表示选中的 token 在原文中的位置，因此模型按顺序产生一系列条件概率，每个条件概率表示基于上轮预测的 token 产生的下个 token 的位置概率，最后答案总概率等于所有条件概率的乘积。Boundary Model 简化了整个预测答案的过程，只预测答案开始和答案结束位置，相比于 Sequence Model 极大地缩小了搜索答案的空间，最后的实验也显示简化的 Boundary Model 相比于复杂的 Sequence Model 效果更好，因此 Boundary Model 也成为后来的模型用来预测答案范围的标配。</p>
+
+<p>Sequence Model的答案定位计算公式如下：</p>
+
+<p><img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac374290001e74407560110.png" alt="图片描述" style="display:block; margin:auto; width:60%" /></p>
+
+<p><code class="highlighter-rouge">k</code>是<code class="highlighter-rouge">[1, P+1]</code>中某个值，当<code class="highlighter-rouge">k=P+1</code>时，表示答案迭代计算答案位置概率结束。</p>
+
+<p>Boundary Model的答案定位计算公式如下：</p>
+
+<p><img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac3744000019f4506120110.png" alt="图片描述" style="display:block; margin:auto; width:60%" /></p>
+
+<h2 id="2-实验"><strong>2 实验</strong></h2>
+
+<p><strong>模型参数设置如下：</strong></p>
+
+<ul>
+  <li>隐藏层大小：<code class="highlighter-rouge">150</code></li>
+  <li>优化方法：<code class="highlighter-rouge">Adamax(β1 = 0.9，β2 = 0.999)</code></li>
+  <li>minibatch：<code class="highlighter-rouge">30</code></li>
+  <li>没有用<code class="highlighter-rouge">L2</code>正则</li>
+</ul>
+
+<p>实验结果对比如图3所示：</p>
+
+<p><img title="机器阅读理解Match-LSTM模型_" 图片1="" src="https://img.mukewang.com/5ac37472000179ad15620702.png" alt="图片描述" style="display:block; margin:auto; width:80%" /></p>
+
+<p style="text-align:center">图3 各模型实验对比结果</p>
+
+<h2 id="3-参考文献"><strong>3 参考文献</strong></h2>
+
+<p>[1] 目前（2017年）机器阅读技术发展得如何？能达到什么水平？有哪些应用？ [2017-05-22]. https://www.zhihu.com/question/59280791/answer/172363224</p>
+
+<p>[2] Wang S, Jiang J. Machine Comprehension Using Match-LSTM and Answer Pointer[J]. 2016.</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">机器阅读理解数据集</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">Match-LSTM</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>

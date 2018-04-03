@@ -3,6 +3,14 @@
 	"data" : [
 	 
 	{
+		"title" : "机器阅读理解Match-LSTM模型 - 2018-04-03",
+		"url" : "/deeplearning/2018/04/03/%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3Match-LSTM%E6%A8%A1%E5%9E%8B.html"
+	}
+	
+	,
+	
+    
+	{
 		"title" : "DuReader：百度大规模的中文机器阅读理解数据集 - 2018-04-01",
 		"url" : "/deeplearning/2018/04/01/DuReader-%E7%99%BE%E5%BA%A6%E5%A4%A7%E8%A7%84%E6%A8%A1%E7%9A%84%E4%B8%AD%E6%96%87%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E9%9B%86.html"
 	}
