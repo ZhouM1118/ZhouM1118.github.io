@@ -1,7 +1,7 @@
 # careers section data
 # if you don't have language feature(language.yml is empty), ignore "i18n" items
 - name:
-    detail: 北京朗播网-人工智能与大数据中心
+    detail: 北京朗播网-人工智能与大数据中心-导师外派
     i18n: langlib
   desc1:
     detail: 主要工作：
