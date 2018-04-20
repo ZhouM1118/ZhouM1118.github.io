@@ -20,7 +20,7 @@ icon: icon-html
 
 **0.1 CNN&Dailymail**
 
-于是，Hermann等人于2015年在[《Teaching Machines to Read and Comprehend》][1]一文中发布CNN&Dailymail数据集。[数据集下载][2]。Hermann从美国有线新闻网（CNN）和每日邮报网中收集了大约一百万条新闻数据作为机器阅读理解语料库，并通过实体检测等方法**将总结和解释性的句子转化为[背景, 问题, 答案]三元组**。图1展示的是CNN&Dailymail语料库的统计信息。
+于是，Hermann等人于2015年在[《Teaching Machines to Read and Comprehend》](https://arxiv.org/abs/1506.03340)一文中发布CNN&Dailymail数据集。[数据集下载](https://github.com/deepmind/rc-data)。Hermann从美国有线新闻网（CNN）和每日邮报网中收集了大约一百万条新闻数据作为机器阅读理解语料库，并通过实体检测等方法**将总结和解释性的句子转化为[背景, 问题, 答案]三元组**。图1展示的是CNN&Dailymail语料库的统计信息。
 
 <img title="CNN&amp;Dailymail：TeachingMachinestoReadandComprehend_" 图片1="" src="https://img.mukewang.com/5ad96e4b00018cf008900430.png" alt="图片描述" style="display:block; margin:auto; width:70%">
 
