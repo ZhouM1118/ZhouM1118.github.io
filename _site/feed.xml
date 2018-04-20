@@ -5,9 +5,152 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 03 Apr 2018 20:59:37 +0800</pubDate>
-    <lastBuildDate>Tue, 03 Apr 2018 20:59:37 +0800</lastBuildDate>
+    <pubDate>Fri, 20 Apr 2018 13:04:16 +0800</pubDate>
+    <lastBuildDate>Fri, 20 Apr 2018 13:04:16 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>CNN&amp;Dailymail：Teaching Machines to Read and Comprehend</title>
+        <description>&lt;h2 id=&quot;0-cnndailymail语料库&quot;&gt;&lt;strong&gt;0 CNN&amp;amp;Dailymail语料库&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;0.0 背景&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;教会机器能够阅读并理解人类文章是人工智能的一个前沿方向，也是机器更好地为人类服务必须具备的一个能力。传统机器阅读理解方法大多为无监督学习，即&lt;strong&gt;采用模板或句法分析器从上下文文档中提取实体关系元组（谓语及主、宾语），并人工设计规则匹配文档信息，保存以供查询&lt;/strong&gt;。这种简单且严重依赖人工经验的方式并不能取得很好的机器阅读理解效果，但有监督学习方法需要大量带标签的阅读理解数据，语料库的极度缺乏也是影响机器阅读理解方法发展的重要原因之一。&lt;/p&gt;
+
+&lt;p&gt;虽然带标签的阅读理解数据获取困难，但有一些学者开始构造&lt;strong&gt;人造叙述性文章以及问题数据集&lt;/strong&gt;，大量的人造数据并以此为语料库构建机器阅读理解的神经网络模型取得了较好的效果，但实践证明，基于人造数据训练得到的网络模型不一定适用于真实应用场景中，因为模拟数据永远&lt;strong&gt;无法捕捉到自然语言的复杂性、丰富性和噪点&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;0.1 CNN&amp;amp;Dailymail&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;于是，Hermann等人于2015年在[《Teaching Machines to Read and Comprehend》][1]一文中发布CNN&amp;amp;Dailymail数据集。[数据集下载][2]。Hermann从美国有线新闻网（CNN）和每日邮报网中收集了大约一百万条新闻数据作为机器阅读理解语料库，并通过实体检测等方法&lt;strong&gt;将总结和解释性的句子转化为[背景, 问题, 答案]三元组&lt;/strong&gt;。图1展示的是CNN&amp;amp;Dailymail语料库的统计信息。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;CNN&amp;amp;Dailymail：TeachingMachinestoReadandComprehend_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ad96e4b00018cf008900430.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图1 CNN&amp;amp;Dailymail语料库的统计信息&lt;/p&gt;
+
+&lt;p&gt;CNN&amp;amp;Dailymail语料库由2007年4月-2015年4月的CNN新闻文章和2010年6月-2015年4月的每日邮报网新闻文章组成，语料库剔除了单篇超过2000个字的文章和问题答案不在原文出现的文章。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;0.2 命名实体替换&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Hermann将机器阅读理解任务看作是一个&lt;strong&gt;有监督学习问题&lt;/strong&gt;，并尝试求出语料库中每个样本的答案（answer）的条件概率&lt;code class=&quot;highlighter-rouge&quot;&gt;p(a|c,q)&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;c&lt;/code&gt;表示上下文文档，&lt;code class=&quot;highlighter-rouge&quot;&gt;q&lt;/code&gt;表示问题，&lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;则表示该问题的答案。&lt;strong&gt;Hermann尝试剔除词组共现统计对机器阅读理解的影响，让网络模型更关注从上下文挖掘实体的语义关系&lt;/strong&gt;，故而Hermann将语料库中文章样本的命名实体都进行了替换，且在训练与测试过程中，命名实体替换后都会进行随机排序，防止在训练过程中网络模型过渡关注替换后的命名实体，而忽略去理解问题以及上下文信息，提高模型泛化能力。图2展示了原始版本与命名实体替换后的匿名版本。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;CNN&amp;amp;Dailymail：TeachingMachinestoReadandComprehend_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ad96e7200010b5015340678.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图2 原始版本与命名实体替换后的匿名版本对比&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么要进行命名实体替换？&lt;/strong&gt;
+很显然，人在原始版本和匿名版本的文章中都很容易能回答问题，但对于匿名版本的问题，人必须要去阅读原文才能回答问题，而对于原始版本，如果人在不阅读原文仅通过阅读分析问题的情况下也是有可能回答问题的，因为人可能根据实体信息猜出答案，如果是这样则丢失了机器阅读理解的本质。&lt;/p&gt;
+
+&lt;p&gt;从这里也能够看出&lt;strong&gt;CNN&amp;amp;Dailymail语料库的一些特点&lt;/strong&gt;：答案是某种实体对象；答案一定出现在原文中，所以对于需要让机器理解并回答推理性的问题，CNN&amp;amp;Dailymail语料库力不从心。&lt;/p&gt;
+
+&lt;h2 id=&quot;1-模型&quot;&gt;&lt;strong&gt;1 模型&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;1.0 符号匹配模型&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;（1）&lt;strong&gt;框架语义分析模型(Frame-semantic)&lt;/strong&gt;，模型通过识别句子谓语以及它们的主语和宾语，匹配类似&lt;strong&gt;“谁对谁做了什么事情”&lt;/strong&gt;的框架来获取信息。&lt;/p&gt;
+
+&lt;p&gt;分别从问题&lt;code class=&quot;highlighter-rouge&quot;&gt;q&lt;/code&gt;和上下文文档&lt;code class=&quot;highlighter-rouge&quot;&gt;d&lt;/code&gt;中提取实体与谓词的三元组，三元组表示为&lt;code class=&quot;highlighter-rouge&quot;&gt;(e1，V，e2)&lt;/code&gt;，并使用事先定义好的多个规则来匹配问题的答案，如果在一个规则下出现多个答案，则随机选择一个。图3展示了规则定义以及举例分析。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;CNN&amp;amp;Dailymail：TeachingMachinestoReadandComprehend_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ad96ea00001144914640334.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图3 框架语义分析模型的规则定义以及举例分析&lt;/p&gt;
+
+&lt;p&gt;（2）&lt;strong&gt;单词距离基准法(Word distance)&lt;/strong&gt;，将完形填空式问题中的答案占位符与上下文文档中的每个可能的实体对比，并计算问题与指定实体上下文之间的距离，选取距离最小的实体对象作为问题答案。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1.1 神经网络模型&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1.1.1 Deep LSTM Reader&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;先将原文文档document一次一个单词token输入到一个两层LSTM中，然后将问题query一次一个单词输入到两层LSTM，即模型的输入不仅包含原文文档，还包含问题，原文与问题用分隔符（&lt;code class=&quot;highlighter-rouge&quot;&gt;|||&lt;/code&gt;）划分开，也可以反过来。即使用两个LSTM来编码encode &lt;code class=&quot;highlighter-rouge&quot;&gt;document ||| query&lt;/code&gt; 或 &lt;code class=&quot;highlighter-rouge&quot;&gt;query ||| document&lt;/code&gt;，图4展示了双层LSTM对&lt;code class=&quot;highlighter-rouge&quot;&gt;query ||| document&lt;/code&gt;的编码过程，通过先后将query和document输入双层LSTM中，拼接后通过一个&lt;code class=&quot;highlighter-rouge&quot;&gt;g(q,d)&lt;/code&gt;函数得到&lt;code class=&quot;highlighter-rouge&quot;&gt;query ||| document&lt;/code&gt;的向量表示，然后用得到的表示做分类模型的输入。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;CNN&amp;amp;Dailymail：TeachingMachinestoReadandComprehend_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ad96ebd00013d8f06340284.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图4 双层LSTM对query ||| document的编码过程&lt;/p&gt;
+
+&lt;p&gt;通过一个&lt;code class=&quot;highlighter-rouge&quot;&gt;g(q,d)&lt;/code&gt;函数得到&lt;code class=&quot;highlighter-rouge&quot;&gt;query ||| document&lt;/code&gt;的向量表示作为输入&lt;code class=&quot;highlighter-rouge&quot;&gt;X(t)&lt;/code&gt;，然后输入至一个双层LSTM得到答案，计算演变过程如图5所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;CNN&amp;amp;Dailymail：TeachingMachinestoReadandComprehend_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ad96ed100017e4313260404.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 5 双层LSTM计算演变过程&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;||&lt;/code&gt;表示拼接两个向量，&lt;code class=&quot;highlighter-rouge&quot;&gt;h(t, k)&lt;/code&gt;表示&lt;code class=&quot;highlighter-rouge&quot;&gt;t&lt;/code&gt;时刻在&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;层隐藏层的状态，&lt;code class=&quot;highlighter-rouge&quot;&gt;i, f, o&lt;/code&gt;分别表示输入门、遗忘门以及输出门的状态。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1.1.2 Attentive Reader&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Deep LSTM Reader试图挖掘长距离依赖信息，但这一目的却受限于固定宽度的隐藏层。受机器翻译与图像识别的启发，Attentive Reader采用注意力机制来构建token级别的网络模型。图6 展示了Attentive Reader中query和document的编码过程。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;CNN&amp;amp;Dailymail：TeachingMachinestoReadandComprehend_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ad96ee700017e9707140408.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图6 Attentive Reader中query和document的编码过程&lt;/p&gt;
+
+&lt;p&gt;首先使用双向LSTM层分别对文档和问题进行编码，对于长度为&lt;code class=&quot;highlighter-rouge&quot;&gt;|q|&lt;/code&gt;的query编码，拼接正反向上LSTM的输出作为query的向量表示，使用&lt;code class=&quot;highlighter-rouge&quot;&gt;u&lt;/code&gt;表示；document中&lt;code class=&quot;highlighter-rouge&quot;&gt;t&lt;/code&gt;位置的token输出表示为正反向上LSTM的输出的拼接，使用&lt;code class=&quot;highlighter-rouge&quot;&gt;y(t)&lt;/code&gt;表示，document的表示则是用document中所有token的加权平均来表示；权重矩阵&lt;code class=&quot;highlighter-rouge&quot;&gt;W&lt;/code&gt;为网络在回答问题时对文档中特定位置的token的重视程度，即注意力；变量&lt;code class=&quot;highlighter-rouge&quot;&gt;s(t)&lt;/code&gt;是token的规范化注意力表示；&lt;code class=&quot;highlighter-rouge&quot;&gt;r&lt;/code&gt;为文档表示；然后使用query和document的表示作为分类模型的输入。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1.1.3 Impatient Reader&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;不难看出，&lt;strong&gt;Attentive Reader将query作为一个整体来分析document中不同token的注意力&lt;/strong&gt;，但query中不同token本身的重要性也是不一样的，&lt;strong&gt;Impatient Reader进一步分析query中每个token，尝试找到query中的token与document中哪几个token关联最大&lt;/strong&gt;，并且对于query中每个token都需要考虑到上一个token在document中积累的信息。图7展示了Impatient Reader中query和document的编码过程。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;CNN&amp;amp;Dailymail：TeachingMachinestoReadandComprehend_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ad96ef60001d06d07120434.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图7 Impatient Reader中query和document的编码过程&lt;/p&gt;
+
+&lt;p&gt;Impatient Reader模型较Attentive Reader更为复杂，但在某些情况下，Impatient Reader效果可能并不是很好，因为在每读取query中的一个token就要通读原文一次，且还需要考虑上一个token在原文中相关的token，这样效率可能不高，且可能存在梯度弥散的问题。&lt;/p&gt;
+
+&lt;h2 id=&quot;2-实验&quot;&gt;&lt;strong&gt;2 实验&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;2.0 基线方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;（1）&lt;strong&gt;多数基线(Maximum frequency)&lt;/strong&gt;选择上下文文档中最常见的实体
+（2）&lt;strong&gt;排除式多数(Exclusive frequency)&lt;/strong&gt;选择在上下文中最常见但在问题中没有出现的实体，即排除在问题中出现的实体。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2.1 模型超参数设置&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;所有深度学习模型均使用RmsProp优化方法，decay为0.95。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;（1）Deep LSTM Reader&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;隐藏层大小：[64, 128, 256]&lt;/li&gt;
+  &lt;li&gt;LSTM层数：[1, 2, 4]&lt;/li&gt;
+  &lt;li&gt;学习率初始化：[1E-3, 5E-4, 1E-4, 5E-5]&lt;/li&gt;
+  &lt;li&gt;batch size：[16, 32]&lt;/li&gt;
+  &lt;li&gt;dropout：[0.0, 0.1, 0.2]&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;（2）Attentive Reader &amp;amp; Impatient Reader&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;隐藏层大小：[64, 128, 256]&lt;/li&gt;
+  &lt;li&gt;LSTM层数：1&lt;/li&gt;
+  &lt;li&gt;学习率初始化：[1E-4, 5E-5, 2.5E-5, 1E-5]&lt;/li&gt;
+  &lt;li&gt;batch size：[8, 16, 32]&lt;/li&gt;
+  &lt;li&gt;dropout：[0.0, 0.1, 0.2, 0.5]&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;2.2 实验结果&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;图8展示的是基线方法以及深度学习模型的实验结果对比。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;CNN&amp;amp;Dailymail：TeachingMachinestoReadandComprehend_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ad96f0f0001498207500484.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图8 基线方法以及深度学习模型的实验结果对比&lt;/p&gt;
+
+&lt;p&gt;由图8可知，不管在CNN还是Daily Mail中，&lt;strong&gt;深度学习模型普遍比基线方法和传统模型要好&lt;/strong&gt;，这也展现了深度学习在机器阅读理解的适用性；Uniform Reader没有使用注意力机制，其性能表现说明注意力机制在机器阅读理解中有效性，图9展示了其与Impatient Reader、Attentive Reader模型的P-R图；在CNN中Impatient Reader模型较Attentive Reader表现更好，但相差不大，而在Daily Mail中Attentive Reader模型较Impatient Reader表现更好。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;CNN&amp;amp;Dailymail：TeachingMachinestoReadandComprehend_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ad96f1d00018bf306940578.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图9 三种深度学习模型的P-R图（其中Uniform没有使用注意力机制）&lt;/p&gt;
+</description>
+        <pubDate>Sun, 15 Apr 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/04/15/CNN&Dailymail-Teaching-Machines-to-Read-and-Comprehend.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/04/15/CNN&Dailymail-Teaching-Machines-to-Read-and-Comprehend.html</guid>
+        
+        <category>机器阅读理解数据集</category>
+        
+        <category>CNN&amp;Dailymail</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>机器阅读理解Match-LSTM模型</title>
@@ -83,7 +226,7 @@
   &lt;/table&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;&lt;strong&gt;对于ai公式的维度变化：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对于&lt;code class=&quot;highlighter-rouge&quot;&gt;ai&lt;/code&gt;公式的维度变化：&lt;/strong&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;table&gt;

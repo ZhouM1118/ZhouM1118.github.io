@@ -3,6 +3,14 @@
 	"data" : [
 	 
 	{
+		"title" : "CNN&Dailymail：Teaching Machines to Read and Comprehend - 2018-04-15",
+		"url" : "/deeplearning/2018/04/15/CNN&Dailymail-Teaching-Machines-to-Read-and-Comprehend.html"
+	}
+	
+	,
+	
+    
+	{
 		"title" : "机器阅读理解Match-LSTM模型 - 2018-04-03",
 		"url" : "/deeplearning/2018/04/03/%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3Match-LSTM%E6%A8%A1%E5%9E%8B.html"
 	}
