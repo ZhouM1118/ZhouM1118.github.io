@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="SQuAD：机器阅读理解领域中的ImageNet" name="description">
+  
+  
+    <meta name="keywords" content="机器阅读理解数据集, SQuAD, ImageNet">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|SQuAD：机器阅读理解领域中的ImageNet
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/html/">HTML</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 22 Apr 2018</span>
+                        <h1>
+                            SQuAD：机器阅读理解领域中的ImageNet
+                        </h1>
+                    </div>
+                    	<h2 id="0-介绍"><strong>0 介绍</strong></h2>
+
+<p>上篇博文我们通过介绍机器阅读理解的奠基之作《Teaching Machines to Read and Comprehend》对CNN&amp;DailyMail语料库进行了分析，但<strong>由于CNN&amp;DailyMail的answer只能是实体对象，且只能出现在原文中，而使得基于该语料库训练的模型缺乏推理能力</strong>，于是斯坦福大学的Rajpurkar等人于2016年在自然语言处理的顶级会议EMNLP上发布了SQuAD语料库。<a href="https://arxiv.org/abs/1606.05250">论文下载</a>。<a href="https://rajpurkar.github.io/SQuAD-explorer/">数据集下载</a>。SQuAD通过众包的方式，<strong>从wikipedia上的536篇文章提取超过10w个问题-答案对，且其中的答案是原文的一个片段而不是单一的实体对象</strong>。图1展示了SQuAD语料库中的一个原文-问题-答案样本。</p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc667600010bbc08260836.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 1 SQuAD语料库中的一个原文-问题-答案样本</p>
+
+<h2 id="1-语料库对比"><strong>1 语料库对比</strong></h2>
+
+<p><strong>机器阅读理解是一个数据驱动的研究领域</strong>，近几年不同的机构都发布了大大小小的机器阅读理解语料库，图2展示了机器阅读理解领域知名语料库对比。</p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc66910001c26608220758.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 2 机器阅读理解领域知名语料库对比</p>
+
+<p>其中，MCTest：660篇文章，每篇文章包含4个问题，每个问题有四个选项；WikiQA是定位答案在原文所在句子的位置，而SQuAD定位的是答案在原文哪个句子中哪些范围的单词；CNN&amp;DailyMail是完形填空式风格的语料库，其答案一定是实体对象，而SQuAD的答案不一定是实体对象。</p>
+
+<h2 id="2-squad分析"><strong>2 SQuAD分析</strong></h2>
+
+<p><strong>2.1 多样的答案类型</strong></p>
+
+<p>图3展示了SQuAD语料库中答案的多种类型。</p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc66ab00013e6a08180492.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 3 SQuAD语料库中答案的多种类型</p>
+
+<p>从图3中可看出，19.8%的答案为日期和其他数字类；有32.6%的答案为三种不同类型的专有名词：人名、地名以及其它实体对象；31.8%为名词短语；其余15.8%由形容词短语、动词短语、从句和其他类型组成。</p>
+
+<p><strong>2.2 SQuAD语料库的推理能力</strong></p>
+
+<p><strong>Rajpurkar通过构造问题与答案所在原文的句子之间的多种差异类型来增加SQuAD语料库在问题求解时的推理能力。</strong>图4展示了SQuAD语料库中问题与答案所在原文的句子之间的差异类型。</p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc66c20001695e16961042.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 4 SQuAD语料库中问题与答案所在原文的句子之间的差异类型</p>
+
+<p>由图4可看出，</p>
+
+<ul>
+  <li>
+    <p>Lexical variation-词汇差异：
+ 同义词推理，如called-referred
+ 背景知识积累/推理，如governing bodies-The European Parliament and the Council of the European Union</p>
+  </li>
+  <li>
+    <p>Syntactic variation-句法差异：
+即使将问题转化为陈述句后，其与答案所在原文句子的句法结构具有差异</p>
+  </li>
+  <li>
+    <p>Multiple sentences reasoning-答案需要在原文多个句子中进行推理才能得到</p>
+  </li>
+  <li>
+    <p>Ambiguous-众包问题无法有唯一的答案，或众包得到的答案并不对</p>
+  </li>
+</ul>
+
+<p><strong>2.3 问题和答案所在句子的句法差异性</strong></p>
+
+<p>图5 展示了问题和答案所在句子的句法差异性计算过程</p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc670f0001dbd908160364.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 5 问题和答案所在句子的句法差异性计算过程</p>
+
+<p>首先<strong>找出两个句子（问题和答案所在原文句子）的相似词</strong>，比如first，然后再question中找到wh开头的词（即what、why、which等等），而答案所在原文句子则以句子的第一个词作为开头，<strong>计算两个句子的编辑距离</strong>；对于两个句子有多个相似词，则<strong>选最小编辑距离作为句法差异度的度量值</strong>。两个句子的句法差异度的度量范围在0~8之间，如图6所示，编辑距离小不代表问题很容易回答，因为问题在原文中可能有多个同样编辑距离小的句子。</p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc67290001db2207900308.png" alt="图片描述" style="display:block; margin:auto; width:60%" /></p>
+
+<p style="text-align:center">图6 (a) 编辑距离为0的两个句子</p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc673a0001094d16440252.png" alt="图片描述" style="display:block; margin:auto; width:85%" /></p>
+
+<p style="text-align:center">图6 (b) 编辑距离为6的两个句子</p>
+
+<p>图7 展示了SQuAD语料库在句法差异的分布情况。</p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc674d0001d3f307660416.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 7 SQuAD语料库在句法差异的分布情况</p>
+
+<h2 id="3-模型及实验结果"><strong>3 模型及实验结果</strong></h2>
+
+<p>Rajpurkar使用逻辑回归算法构建机器阅读理解模型，分析开发集发现，有77.3%的答案来源于原文，那么在训练过程中，规定答案一定是来源于原文，如果答案不出现在原文，则将原文中能表达答案同等意思的最小部分作为答案。</p>
+
+<p><strong>3.1 特征工程</strong></p>
+
+<p>模型的特征工程总共包含了<strong>1.8亿个特征</strong>，其中大部分是词汇化特征或依赖树路径特征，图8 展示了特征工程中特征详细信息。</p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc676c00013e7917001174.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图8 特征工程中特征详细信息</p>
+
+<p>由图8可以看出，</p>
+
+<ol>
+  <li><strong>匹配词(matching word)、双字词的词频(bigram frequencies)和词根匹配(root match)特征</strong>帮助模型定位候选答案所在句子；</li>
+  <li><strong>长度特征(Length features)</strong>帮助模型选择具有共同长度和位置的答案跨度；</li>
+  <li><strong>跨度中的词频(span word frequencies)</strong>特征帮助模型剔除偏僻词；</li>
+  <li><strong>成分类型特征(Constituent label)和跨度中单词的词性标注特征(span POS tag features)</strong>帮助模型确定正确答案类型；</li>
+  <li><strong>词法特征(lexicalized features)和依赖树路径特征(dependency tree path features)</strong>来定量问题与候选答案句子之间的词法和句法多样性。</li>
+</ol>
+
+<p><strong>3.2 参数设置</strong></p>
+
+<ol>
+  <li>损失函数：交叉熵损失</li>
+  <li>优化方法：AdaGrad</li>
+  <li>初始化学习率：0.1</li>
+  <li>正则化：L2(0.1/batch size)</li>
+</ol>
+
+<p><strong>3.3 基线方法</strong></p>
+
+<ol>
+  <li>
+    <p><strong>sliding-window</strong>
+对于每一个候选答案所在的句子，剔除候选答案本身后，计算其与问题之间单个单词和两个单词的重叠个数，重叠个数最大的句子即为正确答案。</p>
+  </li>
+  <li>
+    <p><strong>基于距离(distance-based )的计算</strong>
+计算问题与候选答案所在句子之间的距离，距离越小的句子即为正确答案。</p>
+  </li>
+</ol>
+
+<p><strong>3.4 评价方法</strong></p>
+
+<ol>
+  <li>完全匹配（Exact Match），即预测的答案与正确答案完全相符</li>
+  <li>F1值</li>
+</ol>
+
+<p><strong>3.5 实验结果</strong></p>
+
+<p>图9 展示了不同模型实验结果，我们可以看到<strong>逻辑回归模型远优于基线方法</strong>，但离人类的表现还差很远，说明基于SQuAD语料库的机器阅读理解研究还有很大空间。</p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc683a0001518508100366.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图9 不同模型实验结果对比</p>
+
+<p>图 10 展示了逻辑回归模型在剔除某种特征后模型的实验结果。我们可以看出<strong>词法特征(lexicalized features)和依赖树路径特征(dependency tree path features)对模型影响最大</strong>，而剔除其它特征几乎不会对逻辑回归模型造成很大的影响。</p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc68520001a1f505820592.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 10 逻辑回归模型在剔除某种特征后的实验结果</p>
+
+<p>图 11 展示了模型在不同答案类型的表现情况。我们可以看到<strong>模型对数字类和实体类表现良好，而人对所有类型答案的表现都差不多</strong>。</p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc685f0001b9d207640536.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图11 模型在不同答案类型的表现情况</p>
+
+<p>图 12 展示了在不同问题与答案所在句子之间的句法差异对模型的影响。我们可以看出<strong>随着句法差异越来越大，模型性能逐渐降低，但人类的表现却很稳定。</strong></p>
+
+<p><img title="SQuAD：机器阅读理解领域中的&quot;ImageNet&quot;_" 图片1="" src="https://img.mukewang.com/5adc68a60001509908240520.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 12 不同问题与答案所在句子之间的句法差异对模型的影响</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">机器阅读理解数据集</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">SQuAD</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">ImageNet</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>

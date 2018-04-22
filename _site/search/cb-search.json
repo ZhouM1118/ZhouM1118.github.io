@@ -3,6 +3,14 @@
 	"data" : [
 	 
 	{
+		"title" : "SQuAD：机器阅读理解领域中的ImageNet - 2018-04-22",
+		"url" : "/deeplearning/2018/04/22/SQuAD-%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E9%A2%86%E5%9F%9F%E4%B8%AD%E7%9A%84ImageNet.html"
+	}
+	
+	,
+	
+    
+	{
 		"title" : "CNN&Dailymail：Teaching Machines to Read and Comprehend - 2018-04-15",
 		"url" : "/deeplearning/2018/04/15/CNN&Dailymail-Teaching-Machines-to-Read-and-Comprehend.html"
 	}

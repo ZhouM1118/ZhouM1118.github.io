@@ -5,9 +5,185 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 20 Apr 2018 13:04:16 +0800</pubDate>
-    <lastBuildDate>Fri, 20 Apr 2018 13:04:16 +0800</lastBuildDate>
+    <pubDate>Sun, 22 Apr 2018 19:22:13 +0800</pubDate>
+    <lastBuildDate>Sun, 22 Apr 2018 19:22:13 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>SQuAD：机器阅读理解领域中的ImageNet</title>
+        <description>&lt;h2 id=&quot;0-介绍&quot;&gt;&lt;strong&gt;0 介绍&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;上篇博文我们通过介绍机器阅读理解的奠基之作《Teaching Machines to Read and Comprehend》对CNN&amp;amp;DailyMail语料库进行了分析，但&lt;strong&gt;由于CNN&amp;amp;DailyMail的answer只能是实体对象，且只能出现在原文中，而使得基于该语料库训练的模型缺乏推理能力&lt;/strong&gt;，于是斯坦福大学的Rajpurkar等人于2016年在自然语言处理的顶级会议EMNLP上发布了SQuAD语料库。&lt;a href=&quot;https://arxiv.org/abs/1606.05250&quot;&gt;论文下载&lt;/a&gt;。&lt;a href=&quot;https://rajpurkar.github.io/SQuAD-explorer/&quot;&gt;数据集下载&lt;/a&gt;。SQuAD通过众包的方式，&lt;strong&gt;从wikipedia上的536篇文章提取超过10w个问题-答案对，且其中的答案是原文的一个片段而不是单一的实体对象&lt;/strong&gt;。图1展示了SQuAD语料库中的一个原文-问题-答案样本。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc667600010bbc08260836.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 1 SQuAD语料库中的一个原文-问题-答案样本&lt;/p&gt;
+
+&lt;h2 id=&quot;1-语料库对比&quot;&gt;&lt;strong&gt;1 语料库对比&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;机器阅读理解是一个数据驱动的研究领域&lt;/strong&gt;，近几年不同的机构都发布了大大小小的机器阅读理解语料库，图2展示了机器阅读理解领域知名语料库对比。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc66910001c26608220758.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 2 机器阅读理解领域知名语料库对比&lt;/p&gt;
+
+&lt;p&gt;其中，MCTest：660篇文章，每篇文章包含4个问题，每个问题有四个选项；WikiQA是定位答案在原文所在句子的位置，而SQuAD定位的是答案在原文哪个句子中哪些范围的单词；CNN&amp;amp;DailyMail是完形填空式风格的语料库，其答案一定是实体对象，而SQuAD的答案不一定是实体对象。&lt;/p&gt;
+
+&lt;h2 id=&quot;2-squad分析&quot;&gt;&lt;strong&gt;2 SQuAD分析&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;2.1 多样的答案类型&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;图3展示了SQuAD语料库中答案的多种类型。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc66ab00013e6a08180492.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 3 SQuAD语料库中答案的多种类型&lt;/p&gt;
+
+&lt;p&gt;从图3中可看出，19.8%的答案为日期和其他数字类；有32.6%的答案为三种不同类型的专有名词：人名、地名以及其它实体对象；31.8%为名词短语；其余15.8%由形容词短语、动词短语、从句和其他类型组成。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2.2 SQuAD语料库的推理能力&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Rajpurkar通过构造问题与答案所在原文的句子之间的多种差异类型来增加SQuAD语料库在问题求解时的推理能力。&lt;/strong&gt;图4展示了SQuAD语料库中问题与答案所在原文的句子之间的差异类型。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc66c20001695e16961042.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 4 SQuAD语料库中问题与答案所在原文的句子之间的差异类型&lt;/p&gt;
+
+&lt;p&gt;由图4可看出，&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Lexical variation-词汇差异：
+ 同义词推理，如called-referred
+ 背景知识积累/推理，如governing bodies-The European Parliament and the Council of the European Union&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Syntactic variation-句法差异：
+即使将问题转化为陈述句后，其与答案所在原文句子的句法结构具有差异&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Multiple sentences reasoning-答案需要在原文多个句子中进行推理才能得到&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Ambiguous-众包问题无法有唯一的答案，或众包得到的答案并不对&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;2.3 问题和答案所在句子的句法差异性&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;图5 展示了问题和答案所在句子的句法差异性计算过程&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc670f0001dbd908160364.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 5 问题和答案所在句子的句法差异性计算过程&lt;/p&gt;
+
+&lt;p&gt;首先&lt;strong&gt;找出两个句子（问题和答案所在原文句子）的相似词&lt;/strong&gt;，比如first，然后再question中找到wh开头的词（即what、why、which等等），而答案所在原文句子则以句子的第一个词作为开头，&lt;strong&gt;计算两个句子的编辑距离&lt;/strong&gt;；对于两个句子有多个相似词，则&lt;strong&gt;选最小编辑距离作为句法差异度的度量值&lt;/strong&gt;。两个句子的句法差异度的度量范围在0~8之间，如图6所示，编辑距离小不代表问题很容易回答，因为问题在原文中可能有多个同样编辑距离小的句子。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc67290001db2207900308.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:60%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图6 (a) 编辑距离为0的两个句子&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc673a0001094d16440252.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:85%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图6 (b) 编辑距离为6的两个句子&lt;/p&gt;
+
+&lt;p&gt;图7 展示了SQuAD语料库在句法差异的分布情况。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc674d0001d3f307660416.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 7 SQuAD语料库在句法差异的分布情况&lt;/p&gt;
+
+&lt;h2 id=&quot;3-模型及实验结果&quot;&gt;&lt;strong&gt;3 模型及实验结果&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;Rajpurkar使用逻辑回归算法构建机器阅读理解模型，分析开发集发现，有77.3%的答案来源于原文，那么在训练过程中，规定答案一定是来源于原文，如果答案不出现在原文，则将原文中能表达答案同等意思的最小部分作为答案。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3.1 特征工程&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;模型的特征工程总共包含了&lt;strong&gt;1.8亿个特征&lt;/strong&gt;，其中大部分是词汇化特征或依赖树路径特征，图8 展示了特征工程中特征详细信息。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc676c00013e7917001174.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图8 特征工程中特征详细信息&lt;/p&gt;
+
+&lt;p&gt;由图8可以看出，&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;匹配词(matching word)、双字词的词频(bigram frequencies)和词根匹配(root match)特征&lt;/strong&gt;帮助模型定位候选答案所在句子；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;长度特征(Length features)&lt;/strong&gt;帮助模型选择具有共同长度和位置的答案跨度；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;跨度中的词频(span word frequencies)&lt;/strong&gt;特征帮助模型剔除偏僻词；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;成分类型特征(Constituent label)和跨度中单词的词性标注特征(span POS tag features)&lt;/strong&gt;帮助模型确定正确答案类型；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;词法特征(lexicalized features)和依赖树路径特征(dependency tree path features)&lt;/strong&gt;来定量问题与候选答案句子之间的词法和句法多样性。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;3.2 参数设置&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;损失函数：交叉熵损失&lt;/li&gt;
+  &lt;li&gt;优化方法：AdaGrad&lt;/li&gt;
+  &lt;li&gt;初始化学习率：0.1&lt;/li&gt;
+  &lt;li&gt;正则化：L2(0.1/batch size)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;3.3 基线方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;sliding-window&lt;/strong&gt;
+对于每一个候选答案所在的句子，剔除候选答案本身后，计算其与问题之间单个单词和两个单词的重叠个数，重叠个数最大的句子即为正确答案。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;基于距离(distance-based )的计算&lt;/strong&gt;
+计算问题与候选答案所在句子之间的距离，距离越小的句子即为正确答案。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;3.4 评价方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;完全匹配（Exact Match），即预测的答案与正确答案完全相符&lt;/li&gt;
+  &lt;li&gt;F1值&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;3.5 实验结果&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;图9 展示了不同模型实验结果，我们可以看到&lt;strong&gt;逻辑回归模型远优于基线方法&lt;/strong&gt;，但离人类的表现还差很远，说明基于SQuAD语料库的机器阅读理解研究还有很大空间。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc683a0001518508100366.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图9 不同模型实验结果对比&lt;/p&gt;
+
+&lt;p&gt;图 10 展示了逻辑回归模型在剔除某种特征后模型的实验结果。我们可以看出&lt;strong&gt;词法特征(lexicalized features)和依赖树路径特征(dependency tree path features)对模型影响最大&lt;/strong&gt;，而剔除其它特征几乎不会对逻辑回归模型造成很大的影响。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc68520001a1f505820592.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 10 逻辑回归模型在剔除某种特征后的实验结果&lt;/p&gt;
+
+&lt;p&gt;图 11 展示了模型在不同答案类型的表现情况。我们可以看到&lt;strong&gt;模型对数字类和实体类表现良好，而人对所有类型答案的表现都差不多&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc685f0001b9d207640536.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图11 模型在不同答案类型的表现情况&lt;/p&gt;
+
+&lt;p&gt;图 12 展示了在不同问题与答案所在句子之间的句法差异对模型的影响。我们可以看出&lt;strong&gt;随着句法差异越来越大，模型性能逐渐降低，但人类的表现却很稳定。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;SQuAD：机器阅读理解领域中的&amp;quot;ImageNet&amp;quot;_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5adc68a60001509908240520.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 12 不同问题与答案所在句子之间的句法差异对模型的影响&lt;/p&gt;
+</description>
+        <pubDate>Sun, 22 Apr 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/04/22/SQuAD-%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E9%A2%86%E5%9F%9F%E4%B8%AD%E7%9A%84ImageNet.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/04/22/SQuAD-%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E9%A2%86%E5%9F%9F%E4%B8%AD%E7%9A%84ImageNet.html</guid>
+        
+        <category>机器阅读理解数据集</category>
+        
+        <category>SQuAD</category>
+        
+        <category>ImageNet</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>CNN&amp;Dailymail：Teaching Machines to Read and Comprehend</title>
@@ -21,7 +197,7 @@
 
 &lt;p&gt;&lt;strong&gt;0.1 CNN&amp;amp;Dailymail&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;于是，Hermann等人于2015年在[《Teaching Machines to Read and Comprehend》][1]一文中发布CNN&amp;amp;Dailymail数据集。[数据集下载][2]。Hermann从美国有线新闻网（CNN）和每日邮报网中收集了大约一百万条新闻数据作为机器阅读理解语料库，并通过实体检测等方法&lt;strong&gt;将总结和解释性的句子转化为[背景, 问题, 答案]三元组&lt;/strong&gt;。图1展示的是CNN&amp;amp;Dailymail语料库的统计信息。&lt;/p&gt;
+&lt;p&gt;于是，Hermann等人于2015年在&lt;a href=&quot;https://arxiv.org/abs/1506.03340&quot;&gt;《Teaching Machines to Read and Comprehend》&lt;/a&gt;一文中发布CNN&amp;amp;Dailymail数据集。&lt;a href=&quot;https://github.com/deepmind/rc-data&quot;&gt;数据集下载&lt;/a&gt;。Hermann从美国有线新闻网（CNN）和每日邮报网中收集了大约一百万条新闻数据作为机器阅读理解语料库，并通过实体检测等方法&lt;strong&gt;将总结和解释性的句子转化为[背景, 问题, 答案]三元组&lt;/strong&gt;。图1展示的是CNN&amp;amp;Dailymail语料库的统计信息。&lt;/p&gt;
 
 &lt;p&gt;&lt;img title=&quot;CNN&amp;amp;Dailymail：TeachingMachinestoReadandComprehend_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ad96e4b00018cf008900430.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
 
