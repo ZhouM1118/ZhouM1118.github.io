@@ -7,16 +7,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-    <meta content="死磕JVM-Java虚拟机对象" name="description">
+    <meta content="HDFS与MapReduce" name="description">
   
   
-    <meta name="keywords" content="java,JVM,虚拟机对象">
+    <meta name="keywords" content="HDFS, MapReduce">
   
   <meta name="author" content="周明">
 
   <title>
     
-        周明的技术博客|死磕JVM-Java虚拟机对象
+        周明的技术博客|HDFS与MapReduce
     
   </title>
   <!-- favicon -->
@@ -248,69 +248,89 @@
                 <div class="ibox-content">
                     <div class="pull-right">
                     	
-                        	<button class="btn btn-white btn-xs" type="button">Java</button>
+                        	<button class="btn btn-white btn-xs" type="button">Datamining</button>
                         
                     </div>
                     <div class="text-center article-title">
-                    <span class="text-muted"><i class="fa fa-clock-o"></i> 18 May 2017</span>
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 21 Dec 2016</span>
                         <h1>
-                            死磕JVM-Java虚拟机对象
+                            HDFS与MapReduce
                         </h1>
                     </div>
-                    	<p>上篇文章我们了解了Java虚拟机的内存模型，也知道不同区域的内存都存储的是什么，现在我们进一步来探究内存上存储的数据是怎么创建的，内存大小又是怎么分配的，数据创建成功后怎么被访问的。我们以Java虚拟机中最大的内存块Java堆为例子来探究上面的三个问题。</p>
+                    	<h1 id="hdfs-hadoop-distributed-file-system"><strong>HDFS (Hadoop Distributed File System)</strong></h1>
 
-<h2 id="java堆上对象的创建"><strong>Java堆上对象的创建</strong></h2>
+<h2 id="数据块"><strong>数据块</strong></h2>
 
-<p>Java虚拟机遇到一条new指令后，首先会去检查要创建的对象能否在常量池中定位到其对应类的符号引用，并且检查这个引用代表的类是否已经被加载、解析和初始化过，如果没有则先进行类加载过程。</p>
+<p>HDFS将文件分成一个个块，除了最后一个块的大小不一样，其余所有的块的大小都是一样的（128MB）。</p>
 
-<p>然后就是为这个对象分配内存，最后执行init方法，这样一个可用的对象创建完毕。</p>
-<h2 id="java堆对象的内存分配"><strong>Java堆对象的内存分配</strong></h2>
-<p>在类加载检查通过之后，虚拟机就会为新生对象分配内存，分配方式因取决于Java堆中内存是否规整而分为“指针碰撞”和“空闲列表”。在Java堆中的内存是规整的情况下，内存分配方式采用“指针碰撞”，反之采用“空闲列表”。</p>
+<h2 id="数据复制"><strong>数据复制</strong></h2>
 
-<p><strong>假设Java堆中的内存是绝对规整的</strong>，所有用过的内存都放在一边，空闲的内存放在另一边，中间放着一个指针作为分界点的指示器，分配内存的方式就是将这个指针往指向空闲空间那边挪动一段与对象大小相等的距离。</p>
+<p>Q：“一次写入，多次读取”，数据写入后，是否在所有结点中的dataNode中复制了一遍？</p>
 
-<p><strong>假设Java堆中的内存不是规整的</strong>，已使用的内存和空闲的内存相互交错，这样就无法进行简单地指针碰撞了，这时候虚拟机会维护一张列表，列表中记录哪些内存块是可用的，在分配内存的时候就从列表中找到一块足够大的空间划分给对象实例，同时更新列表上的记录，这种内存分配的方式叫做“空闲列表”。</p>
+<p>A：对的，这个是可配置的，可复制一遍或多遍。</p>
 
-<p>由此我们知道Java堆对象的内存分配策略是由Java堆内存是否规整来决定的，那么Java堆内存是否规整则由GC是否带有压缩整理功能决定的，所以一般在使用Serial、ParNew等带有压缩整理过程的收集器时，系统采用的是“指针碰撞”的分配策略，在使用CMS这种基于Mark-Sweep算法的收集器时，采用的是“空闲列表”的方式。</p>
+<h2 id="数据副本的存放策略"><strong>数据副本的存放策略</strong></h2>
 
-<p><strong>由于Java堆是线程共享的，那么内存的分配在线程并发的情况下如何保证线程安全呢？</strong></p>
+<p>既然数据块在HDFS中有多个副本备份，那么数据副本应该在HDFS中怎么存放呢？</p>
 
-<p>不管采用哪种内存分配策略，在多线程下进行Java堆内存分配的时候，可能存在正在给A对象分配内存，但指针还没来得及修改而对象B又使用了原来的指针来分配内存的这种情况。</p>
+<p>数据副本的存放需要考虑到数据的可靠性、可用性和网络带宽的利用率。</p>
 
-<p>有两种解决方案：第一是对分配内存空间的动作进行同步处理以保证操作的原子性，也就是说同一时刻只有一个线程能进行分配内存的操作；第二是把内存分配的操作按照线程划分在不同的空间中进行，即每个线程在Java堆中预先分配一小块内存，称为本地线程分配缓冲（Thread Local Allocation Buffer, TLAB）,线程在自己的TLAB中分配内存，只有在TLAB用完了，在分配新的TLAB时才需要同步锁定。</p>
+<p>一个简单且没有有优化的策略是，将数据副本块放在不同的机架（一个机架上有很多不同的节点即DataNode）上，数据副本均匀放在集群中，有助于负载均衡，但需要将一个数据副本看写入到不同的机架上就务必会增加写的代价。</p>
 
-<p><strong>讲完了Java堆对象的内存分配策略，那存储的对象到底存储的是什么呢？对象中都包含哪些内容呢？</strong></p>
+<p>HDFS默认的副本系数为3，Hadoop的3个数据副本的存放策略：</p>
 
-<p>对象在内存中主要存储这三个信息：对象头（Header）、实例数据（Instance Data）和对齐填充（Padding）。</p>
+<p><strong>第一块：</strong>在本机器下的HDFS目录下存储一个数据块；</p>
 
-<p>对象头，存储对象自身的运行时数据：哈希码，GC分代年龄，锁状态标志等。</p>
+<p><strong>第二块：</strong>不同的机架上的某个DataNode上存储一个数据块；</p>
 
-<p>实例数据，存储对象真正有效的信息。</p>
+<p><strong>第三块：</strong>在该机器的同一个机架下的某台机器（也就是节点DataNode）上存储最后一个数据块。</p>
 
-<p>对齐填充，起到占位符的作用，当实例数据部分没有对齐时，就需要对齐填充来补全。</p>
+<h2 id="负载均衡-balancer"><strong>负载均衡 Balancer</strong></h2>
 
-<h2 id="java堆对象的访问定位"><strong>Java堆对象的访问定位</strong></h2>
+<p>需要考虑到网络带宽使用率，机器磁盘利用率等。</p>
 
-<p>对象创建并分配好了内存，那么接下来就可以访问对象了，Java程序是通过栈中的reference数据来操作堆上的具体对象，虚拟机提供了两种机制来访问堆中的实例对象：句柄和直接指针。
-使用句柄：Java堆中会划分一块区域作为句柄池，Java栈中的本地变量表中的reference数据存储的就是对象的句柄地址，而句柄中则包含的是到对象实例数据的指针和对象类型数据的指针。
-<img title="死磕JVM-Java虚拟机对象_" 图片1="" src="http://img.mukewang.com/591d078d0001d19915940584.png" style="width:100%" alt="图片描述" /></p>
+<p>负载均衡程序balancer作为一个独立的进程与NameNode进程分开执行</p>
 
-<p>直接指针：reference数据存储是的对象的实例数据的引用地址和到对象类型数据的指针。</p>
+<p>具体过程：</p>
 
-<p><img title="死磕JVM-Java虚拟机对象_" 图片1="" src="http://img.mukewang.com/591d079d0001210016240586.png" style="width:100%" alt="图片描述" /></p>
+<ol>
+  <li>负载均衡服务Rebalancing Server从NameNode中获取所有的DataNode情况（包括DataNode的磁盘使用情况等）</li>
+  <li>Rebalancing Server计算哪些机器需要将数据移动，哪些机器可以接收移动的数据，哪一台机器的数据块可以移动到另一台机器中去</li>
+  <li>Rebalancing Server执行移动数据块操作，移动成功后删除原来的数据块</li>
+</ol>
 
-<p>使用句柄的好处是Java栈中的本地变量表中的reference数据是相对稳定的，不需要经常变动，比如在执行GC操作时移动对象，这个时候需要改变对象在堆中的地址，在句柄机制中，只需要改动句柄池中的实例数据的指针，而不需要修改reference数据。但缺点是增加了一次指针定位的开销，对于对象访问比较频繁的时候，这种开销累计起来也是很大的，所以对于HotSpot而言，使用的是直接指针的方式。</p>
+<h2 id="hdfs的masterslave主从架构"><strong>HDFS的Master/Slave主从架构</strong></h2>
+
+<p><strong>NameNode—Master：</strong>管理HDFS的命名空间和和文件数据块</p>
+
+<p><strong>DataNode—Slave：</strong>数据存储节点</p>
+
+<p><strong>SecondaryNameNode—辅助的NameNode：</strong>为了降低单个的NameNode的宕机对系统造成影响，SecondaryNameNode会备份NameNode的相关数据</p>
+
+<h1 id="mapreducemap映射reduce化简"><strong>MapReduce（Map映射+Reduce化简）</strong></h1>
+
+<h2 id="mapreduce过程"><strong>MapReduce过程</strong></h2>
+
+<p>map()负责将任务分散成多个子任务（按照键值对的形式，比如讲一篇文章分成多个map，每个map的key是字符串的偏移量，value是文件中一句字符串），将这些键值对作为输入，通过map()函数的处理（将每个map的value中的字符串分割为一个个单词），产生一个个中间map结果（将一个个单词作为map的key，value初始化为1），并将这些键值对结果写入本地磁盘。</p>
+
+<p>MapReduce框架会自动将这些中间数据按照key值进行聚集，将key值相同的数据统一交给一个reduce()函数处理。</p>
+
+<p>reduce()函数负责将分解后的多个任务的处理中间结果进行汇总（把key值相同的value值相加，得到一篇文章中不同单词出现的次数），产生最终结果的键值对（key为单词，value为单词出现的总次数）写入HDFS中。</p>
+
+<h2 id="mapreduce的masterslave主从架构"><strong>MapReduce的Master/Slave主从架构</strong></h2>
+
+<p><strong>ResourcesManager—Master：</strong>控制整个集群的计算资源分配</p>
+
+<p><strong>NodeManager—Slave：</strong>实际的计算节点</p>
 
                     <hr>
                     <div class="row">
                         <div class="col-md-6">
                                 <h5 style="display: inline;">Tags:</h5>
                                 
-                                    <button class="btn btn-white btn-xs" type="button">java</button>
+                                    <button class="btn btn-white btn-xs" type="button">HDFS</button>
                                 
-                                    <button class="btn btn-white btn-xs" type="button">JVM</button>
-                                
-                                    <button class="btn btn-white btn-xs" type="button">虚拟机对象</button>
+                                    <button class="btn btn-white btn-xs" type="button">MapReduce</button>
                                 
                         </div>
                         <div class="col-md-6">

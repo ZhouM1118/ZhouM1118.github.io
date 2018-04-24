@@ -7,16 +7,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-    <meta content="论文笔记-基于全局和局部内聚的学生论文中的篇章结构识别" name="description">
-  
-  
-    <meta name="keywords" content="论文笔记, 全局, 局部, 篇章结构识别">
   
   <meta name="author" content="周明">
 
   <title>
     
-        周明的技术博客|论文笔记-基于全局和局部内聚的学生论文中的篇章结构识别
+        周明的技术博客|Datamining
     
   </title>
   <!-- favicon -->
@@ -241,142 +237,172 @@
 
 	
 
-    <div class="wrapper wrapper-content  animated fadeInRight article">
+        <!-- jPages -->
+<script src="/static/assets/jPage-20170521.min.js"></script>
+<script type="text/javascript">
+$(function(){
+  /* initiate the plugin */
+  $("div.pag-holder").jPages({
+      containerID  : "pag-itemContainer",
+      perPage      : 5,  /* num of items per page */
+      startPage    : 1,
+      startRange   : 1,
+      midRange     : 3,
+      endRange     : 1
+  });
+});
+</script>
+
+<div class="row">
+    <div class="col-lg-12 text-center">
+        <div class="navy-line"></div>
+        
+        
+        <h1>Datamining</h1>
+    </div>
+</div>
+<div class="wrapper wrapper-content  animated fadeInRight blog">
     <div class="row">
-        <div class="col-lg-10 col-lg-offset-1">
-            <div class="ibox">
-                <div class="ibox-content">
-                    <div class="pull-right">
-                    	
-                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
-                        
-                    </div>
-                    <div class="text-center article-title">
-                    <span class="text-muted"><i class="fa fa-clock-o"></i> 19 Oct 2017</span>
-                        <h1>
-                            论文笔记-基于全局和局部内聚的学生论文中的篇章结构识别
-                        </h1>
-                    </div>
-                    	<p>找技术路线很头大啊，明天还要做一个技术分享（压力山大）…这篇论文《Discourse Element Identification in Student Essays based on Global and Local Cohesion》的训练集是中国学生写的中文文章，虽然对我研究的托福雅思的英文议论文不同，但我想思路和技术方法可能是有一定借鉴作用的。</p>
+        <ul id="pag-itemContainer" style="list-style:none;">
+            
+            
+            
+            <li>
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <a href="/datamining/2016/12/21/HDFS%E4%B8%8EMapReduce.html" class="btn-link">
+                                <h2>HDFS与MapReduce</h2>
+                            </a>
+                            <div class="small m-b-xs">
+                                <strong>周明</strong> <span class="text-muted"><i class="fa fa-clock-o"></i> 21 Dec 2016</span>
+                            </div>
+                            <p>
+                                HDFS (Hadoop Distributed File System)
 
-<p>论文主要是通过探索整篇文章中句子与句子之间关系的内聚性来分析文章的篇章结构。通过这种方式能更好的识别Thesis、Main idea和Conclusion标签类别。论文将篇章结构的识别作为一个分类问题来看待，文章中的每个句子使用分类器（朴树贝叶斯、决策树和SVM等）独立分类，论文主要使用SVM模型和基于线性链的条件随机场模型（CRF）来对句子进行篇章结构标签分类。</p>
+数据块
 
-<p><strong>1 基本特征：</strong></p>
+HDFS将文件分成一个个块，除了最后一个块的大小不一样，其余所有的块的大小都是一样的（128MB）。
 
-<ul>
-  <li>位置特征</li>
-  <li>指示单词特征：in my opinion，in conclusion，should，hope等</li>
-  <li>非文本特征：单词的长度，段落句子个数，标点符号特征等</li>
-  <li>主题和提示信息特征：对每个句子提取与文章标题和提示信息的余弦相似性的特征</li>
-</ul>
-
-<p><strong>2 内聚链</strong></p>
-
-<p>这里主要挖掘关系与词汇的内聚特征，主要构建的是在文章所有句子范围内单词的身份链（identity chains）和词汇链（lexical chains）。</p>
-
-<ul>
-  <li>身份链（identity chains）：通过挖掘每个句子中的人物名称，第一、二、三人称等特征，将同属一类身份的部分组成一个身份链；</li>
-  <li>词汇链（lexical chains）：通过挖掘每个句子中不同词汇的重复，单词的同义表达等特征，将同属一类单词的部分组成一个词汇链。</li>
-</ul>
-
-<p><strong>3 全局链（global chains）与局部链（local chains）</strong></p>
-
-<p>基于第二部分的内聚链来构造一个句子链（Sentence Chains），一个句子链包含那些相似的身份链和词汇链。</p>
-
-<p>局部链是那些只包含单一子主题的句子链，全局链那些只包含多个子主题的句子链。</p>
-
-<p><img title="基于全局和局部内聚的学生论文中的篇章结构识别_" 图片1="" src="http://img.mukewang.com/59eb38b30001999f09180520.png" alt="图片描述" style="display:block; margin:auto" /></p>
-
-<p style="text-align:center">图1 训练样本中全局链与局部链图</p>
-
-<p>网格中的每个实体节点表示一个句子中包含来自内聚链的单词。
-文章假设一个段落就是一个子主题，所以将那些跨越三个段落的句子链分类为全局链，只在一个段落中的句子链为局部链。</p>
-
-<p><strong>4 基于句子链的内聚特征：</strong></p>
-
-<ul>
-  <li>链类型特征：global-identity, local-identity, global-lexical 和 local-lexical chains</li>
-  <li>全局标题特征：全局链中的某个句子如果包含题目中的关键字，那么可能将这条句子分类为thesis标签</li>
-  <li>相互作用特征：如果两个句子链中有超过1个共同句子，则认为两个句子链相互作用</li>
-  <li>结构特征：句子链覆盖句子或段落的最大数和平均数</li>
-</ul>
-
-<p>使用条件随机场（CRF）模型对三个不同主题的六种篇章结构分类效果如下图所示：</p>
-
-<p><img title="基于全局和局部内聚的学生论文中的篇章结构识别_" 图片2="" src="http://img.mukewang.com/59eb38f50001cbbf18600658.png" alt="图片描述" style="display:block; margin:auto; width:100%" /></p>
-
-<p style="text-align:center">图2 分类效果图</p>
-
-<p>我们可以发现添加了内聚特征的模型可以明显提升识别Main idea 和 Thesis类别标签的精确度。</p>
-
-                    <hr>
-                    <div class="row">
-                        <div class="col-md-6">
-                                <h5 style="display: inline;">Tags:</h5>
-                                
-                                    <button class="btn btn-white btn-xs" type="button">论文笔记</button>
-                                
-                                    <button class="btn btn-white btn-xs" type="button">全局</button>
-                                
-                                    <button class="btn btn-white btn-xs" type="button">局部</button>
-                                
-                                    <button class="btn btn-white btn-xs" type="button">篇章结构识别</button>
-                                
-                        </div>
-                        <div class="col-md-6">
-                            <div class="small text-right">
-                                <h5>Stats:</h5>
-                                <div>
-                                
-                                
+数...
+                            </p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 style="display: inline;">Tags:</h5>
+                                    
+                                    <button class="btn btn-white btn-xs">HDFS</button>
+                                    
+                                    <button class="btn btn-white btn-xs">MapReduce</button>
+                                    
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="small text-right">
+                                        <h5>Stats:</h5>
+                                        <div>
+                                            
+                                            
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <!-- donate -->
-                            
-                            <div class="text-center">
-<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
-</div>
+                </div>
+            </li>
+            
+            
+            <li>
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <a href="/datamining/2016/12/03/%E6%9E%B6%E6%9E%84%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%B3%BB%E5%88%97%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0.html" class="btn-link">
+                                <h2>架构大数据系列读书笔记</h2>
+                            </a>
+                            <div class="small m-b-xs">
+                                <strong>周明</strong> <span class="text-muted"><i class="fa fa-clock-o"></i> 3 Dec 2016</span>
+                            </div>
+                            <p>
+                                大数据概述
 
-                            
-                            <br>
-                            <!-- share -->
-                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
-<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-<a class="a2a_button_facebook"></a>
-<a class="a2a_button_twitter"></a>
-<a class="a2a_button_google_plus"></a>
-<a class="a2a_button_linkedin"></a> -->
-<a class="a2a_button_email"></a>
-<a class="a2a_button_wechat" style="margin-left:2%"></a>
-<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
-<!-- <a class="a2a_button_pocket"></a> -->
-</div>
-<script>
-var a2a_config = a2a_config || {};
-a2a_config.color_main = "D7E5ED";
-a2a_config.color_border = "AECADB";
-a2a_config.color_link_text = "333333";
-a2a_config.color_link_text_hover = "333333";
-</script>
-<script async src="https://static.addtoany.com/menu/page.js"></script>
+Hadoop大数据处理平台，Spark大数据通用计算平台，用于图像和视频识别的深度学习。
 
-                            <br>
-                            <!-- comment -->
-                            
+大数据发展时间线索
 
+
+  2003年：业内学者开始围绕着半结构化数据或非结构化数据的处...
+                            </p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 style="display: inline;">Tags:</h5>
+                                    
+                                    <button class="btn btn-white btn-xs">大数据</button>
+                                    
+                                    <button class="btn btn-white btn-xs">读书笔记</button>
+                                    
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="small text-right">
+                                        <h5>Stats:</h5>
+                                        <div>
+                                            
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+            </li>
+            
+            
+            <li>
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <a href="/datamining/2016/11/15/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E7%AE%97%E6%B3%95.html" class="btn-link">
+                                <h2>数据挖掘十大经典算法</h2>
+                            </a>
+                            <div class="small m-b-xs">
+                                <strong>周明</strong> <span class="text-muted"><i class="fa fa-clock-o"></i> 15 Nov 2016</span>
+                            </div>
+                            <p>
+                                这个学期有一门课程为《数据挖掘》，老师要求每个同学对数据挖掘中的十大经典算法进行具体应用，老师提供数据集，分别使用这十种数据挖掘算法构建模型，这里主要对这十种数据挖掘算法进行简单介绍。
 
+1、C...
+                            </p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 style="display: inline;">Tags:</h5>
+                                    
+                                    <button class="btn btn-white btn-xs">数据挖掘</button>
+                                    
+                                    <button class="btn btn-white btn-xs">算法</button>
+                                    
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="small text-right">
+                                        <h5>Stats:</h5>
+                                        <div>
+                                            
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            
+        </ul>
+        
+
+
+    </div>
 </div>
+
+
 
 
 	
