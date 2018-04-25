@@ -5,15 +5,15 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 25 Apr 2018 11:44:31 +0800</pubDate>
-    <lastBuildDate>Wed, 25 Apr 2018 11:44:31 +0800</lastBuildDate>
+    <pubDate>Wed, 25 Apr 2018 11:55:29 +0800</pubDate>
+    <lastBuildDate>Wed, 25 Apr 2018 11:55:29 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
         <title>基于最大熵的中文阅读理解模型</title>
         <description>&lt;h1 id=&quot;0-数据集&quot;&gt;&lt;strong&gt;0 数据集&lt;/strong&gt;&lt;/h1&gt;
 
-&lt;p&gt;本模型使用了山西大学构建的中文阅读理解语料库&lt;code class=&quot;highlighter-rouge&quot;&gt;CRCC（Chinese Reading Comprehension Corpus）V1.1&lt;/code&gt;。该语料库包含121篇文章，其中80篇来自对外汉语教学，剩余41篇为在网络上爬取的文章，总共约6.5万。文章类型分为14类，其中包含地理、教育、科技、历史、生物等。平均每篇文章包含15个句子，3~6个问句，问句的类型包含&lt;code class=&quot;highlighter-rouge&quot;&gt;Q_HUMAN(人物，25个，占比4%)；Q_LOCATION(地点，51，8%)；Q_ENTITY(实体，78，13%)；Q_TIME(时间，53，9%)；Q_NUMBER(数值，78，13%)；Q_DISCRIBE(描述，332，54%)&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;本模型使用了山西大学构建的中文阅读理解语料库&lt;code class=&quot;highlighter-rouge&quot;&gt;CRCC（Chinese Reading Comprehension Corpus）V1.1&lt;/code&gt;。该语料库包含121篇文章，其中80篇来自对外汉语教学，剩余41篇为在网络上爬取的文章，总共约6.5万。文章类型分为14类，其中包含地理、教育、科技、历史、生物等。平均每篇文章包含15个句子，3~6个问句，问句的类型包含Q_HUMAN(人物，25个，占比4%)；Q_LOCATION(地点，51，8%)；Q_ENTITY(实体，78，13%)；Q_TIME(时间，53，9%)；Q_NUMBER(数值，78，13%)；Q_DISCRIBE(描述，332，54%)。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;数据集中的文章已经进行了预处理，包括分词、词性标注、指称指代标注以及框架语义标注&lt;/strong&gt;，预处理具体方法可以参见文献1。&lt;/p&gt;
 
