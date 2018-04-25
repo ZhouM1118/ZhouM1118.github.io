@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="基于最大熵的中文阅读理解模型" name="description">
+  
+  
+    <meta name="keywords" content="中文阅读理解模型, 最大熵, 主成分分析">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|基于最大熵的中文阅读理解模型
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DataMining/">DataMining</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 25 Apr 2018</span>
+                        <h1>
+                            基于最大熵的中文阅读理解模型
+                        </h1>
+                    </div>
+                    	<h1 id="0-数据集"><strong>0 数据集</strong></h1>
+
+<p>本模型使用了山西大学构建的中文阅读理解语料库<code class="highlighter-rouge">CRCC（Chinese Reading Comprehension Corpus）V1.1</code>。该语料库包含121篇文章，其中80篇来自对外汉语教学，剩余41篇为在网络上爬取的文章，总共约6.5万。文章类型分为14类，其中包含地理、教育、科技、历史、生物等。平均每篇文章包含15个句子，3~6个问句，问句的类型包含<code class="highlighter-rouge">Q_HUMAN(人物，25个，占比4%)；Q_LOCATION(地点，51，8%)；Q_ENTITY(实体，78，13%)；Q_TIME(时间，53，9%)；Q_NUMBER(数值，78，13%)；Q_DISCRIBE(描述，332，54%)</code>。</p>
+
+<p><strong>数据集中的文章已经进行了预处理，包括分词、词性标注、指称指代标注以及框架语义标注</strong>，预处理具体方法可以参见文献1。</p>
+
+<p>由于实验数据集规模较小，为了减少实验结果对训练集和测试集较强的依赖性，实验按照1：1的比例划分语料库，并尽可能使得各种类型的问句在训练集和测试集中比例接近1：1，训练集和测试集中各问题类型分布如图1所示。</p>
+
+<p><img title="基于最大熵的中文阅读理解模型_" 图片1="" src="https://img.mukewang.com/5adff1b9000108a616480568.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 1 训练集和测试集中各问题类型分布</p>
+
+<h1 id="1-特征工程"><strong>1 特征工程</strong></h1>
+
+<p>基于最大熵来构建中文阅读理解模型主要工作在于构建特征工程，特征抽取是机器学习中至关重要的步骤，<strong>特征抽取的好坏直接影响模型的性能，其主要思想是将无法直接识别的原始数据转化为可识别的特征数据</strong>。特征抽取是现实机器学习任务中的重要的“数据预处理”（data preprocessing）过程，通常先分析数据并进行特征抽取，然后再训练学习器。</p>
+
+<p>实验的特征工程主要包含两种类型的特征：<strong>词法特征和浅层句法特征。</strong></p>
+
+<h2 id="11-词法特征10个"><strong>1.1 词法特征（10个）</strong></h2>
+
+<p><strong>DMWM：</strong>统计问题q与其对应文章中句子s的词匹配个数m，取其中最大的m值记为M，那么每个句子的DMWM值则为（M-m）。其中DMWM为0时表示“问题-句子”的词匹配程度最高，在特殊情况下，比如当所有的m都为0，即问题q与文章所有句子的词匹配个数均为0，则DMWM均为0，在这种情况下我们将DMWM设置为200。</p>
+
+<p><strong>DMVM：</strong>统计问题q与其对应文章中句子s的动词匹配个数，计算方法同DMWM。</p>
+
+<p><strong>DMWM-Prev：</strong>统计问题q与其对应文章中句子s的前一个句子的词匹配个数，计算方法同DMWM。</p>
+
+<p><strong>DMWM-Next：</strong>统计问题q与其对应文章中句子s的后一个句子的词匹配个数，计算方法同DMWM。</p>
+
+<p><strong>DMVM-Prev：</strong>统计问题q与其对应文章中句子s的前一个句子的动词匹配个数，计算方法同DMWM。</p>
+
+<p><strong>DMVM-Next：</strong>统计问题q与其对应文章中句子s的后一个句子的动词匹配个数，计算方法同DMWM。</p>
+
+<p><strong>PO：</strong>表示句子s是否包含人（Person）、组织（Organization），有则设置为True，否则为False。</p>
+
+<p><strong>DT：</strong>表示句子s是否包含日期（Date）、时间（Time），有则设置为True，否则为False。</p>
+
+<p><strong>LO：</strong>表示句子s是否包含地点（Location），有则设置为True，否则为False。</p>
+
+<p><strong>VA：</strong>表示句子s是否包含数值（Value），有则设置为True，否则为False。</p>
+
+<h2 id="12-浅层句法特征25个"><strong>1.2 浅层句法特征（25个）</strong></h2>
+
+<p><strong>基本块类别特征：共8种</strong>，包含：np（名词块），mp（数量块），sp（指代词块），tp（时间词块），vp（动词块），ap（形容词块），dp（副词块），pp（介词块）。实验分别抽取问句与答案句中的基本块类别进行匹配，如果基本块类别一致，且基本块的中心词一致，则匹配成功，匹配数递增加1，否则匹配失败，匹配数为0。</p>
+
+<p><strong>基本块关系特征：共13种</strong>，包含：ZX，LN，LH，PO，SB，AD，JB，AM，CD，RL，SX，XX，SG。实验分别抽取问句与答案句中的基本块关系标记进行匹配，如果基本块关系标记一致，且基本块的中心词一致，则匹配成功，匹配数递增加1，否则匹配失败，匹配数为0。</p>
+
+<p>接下来我们使用一个样本案例来介绍基本块特征抽取过程。</p>
+
+<p><img title="基于最大熵的中文阅读理解模型_" 图片1="" src="https://img.mukewang.com/5adff1e1000112aa08220592.png" alt="图片描述" style="display:block; margin:auto; width:30%" /></p>
+
+<p>提取各基本块的中心词后，得到如下表示：</p>
+
+<p><img title="基于最大熵的中文阅读理解模型_" 图片1="" src="https://img.mukewang.com/5adff1ef00017bd608080266.png" alt="图片描述" style="display:block; margin:auto; width:30%" /></p>
+
+<p>对于基本块类别特征，匹配的基本块有两个：[人口/n    np-AM] 和 [分布/n    np-SG]，则对于该样本的基本块类别特征向量表示为<code class="highlighter-rouge">[2, 0, 0, 0, 0, 0, 0, 0]</code>。</p>
+
+<p>对于基本块关系特征，匹配的基本块有两个：[人口/n    np-AM] 和 [分布/n    np-SG]，则对于该样本的基本块关系特征向量表示为<code class="highlighter-rouge">[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]</code>。</p>
+
+<p><strong>功能块特征：共4种</strong>，功能块表示一个中文句子的功能性成分，分析数据集，实验主要考虑了4种功能块：S（主语语块），P（谓语语块），O（宾语语块），D（状语语块），计算方法同基本块特征相似。</p>
+
+<h1 id="3-模型"><strong>3 模型</strong></h1>
+
+<p>最大熵模型，即在满足约束条件的模型集合中选取熵最大的模型。其本质在于，<strong>已知特征向量X，计算Y的概率，且尽可能让Y的概率最大</strong>。</p>
+
+<p>基于最大熵的中文阅读理解模型的主要任务是：在一篇文章中，找出概率最大的问题q对应的答案句A，也就是说<strong>模型是在句子粒度上回答问题</strong>。</p>
+
+<p>那么，<strong>中文阅读理解任务可以看出是一个二分类问题</strong>，即给定文章S以及问题Q，对文章S中的n个句子进行二分类，假设“x”表示问题Q及文中的句子Si构成的上下文环境，“y”表示Si是否为答案句，那么基于最大熵模型进行建模可得：</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>$ P(y</td>
+      <td>x) = {1 \over Z(x)} e ^ {\sum_{i} \lambda_i f_i(x,y) } $</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>其中，$ Z(x) = \sum_{y}y e ^ {\sum_{i} \lambda_i f_i(x,y) }$为归一化因子，$f_i$为特征函数，$\lambda_i$为其权重。</p>
+
+<h1 id="4-实验结果及改进"><strong>4 实验结果及改进</strong></h1>
+
+<p>为了探索35个特征中不同组合特征对模型的影响程度，通过逐步增加特征的方式进行了实验。其中特征组合的方式有：<strong>10个特征（词法特征），18个特征（词法特征+基本块类别特征），31个特征（词法特征+基本块类别特征+基本块关系特征），35个特征（词法特征+基本块类别特征+基本块关系特征+功能块特征）</strong>。</p>
+
+<p>图 2 展示了不同特征组合下模型在各个问题集的实验对比结果。</p>
+
+<p><img title="基于最大熵的中文阅读理解模型_" 图片1="" src="https://img.mukewang.com/5adff2290001dff916420510.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 2 (a) 不同特征组合下模型在各个问题集的HumSent对比结果</p>
+
+<p><img title="基于最大熵的中文阅读理解模型_" 图片1="" src="https://img.mukewang.com/5adff2370001e16313160640.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 2 (b) 不同特征组合下模型在各个问题集的实验结果柱状图</p>
+
+<p>从图2可以看出，逐步加入特征并没有像我们预想的效果逐渐增加，而是<strong>随着特征的增多，HumSent准确率有所下降</strong>。分析原因有两个：第一是<strong>数据集的预处理准确率不高</strong>；第二是<strong>数据集规模较小</strong>，特征的增多，导致特征矩阵越来越稀疏。</p>
+
+<p>基于以上实验结果以及分析原因，使用<strong>主成分分析发对特征进行降维</strong>，避开特征筛选过程，充分利用所有特征的有效信息来训练模型，使用降维后的特征向量构建主成分最大熵模型。</p>
+
+<p><strong>主成分分析（Principal Component Analysis，PCA）</strong>， 是一种统计方法。通过正交变换<strong>将一组可能存在相关性的变量转换为一组线性不相关的变量</strong>，转换后的这组变量叫主成分。</p>
+
+<p><strong>少变量样本的研究中，我们可以很容易发现变量中的主成分</strong>，因为变量少，变量之间的相关性弱，独立性强，我们可以很容易通过区分主成分变量来区分样本；多变量大样本虽然会为研究和应用提供了丰富的信息，但也在一定程度上增加了数据采集的工作量，更重要的是在多数情况下，<strong>许多变量之间可能存在相关性，很难区分主成分变量，从而增加了问题分析的复杂性</strong>，同时对分析带来不便。如果分别对每个指标进行分析，分析往往是孤立的，而不是综合的。盲目减少指标会损失很多信息，容易产生错误的结论。因此需要找到一个合理的方法，在减少需要分析的指标同时，尽量减少原指标包含信息的损失，以达到对所收集数据进行全面分析的目的。由于各变量间存在一定的相关关系，因此有可能<strong>用较少的综合指标分别综合存在于各变量中的各类信息</strong>。主成分分析与因子分析就属于这类降维的方法。</p>
+
+<p>图3展示了主成分最大熵模型与非主成分最大熵模型实验对比结果。</p>
+
+<p><img title="基于最大熵的中文阅读理解模型_" 图片1="" src="https://img.mukewang.com/5adff2480001d66116460510.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 3 (a) 主成分最大熵模型与非主成分最大熵模型的HumSent对比结果</p>
+
+<p><img title="基于最大熵的中文阅读理解模型_" 图片1="" src="https://img.mukewang.com/5adff2560001403213100636.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 3 (b) 主成分最大熵模型与非主成分最大熵模型实验柱状图</p>
+
+<h1 id="参考文献"><strong>参考文献</strong></h1>
+
+<ol>
+  <li>张娜, 李济洪. 基于语义标注的中文阅读理解语料库的建设[C]// 全国计算语言学学术会议. 2007.</li>
+  <li>王凯华, 李济洪, 张国华,等. 基于最大熵模型的中文阅读理解问答系统技术研究[C]// 全国计算语言学学术会议. 2007.</li>
+  <li>李济洪, 王瑞波, 王凯华,等. 基于最大熵模型的中文阅读理解问题回答技术研究[J]. 中文信息学报, 2008, 22(6):55-62.</li>
+</ol>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">中文阅读理解模型</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">最大熵</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">主成分分析</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
