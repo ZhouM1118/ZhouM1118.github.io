@@ -5,15 +5,200 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 26 Apr 2018 10:36:14 +0800</pubDate>
-    <lastBuildDate>Thu, 26 Apr 2018 10:36:14 +0800</lastBuildDate>
+    <pubDate>Thu, 26 Apr 2018 18:53:00 +0800</pubDate>
+    <lastBuildDate>Thu, 26 Apr 2018 18:53:00 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>你需要知道的几个好用的中文词法分析工具</title>
+        <description>&lt;h1 id=&quot;1stanford-corenlp&quot;&gt;&lt;strong&gt;1、Stanford CoreNLP&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;Stanford CoreNLP是&lt;strong&gt;斯坦福大学自然语言处理小组&lt;/strong&gt;开发的自然语言分析工具集，包含&lt;strong&gt;分句，分词，词性标注，命名实体识别，句法分析，指代消解，情感分析&lt;/strong&gt;等功能，这些工具采用流式(pipeline)集成方式，各功能模块之间相互解耦，提供单独的包下载，高度灵活且可扩展性强。Stanford CoreNLP支持&lt;strong&gt;英文、阿拉伯文、中文、法文、德文以及西班牙文&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Stanford CoreNLP工具采用Java语言开发&lt;/strong&gt;，支持Java 8+。提供jar包下载，便于集成到Java代码中，同时也支持C#，Node.js，PHP，Python等语言调用。&lt;/p&gt;
+
+&lt;p&gt;Stanford CoreNLP的分词和命名实体识别工具是基于条件随机场模型实现的，而词性标注则是基于双向依存网络模型。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;官网介绍地址&lt;/strong&gt;：https://stanfordnlp.github.io/CoreNLP/index.html；&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;论文地址&lt;/strong&gt;：https://nlp.stanford.edu/pubs/StanfordCoreNlp2014.pdf；&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;中文文本处理工具下载地址&lt;/strong&gt;：http://nlp.stanford.edu/software/stanford-chinese-corenlp-2018-02-27-models.jar。&lt;/p&gt;
+
+&lt;h1 id=&quot;2语言技术平台language-technology-platforltp&quot;&gt;&lt;strong&gt;2、语言技术平台（Language Technology Platfor，LTP）&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;LTP是&lt;strong&gt;哈尔滨大学社会计算与信息检索研究中心&lt;/strong&gt;发布的一套中文自然语言处理工具集，包含&lt;strong&gt;分句，分词，词性标注，命名实体识别，依存句法分析，语义角色标注，语义依存分析（树、图结构）&lt;/strong&gt;等工具。LTP同样采用流式集成方式，支持各功能模块单独调用。其中分词和词性标注等功能是基于&lt;strong&gt;1998年人民日报和微博语料&lt;/strong&gt;进行训练，命名实体标注则是基于1998年人民日报语料进行训练。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;LTP采用C++语言开发&lt;/strong&gt;，提供静态、动态库，可方便集成在C，C++和Java程序中。&lt;/p&gt;
+
+&lt;p&gt;LTP的分词、词性标注以及命名实体识别工具是基于结构化感知器实现的。&lt;/p&gt;
+
+&lt;p&gt;LTP的使用非常简单，只需要&lt;strong&gt;根据 API 参数构造 HTTP 请求即可在线获得分析结果&lt;/strong&gt;，而无需下载 SDK 、无需购买高性能的机器，同时支持跨平台、跨语言编程等。如果你需要使用LTP，则先在LTP上注册一个帐号，相关信息审核通过后，系统会给你发送API_KEY，并告知每个月的流量额度，初始是每月20G的免费流量。&lt;/p&gt;
+
+&lt;p&gt;语言云服务的API参数集如下表所示：&lt;/p&gt;
+
+&lt;table class=&quot;table table-bordered&quot;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;参数名&lt;/th&gt;
+&lt;th&gt;含义&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;api_key&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;用户注册语言云服务后获得的认证标识&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;text&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;待分析的文本。&lt;/td&gt;
+&lt;td&gt;请以UTF-8格式编码，GET方式最大10K，POST方式最大20K&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;pattern&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;用以指定分析模式，可选值包括&lt;code&gt;ws&lt;/code&gt;(分词)，&lt;code&gt;pos&lt;/code&gt;(词性标注)，&lt;code&gt;ner&lt;/code&gt;(命名实体识别)，&lt;code&gt;dp&lt;/code&gt;(依存句法分析)，&lt;code&gt;sdp&lt;/code&gt;(语义依存(树)分析)，&lt;code&gt;sdb_graph&lt;/code&gt;(语义依存图分析)&lt;code&gt;srl&lt;/code&gt;(语义角色标注),&lt;code&gt;all&lt;/code&gt;(全部任务)&lt;/td&gt;
+&lt;td&gt;plain格式中不允许指定全部任务&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;format&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;用以指定结果格式类型，可选值包括&lt;code&gt;xml&lt;/code&gt;(XML格式)，&lt;code&gt;json&lt;/code&gt;(JSON格式)，&lt;code&gt;conll&lt;/code&gt;(CONLL格式)，&lt;code&gt;plain&lt;/code&gt;(简洁文本格式)&lt;/td&gt;
+&lt;td&gt;在指定pattern为all条件下，指定format为xml或json，返回结果将包含sdp结果，但conll格式不会包含sdp结果；&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;xml_input&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;用以指定输入text是否是xml格式，可选值为&lt;code&gt;false&lt;/code&gt;(默认值),&lt;code&gt;true&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;仅限POST方式&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;has_key&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;用以指定json结果中是否含有键值，可选值包括&lt;code&gt;true&lt;/code&gt;(含有键值，默认)，&lt;code&gt;false&lt;/code&gt;(不含有键值)&lt;/td&gt;
+&lt;td&gt;配合format=json使用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;only_ner&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;用以指定plain格式中是否只需要ner列表，可选值包括&lt;code&gt;false&lt;/code&gt;(默认值)和&lt;code&gt;true&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;配合pattern=ner&amp;amp;format=plain使用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;callback&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;用以指定JavaScript调用中所使用的回调函数名称&lt;/td&gt;
+&lt;td&gt;配合format=json使用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;strong&gt;Python调用demo&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# -*- coding:utf8 -*-
+if __name__ == '__main__':
+    url_get_base = &quot;http://api.ltp-cloud.com/analysis/&quot;
+    args = { 
+        'api_key' : 'YourApiKey',
+        'text' : '我是中国人。',
+        'pattern' : 'dp',
+        'format' : 'plain'
+    }
+    result = urllib.urlopen(url_get_base, urllib.urlencode(args)) # POST method
+    content = result.read().strip()
+    print content
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;官网介绍地址&lt;/strong&gt;：http://www.ltp-cloud.com/intro/&lt;/p&gt;
+
+&lt;h1 id=&quot;3清华大学词法分析器thu-lexical-analyzer-for-chinesethulac&quot;&gt;&lt;strong&gt;3、清华大学词法分析器（THU Lexical Analyzer for Chinese，THULAC）&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;THULAC由&lt;strong&gt;清华大学自然语言处理与社会人文计算实验室&lt;/strong&gt;研制推出的一套中文词法分析工具包，具有&lt;strong&gt;中文分词和词性标注&lt;/strong&gt;功能。THULAC工具包随包附带的分词模型Model_1以及分词和词性标注模型Model_2是由&lt;strong&gt;人民日报语料库&lt;/strong&gt;训练得到的，所以支持单独调用分词接口，但不能单独调用词性标注接口。&lt;strong&gt;语料库包含已标注的字数约为五千八百万字&lt;/strong&gt;，你可以填写申请表来得到全部语料库。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;THULAC完全开源，公布了算法源代码、算法模型甚至语料库&lt;/strong&gt;。在Python中，可通过 import thulac 来引用，同时还提供C++接口使用和按照命令格式运行可执行jar包完成分词和词性标注。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;C++版&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./thulac [-t2s] [-seg_only] [-deli delimeter] [-user userword.txt] 从命令行输入输出
+./thulac [-t2s] [-seg_only] [-deli delimeter] [-user userword.txt] outputfile 利用重定向从文本文件输入输出（注意均为UTF8文本）
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;java版&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;java -jar THULAC_lite_java_run.jar [-t2s] [-seg_only] [-deli delimeter] [-user userword.txt] 从命令行输入输出
+java -jar THULAC_lite_java_run.jar [-t2s] [-seg_only] [-deli delimeter] [-user userword.txt] -input input_file -output output_file 从文本文件输入输出（注意均为UTF8文本）
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;python版（兼容python2.x和python3.x）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;通过python程序&lt;code class=&quot;highlighter-rouge&quot;&gt;import thulac&lt;/code&gt;，新建thulac.thulac(args)类，其中args为程序的参数。之后可以通过调用thulac.cut()进行单句分词。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;官网介绍地址&lt;/strong&gt;：http://thulac.thunlp.org/&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;相关论文地址&lt;/strong&gt;：https://dl.acm.org/citation.cfm?id=1667988.1667992&lt;/p&gt;
+
+&lt;h1 id=&quot;4fudannlp&quot;&gt;&lt;strong&gt;4、FudanNLP&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;FudanNLP是&lt;strong&gt;复旦大学自然语言处理实验室&lt;/strong&gt;开发的中文自然语言处理工具包，包含信息检索： &lt;strong&gt;文本分类、新闻聚类；中文处理： 中文分词、词性标注、实体名识别、关键词抽取、依存句法分析、时间短语识别；结构化学习： 在线学习、层次分类、聚类&lt;/strong&gt;。FNLP也是开源的，其中包含了实现这些功能的机器学习算法和数据集。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;FNLP采用Java语言开发，可通过命令行方式调用，也可公布了jar包以便集成到各个Java项目中。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;命令行方式调用分词功能&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;java -Xmx1024m -Dfile.encoding=UTF-8 -classpath &quot;fnlp-core/target/fnlp-core-2.1-SNAPSHOT.jar:libs/trove4j-3.0.3.jar:libs/commons-cli-1.2.jar&quot; org.fnlp.nlp.cn.tag.CWSTagger -s models/seg.m &quot;自然语言是人类交流和思维的主要工具，是人类智慧的结晶。&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;参数&lt;code class=&quot;highlighter-rouge&quot;&gt;“-Xmx1024m”&lt;/code&gt;设置Java虚拟机的可用内存为1024M。FNLP载入语言模型所需内存较大，因此可以利用此参数修改可用内存量。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;结果：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;自然 语言 是 人类 交流 和 思维 的 主要 工具 ， 是 人类 智慧 的 结晶 。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;命令行方式调用中文词性标注功能&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;java -Xmx1024m -Dfile.encoding=UTF-8 -classpath &quot;fnlp-core/target/fnlp-core-2.1-SNAPSHOT.jar:libs/trove4j-3.0.3.jar:libs/commons-cli-1.2.jar&quot; org.fnlp.nlp.cn.tag.POSTagger -s models/seg.m models/pos.m &quot;周杰伦出生于台湾，生日为79年1月18日，他曾经的绯闻女友是蔡依林。&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;结果：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;周杰伦/人名 出生/动词 于/介词 台湾/地名 ，/标点 生日/名词 为/介词 79年/时间短语 1月/时间短语 18日/时间短语 ，/标点
+他/人称代词 曾经/副词 的/结构助词 绯闻/名词 女友/名词 是/动词 蔡依林/人名 。/标点&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;命令行方式调用实体名识别功能&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;java -Xmx1024m -Dfile.encoding=UTF-8 -classpath &quot;fnlp-core/target/fnlp-core-2.1-SNAPSHOT.jar:libs/trove4j-3.0.3.jar:libs/commons-cli-1.2.jar&quot; org.fnlp.nlp.cn.tag.NERTagger -s models/seg.m models/pos.m &quot;詹姆斯·默多克和丽贝卡·布鲁克斯 鲁珀特·默多克旗下的美国小报《纽约邮报》的职员被公司律师告知，保存任何也许与电话窃听及贿赂有关的文件。&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;结果：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;{詹姆斯·默多克=人名, 鲁珀特·默多克旗=人名, 丽贝卡·布鲁克斯=人名, 纽约=地名, 美国=地名}&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;FudanNLP gitbub地址（包含wiki）&lt;/strong&gt;：https://github.com/FudanNLP/fnlp&lt;/p&gt;
+</description>
+        <pubDate>Thu, 26 Apr 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/04/26/%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E4%B8%AA%E5%A5%BD%E7%94%A8%E7%9A%84%E4%B8%AD%E6%96%87%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/04/26/%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E4%B8%AA%E5%A5%BD%E7%94%A8%E7%9A%84%E4%B8%AD%E6%96%87%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7.html</guid>
+        
+        <category>中文词法分析工具</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>HFL-RC：科大讯飞填空式机器阅读理解数据集</title>
         <description>&lt;h1 id=&quot;0-hfl-rc数据集&quot;&gt;&lt;strong&gt;0 HFL-RC数据集&lt;/strong&gt;&lt;/h1&gt;
 
-&lt;p&gt;&lt;strong&gt;语料主要来源于人民日报和儿童童话&lt;/strong&gt;，&lt;a href=&quot;https://arxiv.org/abs/1607.02250&quot;&gt;论文地址&lt;/a&gt;。&lt;a href=&quot;http://hfl.iflytek.com/chinese-rc/&quot;&gt;数据集下载地址&lt;/a&gt;。图1展示了从人民日报提取的样本案例。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;语料主要来源于人民日报和儿童童话&lt;/strong&gt;，&lt;a href=&quot;https://arxiv.org/abs/1607.02250&quot;&gt;论文地址&lt;/a&gt;。&lt;a href=&quot;https://github.com/ymcui/Chinese-RC-Dataset&quot;&gt;数据集下载地址&lt;/a&gt;。图1展示了从人民日报提取的样本案例。&lt;/p&gt;
 
 &lt;p&gt;&lt;img title=&quot;HFL-RC：科大讯飞填空式机器阅读理解数据集_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae135c900018c2a17320546.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
 

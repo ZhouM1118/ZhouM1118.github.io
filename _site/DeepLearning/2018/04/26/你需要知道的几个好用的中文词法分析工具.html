@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="你需要知道的几个好用的中文词法分析工具" name="description">
+  
+  
+    <meta name="keywords" content="中文词法分析工具">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|你需要知道的几个好用的中文词法分析工具
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DataMining/">DataMining</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 26 Apr 2018</span>
+                        <h1>
+                            你需要知道的几个好用的中文词法分析工具
+                        </h1>
+                    </div>
+                    	<h1 id="1stanford-corenlp"><strong>1、Stanford CoreNLP</strong></h1>
+
+<p>Stanford CoreNLP是<strong>斯坦福大学自然语言处理小组</strong>开发的自然语言分析工具集，包含<strong>分句，分词，词性标注，命名实体识别，句法分析，指代消解，情感分析</strong>等功能，这些工具采用流式(pipeline)集成方式，各功能模块之间相互解耦，提供单独的包下载，高度灵活且可扩展性强。Stanford CoreNLP支持<strong>英文、阿拉伯文、中文、法文、德文以及西班牙文</strong>。</p>
+
+<p><strong>Stanford CoreNLP工具采用Java语言开发</strong>，支持Java 8+。提供jar包下载，便于集成到Java代码中，同时也支持C#，Node.js，PHP，Python等语言调用。</p>
+
+<p>Stanford CoreNLP的分词和命名实体识别工具是基于条件随机场模型实现的，而词性标注则是基于双向依存网络模型。</p>
+
+<p><strong>官网介绍地址</strong>：https://stanfordnlp.github.io/CoreNLP/index.html；</p>
+
+<p><strong>论文地址</strong>：https://nlp.stanford.edu/pubs/StanfordCoreNlp2014.pdf；</p>
+
+<p><strong>中文文本处理工具下载地址</strong>：http://nlp.stanford.edu/software/stanford-chinese-corenlp-2018-02-27-models.jar。</p>
+
+<h1 id="2语言技术平台language-technology-platforltp"><strong>2、语言技术平台（Language Technology Platfor，LTP）</strong></h1>
+
+<p>LTP是<strong>哈尔滨大学社会计算与信息检索研究中心</strong>发布的一套中文自然语言处理工具集，包含<strong>分句，分词，词性标注，命名实体识别，依存句法分析，语义角色标注，语义依存分析（树、图结构）</strong>等工具。LTP同样采用流式集成方式，支持各功能模块单独调用。其中分词和词性标注等功能是基于<strong>1998年人民日报和微博语料</strong>进行训练，命名实体标注则是基于1998年人民日报语料进行训练。</p>
+
+<p><strong>LTP采用C++语言开发</strong>，提供静态、动态库，可方便集成在C，C++和Java程序中。</p>
+
+<p>LTP的分词、词性标注以及命名实体识别工具是基于结构化感知器实现的。</p>
+
+<p>LTP的使用非常简单，只需要<strong>根据 API 参数构造 HTTP 请求即可在线获得分析结果</strong>，而无需下载 SDK 、无需购买高性能的机器，同时支持跨平台、跨语言编程等。如果你需要使用LTP，则先在LTP上注册一个帐号，相关信息审核通过后，系统会给你发送API_KEY，并告知每个月的流量额度，初始是每月20G的免费流量。</p>
+
+<p>语言云服务的API参数集如下表所示：</p>
+
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>参数名</th>
+<th>含义</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api_key</code></td>
+<td>用户注册语言云服务后获得的认证标识</td>
+<td></td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td>待分析的文本。</td>
+<td>请以UTF-8格式编码，GET方式最大10K，POST方式最大20K</td>
+</tr>
+<tr>
+<td><code>pattern</code></td>
+<td>用以指定分析模式，可选值包括<code>ws</code>(分词)，<code>pos</code>(词性标注)，<code>ner</code>(命名实体识别)，<code>dp</code>(依存句法分析)，<code>sdp</code>(语义依存(树)分析)，<code>sdb_graph</code>(语义依存图分析)<code>srl</code>(语义角色标注),<code>all</code>(全部任务)</td>
+<td>plain格式中不允许指定全部任务</td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td>用以指定结果格式类型，可选值包括<code>xml</code>(XML格式)，<code>json</code>(JSON格式)，<code>conll</code>(CONLL格式)，<code>plain</code>(简洁文本格式)</td>
+<td>在指定pattern为all条件下，指定format为xml或json，返回结果将包含sdp结果，但conll格式不会包含sdp结果；</td>
+</tr>
+<tr>
+<td><code>xml_input</code></td>
+<td>用以指定输入text是否是xml格式，可选值为<code>false</code>(默认值),<code>true</code></td>
+<td>仅限POST方式</td>
+</tr>
+<tr>
+<td><code>has_key</code></td>
+<td>用以指定json结果中是否含有键值，可选值包括<code>true</code>(含有键值，默认)，<code>false</code>(不含有键值)</td>
+<td>配合format=json使用</td>
+</tr>
+<tr>
+<td><code>only_ner</code></td>
+<td>用以指定plain格式中是否只需要ner列表，可选值包括<code>false</code>(默认值)和<code>true</code></td>
+<td>配合pattern=ner&amp;format=plain使用</td>
+</tr>
+<tr>
+<td><code>callback</code></td>
+<td>用以指定JavaScript调用中所使用的回调函数名称</td>
+<td>配合format=json使用</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Python调用demo</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code># -*- coding:utf8 -*-
+if __name__ == '__main__':
+    url_get_base = "http://api.ltp-cloud.com/analysis/"
+    args = { 
+        'api_key' : 'YourApiKey',
+        'text' : '我是中国人。',
+        'pattern' : 'dp',
+        'format' : 'plain'
+    }
+    result = urllib.urlopen(url_get_base, urllib.urlencode(args)) # POST method
+    content = result.read().strip()
+    print content
+</code></pre>
+</div>
+
+<p><strong>官网介绍地址</strong>：http://www.ltp-cloud.com/intro/</p>
+
+<h1 id="3清华大学词法分析器thu-lexical-analyzer-for-chinesethulac"><strong>3、清华大学词法分析器（THU Lexical Analyzer for Chinese，THULAC）</strong></h1>
+
+<p>THULAC由<strong>清华大学自然语言处理与社会人文计算实验室</strong>研制推出的一套中文词法分析工具包，具有<strong>中文分词和词性标注</strong>功能。THULAC工具包随包附带的分词模型Model_1以及分词和词性标注模型Model_2是由<strong>人民日报语料库</strong>训练得到的，所以支持单独调用分词接口，但不能单独调用词性标注接口。<strong>语料库包含已标注的字数约为五千八百万字</strong>，你可以填写申请表来得到全部语料库。</p>
+
+<p><strong>THULAC完全开源，公布了算法源代码、算法模型甚至语料库</strong>。在Python中，可通过 import thulac 来引用，同时还提供C++接口使用和按照命令格式运行可执行jar包完成分词和词性标注。</p>
+
+<p><strong>C++版</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>./thulac [-t2s] [-seg_only] [-deli delimeter] [-user userword.txt] 从命令行输入输出
+./thulac [-t2s] [-seg_only] [-deli delimeter] [-user userword.txt] outputfile 利用重定向从文本文件输入输出（注意均为UTF8文本）
+</code></pre>
+</div>
+
+<p><strong>java版</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>java -jar THULAC_lite_java_run.jar [-t2s] [-seg_only] [-deli delimeter] [-user userword.txt] 从命令行输入输出
+java -jar THULAC_lite_java_run.jar [-t2s] [-seg_only] [-deli delimeter] [-user userword.txt] -input input_file -output output_file 从文本文件输入输出（注意均为UTF8文本）
+</code></pre>
+</div>
+
+<p><strong>python版（兼容python2.x和python3.x）</strong></p>
+
+<p>通过python程序<code class="highlighter-rouge">import thulac</code>，新建thulac.thulac(args)类，其中args为程序的参数。之后可以通过调用thulac.cut()进行单句分词。</p>
+
+<p><strong>官网介绍地址</strong>：http://thulac.thunlp.org/</p>
+
+<p><strong>相关论文地址</strong>：https://dl.acm.org/citation.cfm?id=1667988.1667992</p>
+
+<h1 id="4fudannlp"><strong>4、FudanNLP</strong></h1>
+
+<p>FudanNLP是<strong>复旦大学自然语言处理实验室</strong>开发的中文自然语言处理工具包，包含信息检索： <strong>文本分类、新闻聚类；中文处理： 中文分词、词性标注、实体名识别、关键词抽取、依存句法分析、时间短语识别；结构化学习： 在线学习、层次分类、聚类</strong>。FNLP也是开源的，其中包含了实现这些功能的机器学习算法和数据集。</p>
+
+<p><strong>FNLP采用Java语言开发，可通过命令行方式调用，也可公布了jar包以便集成到各个Java项目中。</strong></p>
+
+<p><strong>命令行方式调用分词功能</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>java -Xmx1024m -Dfile.encoding=UTF-8 -classpath "fnlp-core/target/fnlp-core-2.1-SNAPSHOT.jar:libs/trove4j-3.0.3.jar:libs/commons-cli-1.2.jar" org.fnlp.nlp.cn.tag.CWSTagger -s models/seg.m "自然语言是人类交流和思维的主要工具，是人类智慧的结晶。"
+</code></pre>
+</div>
+
+<p>参数<code class="highlighter-rouge">“-Xmx1024m”</code>设置Java虚拟机的可用内存为1024M。FNLP载入语言模型所需内存较大，因此可以利用此参数修改可用内存量。</p>
+
+<p><strong>结果：</strong></p>
+
+<blockquote>
+  <p>自然 语言 是 人类 交流 和 思维 的 主要 工具 ， 是 人类 智慧 的 结晶 。</p>
+</blockquote>
+
+<p><strong>命令行方式调用中文词性标注功能</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>java -Xmx1024m -Dfile.encoding=UTF-8 -classpath "fnlp-core/target/fnlp-core-2.1-SNAPSHOT.jar:libs/trove4j-3.0.3.jar:libs/commons-cli-1.2.jar" org.fnlp.nlp.cn.tag.POSTagger -s models/seg.m models/pos.m "周杰伦出生于台湾，生日为79年1月18日，他曾经的绯闻女友是蔡依林。"
+</code></pre>
+</div>
+
+<p><strong>结果：</strong></p>
+
+<blockquote>
+  <p>周杰伦/人名 出生/动词 于/介词 台湾/地名 ，/标点 生日/名词 为/介词 79年/时间短语 1月/时间短语 18日/时间短语 ，/标点
+他/人称代词 曾经/副词 的/结构助词 绯闻/名词 女友/名词 是/动词 蔡依林/人名 。/标点</p>
+</blockquote>
+
+<p><strong>命令行方式调用实体名识别功能</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>java -Xmx1024m -Dfile.encoding=UTF-8 -classpath "fnlp-core/target/fnlp-core-2.1-SNAPSHOT.jar:libs/trove4j-3.0.3.jar:libs/commons-cli-1.2.jar" org.fnlp.nlp.cn.tag.NERTagger -s models/seg.m models/pos.m "詹姆斯·默多克和丽贝卡·布鲁克斯 鲁珀特·默多克旗下的美国小报《纽约邮报》的职员被公司律师告知，保存任何也许与电话窃听及贿赂有关的文件。"
+</code></pre>
+</div>
+
+<p><strong>结果：</strong></p>
+
+<blockquote>
+  <p>{詹姆斯·默多克=人名, 鲁珀特·默多克旗=人名, 丽贝卡·布鲁克斯=人名, 纽约=地名, 美国=地名}</p>
+</blockquote>
+
+<p><strong>FudanNLP gitbub地址（包含wiki）</strong>：https://github.com/FudanNLP/fnlp</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">中文词法分析工具</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
