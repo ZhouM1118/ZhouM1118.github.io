@@ -5,9 +5,194 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 26 Apr 2018 18:53:00 +0800</pubDate>
-    <lastBuildDate>Thu, 26 Apr 2018 18:53:00 +0800</lastBuildDate>
+    <pubDate>Mon, 30 Apr 2018 17:17:19 +0800</pubDate>
+    <lastBuildDate>Mon, 30 Apr 2018 17:17:19 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>一种基于模糊依存关系匹配的问答模型构建方法</title>
+        <description>&lt;h1 id=&quot;0-前言&quot;&gt;&lt;strong&gt;0 前言&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;基于传统机器学习方法构建问答模型的主要工作是构建适合当前任务的特征工程，在&lt;a href=&quot;&quot;&gt;《中文自然语言处理建模过程中的特征工程》&lt;/a&gt;一文中，我们介绍了很多可提取的特征以及提取方法，主要的特征集中在句法分析上。我们都知道，&lt;strong&gt;句法分析是NLP中的关键底层技术之一，也是构建特征工程时经常用到的，其基本目标是确定句子的句法结构或者句子中词汇之间的依存关系。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;句法分析分为&lt;strong&gt;句法结构分析&lt;/strong&gt;（syntactic structure parsing）和&lt;strong&gt;依存关系分析&lt;/strong&gt;（dependency parsing）。句法结构分析以其目的不同分为&lt;strong&gt;成分结构分析&lt;/strong&gt;（constituent structure parsing）或者&lt;strong&gt;短语结构分析&lt;/strong&gt;（phrase structure parsing），成分结构分析以获取整个句子的句法结构为目的，而短语结构分析以获取完全短语结构为目的；&lt;strong&gt;依存关系分析&lt;/strong&gt;则以获取局部成分之间的依存关系为目的。&lt;/p&gt;
+
+&lt;p&gt;《Question Answering Passage Retrieval Using Dependency Relations》中通过&lt;strong&gt;对问题（question）和包含候选答案的句子（Sentence）间的依存关系的分析，提出了一种基于模糊依存关系匹配的问答模型的构建方法&lt;/strong&gt;。实验模型在不同数据集下，相比基于词匹配和基于严格依存关系的模型效果要更好。分析这篇论文发现，&lt;strong&gt;在某些任务中，模糊依存关系可以作为特征工程的一部分，所以记录下来，以便未来建模需要。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;1-背景&quot;&gt;&lt;strong&gt;1 背景&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;传统问答系统定位答案的过程&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;定位相关的文档&lt;/li&gt;
+  &lt;li&gt;定位文档中答案可能所在的段落&lt;/li&gt;
+  &lt;li&gt;在备选段落中精确定位，找到答案&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这种传统问答系统定位答案的方法并非一蹴而就，而是在不断缩小答案可能所在的范围。在这个过程中需要每一步都准确无误，否则一步错而步步错。但段落的定位是而这种方法的重点和难点，如果连可能包含答案的段落都找错了，那肯定不会找到正确的答案了。相反如果段落定位准确，即使答案的精确定位错误也不影响大局（可直接返回段落作为答案），因为有研究表明，&lt;strong&gt;一个段落足以包含回答问题所需要的信息&lt;/strong&gt;，且用户也更倾向于模型给出的答案是一个段落，理由是一个段落可以提供完整的答案上下文，有助于理解答案的含义。当然研究肯定不是只止步于此，精确地回答问题依旧是问答系统或机器阅读理解的最终目的。&lt;/p&gt;
+
+&lt;p&gt;在基于依存关系匹配来回答问题之前，就出现了&lt;strong&gt;基于词匹配来回答问题&lt;/strong&gt;。这种方法通过分析问题句与候选答案句之间词汇来定位答案所在句子，这种方法过于追求句子间词汇的匹配而忽视了词之间的依存关系，比如，图1展示了一个问题和四个候选答案句，其中&lt;code class=&quot;highlighter-rouge&quot;&gt;S1&lt;/code&gt;为正确答案句，但分析这四个句子可发现，词匹配最多的并不是&lt;code class=&quot;highlighter-rouge&quot;&gt;S1&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于模糊依存关系匹配的问答模型构建方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae6d22a0001366d08980492.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 1 基于词匹配方法的例子&lt;/p&gt;
+
+&lt;p&gt;还有一种方法是&lt;strong&gt;基于依存关系匹配方法，但是匹配要求较为严格&lt;/strong&gt;，对于语义相同但表述不同的情况也视为匹配失败。但在实际应用中，在问题句和答案句的句法分析树中，核心词之间相似的关系往往有不同的表述方式，严格匹配容易把正确的当成错误的，即模型召回率低。&lt;/p&gt;
+
+&lt;h1 id=&quot;2-基于模糊依存关系匹配的问答模型构建方法&quot;&gt;&lt;strong&gt;2 基于模糊依存关系匹配的问答模型构建方法&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;我们首先介绍了如何从依存关系树中提取关系路径并对其进行配对。然后计算两条关系路径的匹配分数，匹配分数包含了两条路径中单个关系的映射分数。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2.1 依存关系的提取-依存关系树&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;依存关系树的构建工具有很多，详情可见&lt;a href=&quot;https://zhoum1118.github.io/deeplearning/2018/04/26/%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E4%B8%AA%E5%A5%BD%E7%94%A8%E7%9A%84%E4%B8%AD%E6%96%87%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7.html&quot;&gt;《你需要知道的几个好用的中文词法分析工具》&lt;/a&gt;。《Question Answering Passage Retrieval Using Dependency Relations》使用了&lt;code class=&quot;highlighter-rouge&quot;&gt;Minipar&lt;/code&gt;来构建依存关系树，图2展示了在图1中问题句和答案句&lt;code class=&quot;highlighter-rouge&quot;&gt;S1&lt;/code&gt;的依存关系树。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于模糊依存关系匹配的问答模型构建方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae6d2410001583806860562.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 2 依存关系树&lt;/p&gt;
+
+&lt;p&gt;在提取两个句子的依存关系时，需注意以下几点：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;虽然依赖关系是有向链接，但我们忽略了关系的方向；&lt;/li&gt;
+  &lt;li&gt;路径长度不能超过预定义的阈值（7），其目的是排除异常长的路径，因为&lt;code class=&quot;highlighter-rouge&quot;&gt;Minipar&lt;/code&gt;只能可靠地解决附近的依赖关系；&lt;/li&gt;
+  &lt;li&gt;如果两个词属于相同的块(通常是名词短语或动词短语)，我们忽略了它们之间的关系路径（这是由&lt;code class=&quot;highlighter-rouge&quot;&gt;MiniPar&lt;/code&gt;确定的），比如&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;‘28’和‘28 percent’
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;为了确定依赖关系的相关性，对于两个句子，提取出主要节点（node），并匹配它们在两个句子中的依赖关系，node的类型一般为&lt;strong&gt;名词、动词和形容词&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在依存关系树中，我们可以提取出主要节点的依存路径，如图3所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于模糊依存关系匹配的问答模型构建方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae6d25000012c2c09080496.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 3 主要节点的依存路径&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Minipar&lt;/code&gt;有42个主要的依存关系，比如&lt;code class=&quot;highlighter-rouge&quot;&gt;subj (subjective)&lt;/code&gt; 表示主观关系；&lt;code class=&quot;highlighter-rouge&quot;&gt;mod (modifying)&lt;/code&gt; 表示修饰关系；&lt;code class=&quot;highlighter-rouge&quot;&gt;pcomp-n (nominal complement of a preposition)&lt;/code&gt; 表示介词的名词补充。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2.2 模糊依存关系匹配分数计算&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;以图3为例，我们需要计算问题句&lt;code class=&quot;highlighter-rouge&quot;&gt;question&lt;/code&gt;的依存关系路径&lt;code class=&quot;highlighter-rouge&quot;&gt;（&amp;lt;subj&amp;gt;-&amp;lt;head, whn, prep, pcomp-n&amp;gt;-&amp;lt;gen&amp;gt;）&lt;/code&gt;和答案句&lt;code class=&quot;highlighter-rouge&quot;&gt;S1&lt;/code&gt;的依存关系路径&lt;code class=&quot;highlighter-rouge&quot;&gt;（&amp;lt;pcomp-n, mod, i&amp;gt;-&amp;lt;obj, mod, pcomp-n&amp;gt;-&amp;lt;gen&amp;gt;）&lt;/code&gt;间的匹配分数，注意到这里的node是一样的。&lt;/p&gt;
+
+&lt;p&gt;我们&lt;strong&gt;将候选答案句子的关系路径的匹配分数看作是从问题句中的对应路径转换到候选答案句的关系路径的概率&lt;/strong&gt;。计算公式如下。（这里有个小思考：&lt;strong&gt;两个关系路径的最小编辑距离应该也可以作为模型特征工程的一部分&lt;/strong&gt;）&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于模糊依存关系匹配的问答模型构建方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae6d25f0001973307260104.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;P_s&lt;/code&gt;表示候选答案句的依存关系路径，其长度为&lt;code class=&quot;highlighter-rouge&quot;&gt;n&lt;/code&gt;；&lt;code class=&quot;highlighter-rouge&quot;&gt;P_Q&lt;/code&gt;表示问题句的依存关系路径，其长度为&lt;code class=&quot;highlighter-rouge&quot;&gt;m&lt;/code&gt;；&lt;code class=&quot;highlighter-rouge&quot;&gt;Rel_(s)_i&lt;/code&gt;表示&lt;code class=&quot;highlighter-rouge&quot;&gt;P_s&lt;/code&gt;中第&lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt;个关系，&lt;code class=&quot;highlighter-rouge&quot;&gt;Rel_(Q)_ai&lt;/code&gt;则为在&lt;code class=&quot;highlighter-rouge&quot;&gt;P_Q&lt;/code&gt;中对应的关系；&lt;code class=&quot;highlighter-rouge&quot;&gt;P_t(Rel_(s)_i | Rel_(Q)_j)&lt;/code&gt;表示两种依存关系转换的概率。这里假设每一种关系都可以转换成另一种关系，所以&lt;code class=&quot;highlighter-rouge&quot;&gt;P_t(Rel_(s)_i | Rel_(Q)_j)&lt;/code&gt;是大于0，小于等于1的值，当&lt;code class=&quot;highlighter-rouge&quot;&gt;P_t(Rel_(s)_i | Rel_(Q)_j)=1&lt;/code&gt;时，表示&lt;code class=&quot;highlighter-rouge&quot;&gt;Rel_(s)_i&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;Rel_(Q)_j&lt;/code&gt;是一样的，那么自己匹配自己时，其匹配概率是100%。&lt;/p&gt;
+
+&lt;p&gt;分析语料库，在实际依存关系匹配中，&lt;strong&gt;我们不需要匹配两个句子所有的依存关系路径，而是只要从关系路径中的每个关系中找到对应路径中最可能映射的关系来计算匹配分数即可&lt;/strong&gt;。于是公式可简化为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于模糊依存关系匹配的问答模型构建方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae6d26c0001714f05380080.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;A_i&lt;/code&gt;表示最有可能映射的关系组合。&lt;/p&gt;
+
+&lt;p&gt;最终的匹配分数计算公式为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于模糊依存关系匹配的问答模型构建方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae6d2780001239105840156.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;到这，我们只需要得到&lt;code class=&quot;highlighter-rouge&quot;&gt;P_t(Rel_(s)_i | Rel_(Q)_j)&lt;/code&gt;就能计算最终的匹配分数，两种依存关系的相关性通过依存关系路径的双向共现量&lt;code class=&quot;highlighter-rouge&quot;&gt;（bipartite co-occurrences）&lt;/code&gt;来测量，计算公式如下所示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于模糊依存关系匹配的问答模型构建方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae6d2860001e69106560104.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;img title=&quot;一种基于模糊依存关系匹配的问答模型构建方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae6d29100015ddb02260042.png&quot; alt=&quot;图片描述&quot; style=&quot;width:20%&quot; /&gt;为一个分段函数，当依存关系&lt;code class=&quot;highlighter-rouge&quot;&gt;Rel_(Q)_j&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;Rel_(S)_i&lt;/code&gt;在依存关系路径中都出现了，那么其值为&lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;，否则为&lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;；&lt;code class=&quot;highlighter-rouge&quot;&gt;γ&lt;/code&gt;是两条依存关系路径长度之和的倒数。&lt;code class=&quot;highlighter-rouge&quot;&gt;|Rel_(Q)_j|&lt;/code&gt;为所有问题句的依存关系路径中包含依存关系&lt;code class=&quot;highlighter-rouge&quot;&gt;Rel_(Q)_j&lt;/code&gt;的个数；&lt;code class=&quot;highlighter-rouge&quot;&gt;|Rel_(S)_i|&lt;/code&gt;为所有答案句的依存关系路径中包含依存关系&lt;code class=&quot;highlighter-rouge&quot;&gt;Rel_(S)_i&lt;/code&gt;的个数。&lt;/p&gt;
+
+&lt;p&gt;从计算过程中，我们可以看出，&lt;strong&gt;如果问题句的长度越长，依存关系路径也可能越长，那么在一定程度上其包含的信息越多，得到正确答案的概率就越大&lt;/strong&gt;。&lt;/p&gt;
+</description>
+        <pubDate>Mon, 30 Apr 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/04/30/%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%A8%A1%E7%B3%8A%E4%BE%9D%E5%AD%98%E5%85%B3%E7%B3%BB%E5%8C%B9%E9%85%8D%E7%9A%84%E9%97%AE%E7%AD%94%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/04/30/%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%A8%A1%E7%B3%8A%E4%BE%9D%E5%AD%98%E5%85%B3%E7%B3%BB%E5%8C%B9%E9%85%8D%E7%9A%84%E9%97%AE%E7%AD%94%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95.html</guid>
+        
+        <category>依存关系</category>
+        
+        <category>模糊匹配</category>
+        
+        <category>问答模型</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
+    
+      <item>
+        <title>中文自然语言处理建模过程中的特征工程</title>
+        <description>&lt;p&gt;近来在尝试用传统机器学习方法来做一个中文问答系统，传统机器学习方法建模其实&lt;strong&gt;主要的工作在于模型的特征工程&lt;/strong&gt;，本文主要受哈工大的《中文语义角色标注的特征工程》及其参考文献的启发，分析及总结了在中文的自然语言处理任务的特征工程中可能用到的特征，以及特征提取的方法。&lt;/p&gt;
+
+&lt;p&gt;其实在&lt;a href=&quot;https://zhoum1118.github.io/deeplearning/2018/04/25/%E5%9F%BA%E4%BA%8E%E6%9C%80%E5%A4%A7%E7%86%B5%E7%9A%84%E4%B8%AD%E6%96%87%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%A8%A1%E5%9E%8B.html&quot;&gt;《基于最大熵的中文阅读理解模型》&lt;/a&gt;中我们分析了词层面和句法层面的特征及提取，对于词层面的特征提取，通常需要进行&lt;strong&gt;分词、词性标注以及命名实体（NE）识别&lt;/strong&gt;。在《你需要知道的几个好用的中文词法分析工具》中调研了几个常用的中文自然语言处理工具，通过调用接口、jar包等方式，我们可以很方便地使用这些工具来完成分词、词性标注以及命名实体标注等基本功能。&lt;/p&gt;
+
+&lt;p&gt;1、在对句子进行&lt;strong&gt;分词、词性标注和命名实体标注&lt;/strong&gt;后，我们可以统计句子中词频，各类型词性个数以及句子中命名实体的种类和数量，并将其转化为特征；&lt;/p&gt;
+
+&lt;p&gt;2、&lt;strong&gt;中心词及其词性特征及提取&lt;/strong&gt;：中心词是指在句子中具有重要意义的成分，中心词可以挖掘动词与施事者、受事者之间的关系。通过分析实验的语料库并统计中心词的词频，提取适合当前任务的中心词词典，图1展示了《Shallow Semantic Parsing of Chinese》中前20个中心词。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;中文自然语言处理建模过程中的特征工程_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae3c72c000107d807780446.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图1 《Shallow Semantic Parsing of Chinese》中前20个中心词&lt;/p&gt;
+
+&lt;p&gt;3、&lt;strong&gt;句法分析树&lt;/strong&gt;：在&lt;a href=&quot;https://zhoum1118.github.io/deeplearning/2018/04/26/%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E4%B8%AA%E5%A5%BD%E7%94%A8%E7%9A%84%E4%B8%AD%E6%96%87%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7.html&quot;&gt;《你需要知道的几个好用的中文词法分析工具》&lt;/a&gt;中我们也介绍了一些句法分析树构造工具，将句子转化成如图2所示的句法分析树，以此提取句法分析树特征。句法分析树特征可包含：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;句法分析树中&lt;strong&gt;左、右兄弟句法成分的短语类型&lt;/strong&gt;；&lt;/li&gt;
+  &lt;li&gt;由谓语动词的父节点、谓语动词本身以及谓语动词子节点构成&lt;strong&gt;子类框架&lt;/strong&gt;（如图2中的“通过”的子类框架为：&lt;code class=&quot;highlighter-rouge&quot;&gt;VP-VV-(NP-OBJ)&lt;/code&gt;）；&lt;/li&gt;
+  &lt;li&gt;句法分析树中&lt;strong&gt;当前句法成分到谓语动词的句法路径&lt;/strong&gt;（“委员会”的句法路径为：&lt;code class=&quot;highlighter-rouge&quot;&gt;(NP-SBJ)-IP-VP-VP-VV&lt;/code&gt;）；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;部分路径&lt;/strong&gt;，当前句法成分到它和当前谓语动词的最近共同父节点的句法路径（“委员会”的部分路径为：&lt;code class=&quot;highlighter-rouge&quot;&gt;(NP-SBJ)-IP-VP&lt;/code&gt;）；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;位置特征&lt;/strong&gt;，句法成分在谓语动词的前面还是后面；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;句法框架特征&lt;/strong&gt;，包含句子的谓语动词和围绕谓语动词的名词短语。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img title=&quot;中文自然语言处理建模过程中的特征工程_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae3c7450001a15908480586.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图2 句法分析树&lt;/p&gt;
+
+&lt;p&gt;4、&lt;strong&gt;谓语动词的类别信息&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;5、&lt;strong&gt;语义角色类型&lt;/strong&gt;：IO（简接宾语）、OBJ（直接宾语）、SBJ（主语）等，这些功能标记暗示着语义角色类型。Chinese Proposition Bank（CPB）语料库手工标记了语义角色类型。通过语义角色类型，我们可以进一步分析不同句法成分之间的关系，包含主谓关系，动宾关系等。图3展示了《基于句法模式识别的中文关系抽取方法研究与实现》中论元和关系词抽取流程。图 4 展示了句法成分的依存关系。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;中文自然语言处理建模过程中的特征工程_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae3c75600013bcd08441316.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 3 论元和关系词抽取流程&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;中文自然语言处理建模过程中的特征工程_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5ae3c7650001ef0413500180.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图4 句法成分的依存关系&lt;/p&gt;
+
+&lt;p&gt;6、&lt;strong&gt;句子包含的子句数&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;7、&lt;strong&gt;句法成分与谓语动词的相对位置&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;是否有兄弟节点关系；&lt;/li&gt;
+  &lt;li&gt;是否有相同动词短语的子节点；&lt;/li&gt;
+  &lt;li&gt;是否属于相同子句或短语的子节点。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;参考文献&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;刘怀军, 车万翔, 刘挺. 中文语义角色标注的特征工程[J]. 中文信息学报, 2007, 21(1):79-84.&lt;/li&gt;
+  &lt;li&gt;Sun H, Jurafsky D. Shallow Semantic Parsing of Chinese[J].
+Proceedings of Naacl, 2004.&lt;/li&gt;
+  &lt;li&gt;郝博. 基于句法模式识别的中文关系抽取方法研究与实现[D].电子科技大学,2017.&lt;/li&gt;
+  &lt;li&gt;潘苏. 中文语义角色标注研究及系统实现[D].苏州大学,2017&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        <pubDate>Sat, 28 Apr 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/04/28/%E4%B8%AD%E6%96%87%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86%E5%BB%BA%E6%A8%A1%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/04/28/%E4%B8%AD%E6%96%87%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86%E5%BB%BA%E6%A8%A1%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B.html</guid>
+        
+        <category>自然语言处理</category>
+        
+        <category>建模</category>
+        
+        <category>特征工程</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>你需要知道的几个好用的中文词法分析工具</title>

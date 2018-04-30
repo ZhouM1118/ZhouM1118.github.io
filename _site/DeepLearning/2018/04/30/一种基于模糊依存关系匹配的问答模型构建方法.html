@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="一种基于模糊依存关系匹配的问答模型构建方法" name="description">
+  
+  
+    <meta name="keywords" content="依存关系, 模糊匹配, 问答模型">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|一种基于模糊依存关系匹配的问答模型构建方法
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DataMining/">DataMining</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 30 Apr 2018</span>
+                        <h1>
+                            一种基于模糊依存关系匹配的问答模型构建方法
+                        </h1>
+                    </div>
+                    	<h1 id="0-前言"><strong>0 前言</strong></h1>
+
+<p>基于传统机器学习方法构建问答模型的主要工作是构建适合当前任务的特征工程，在<a href="">《中文自然语言处理建模过程中的特征工程》</a>一文中，我们介绍了很多可提取的特征以及提取方法，主要的特征集中在句法分析上。我们都知道，<strong>句法分析是NLP中的关键底层技术之一，也是构建特征工程时经常用到的，其基本目标是确定句子的句法结构或者句子中词汇之间的依存关系。</strong></p>
+
+<p>句法分析分为<strong>句法结构分析</strong>（syntactic structure parsing）和<strong>依存关系分析</strong>（dependency parsing）。句法结构分析以其目的不同分为<strong>成分结构分析</strong>（constituent structure parsing）或者<strong>短语结构分析</strong>（phrase structure parsing），成分结构分析以获取整个句子的句法结构为目的，而短语结构分析以获取完全短语结构为目的；<strong>依存关系分析</strong>则以获取局部成分之间的依存关系为目的。</p>
+
+<p>《Question Answering Passage Retrieval Using Dependency Relations》中通过<strong>对问题（question）和包含候选答案的句子（Sentence）间的依存关系的分析，提出了一种基于模糊依存关系匹配的问答模型的构建方法</strong>。实验模型在不同数据集下，相比基于词匹配和基于严格依存关系的模型效果要更好。分析这篇论文发现，<strong>在某些任务中，模糊依存关系可以作为特征工程的一部分，所以记录下来，以便未来建模需要。</strong></p>
+
+<h1 id="1-背景"><strong>1 背景</strong></h1>
+
+<p><strong>传统问答系统定位答案的过程</strong>：</p>
+
+<ul>
+  <li>定位相关的文档</li>
+  <li>定位文档中答案可能所在的段落</li>
+  <li>在备选段落中精确定位，找到答案</li>
+</ul>
+
+<p>这种传统问答系统定位答案的方法并非一蹴而就，而是在不断缩小答案可能所在的范围。在这个过程中需要每一步都准确无误，否则一步错而步步错。但段落的定位是而这种方法的重点和难点，如果连可能包含答案的段落都找错了，那肯定不会找到正确的答案了。相反如果段落定位准确，即使答案的精确定位错误也不影响大局（可直接返回段落作为答案），因为有研究表明，<strong>一个段落足以包含回答问题所需要的信息</strong>，且用户也更倾向于模型给出的答案是一个段落，理由是一个段落可以提供完整的答案上下文，有助于理解答案的含义。当然研究肯定不是只止步于此，精确地回答问题依旧是问答系统或机器阅读理解的最终目的。</p>
+
+<p>在基于依存关系匹配来回答问题之前，就出现了<strong>基于词匹配来回答问题</strong>。这种方法通过分析问题句与候选答案句之间词汇来定位答案所在句子，这种方法过于追求句子间词汇的匹配而忽视了词之间的依存关系，比如，图1展示了一个问题和四个候选答案句，其中<code class="highlighter-rouge">S1</code>为正确答案句，但分析这四个句子可发现，词匹配最多的并不是<code class="highlighter-rouge">S1</code>。</p>
+
+<p><img title="一种基于模糊依存关系匹配的问答模型构建方法_" 图片1="" src="https://img.mukewang.com/5ae6d22a0001366d08980492.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 1 基于词匹配方法的例子</p>
+
+<p>还有一种方法是<strong>基于依存关系匹配方法，但是匹配要求较为严格</strong>，对于语义相同但表述不同的情况也视为匹配失败。但在实际应用中，在问题句和答案句的句法分析树中，核心词之间相似的关系往往有不同的表述方式，严格匹配容易把正确的当成错误的，即模型召回率低。</p>
+
+<h1 id="2-基于模糊依存关系匹配的问答模型构建方法"><strong>2 基于模糊依存关系匹配的问答模型构建方法</strong></h1>
+
+<p>我们首先介绍了如何从依存关系树中提取关系路径并对其进行配对。然后计算两条关系路径的匹配分数，匹配分数包含了两条路径中单个关系的映射分数。</p>
+
+<p><strong>2.1 依存关系的提取-依存关系树</strong></p>
+
+<p>依存关系树的构建工具有很多，详情可见<a href="https://zhoum1118.github.io/deeplearning/2018/04/26/%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E4%B8%AA%E5%A5%BD%E7%94%A8%E7%9A%84%E4%B8%AD%E6%96%87%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7.html">《你需要知道的几个好用的中文词法分析工具》</a>。《Question Answering Passage Retrieval Using Dependency Relations》使用了<code class="highlighter-rouge">Minipar</code>来构建依存关系树，图2展示了在图1中问题句和答案句<code class="highlighter-rouge">S1</code>的依存关系树。</p>
+
+<p><img title="一种基于模糊依存关系匹配的问答模型构建方法_" 图片1="" src="https://img.mukewang.com/5ae6d2410001583806860562.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 2 依存关系树</p>
+
+<p>在提取两个句子的依存关系时，需注意以下几点：</p>
+
+<ul>
+  <li>虽然依赖关系是有向链接，但我们忽略了关系的方向；</li>
+  <li>路径长度不能超过预定义的阈值（7），其目的是排除异常长的路径，因为<code class="highlighter-rouge">Minipar</code>只能可靠地解决附近的依赖关系；</li>
+  <li>如果两个词属于相同的块(通常是名词短语或动词短语)，我们忽略了它们之间的关系路径（这是由<code class="highlighter-rouge">MiniPar</code>确定的），比如</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>‘28’和‘28 percent’
+</code></pre>
+</div>
+
+<ul>
+  <li>为了确定依赖关系的相关性，对于两个句子，提取出主要节点（node），并匹配它们在两个句子中的依赖关系，node的类型一般为<strong>名词、动词和形容词</strong>。</li>
+</ul>
+
+<p>在依存关系树中，我们可以提取出主要节点的依存路径，如图3所示。</p>
+
+<p><img title="一种基于模糊依存关系匹配的问答模型构建方法_" 图片1="" src="https://img.mukewang.com/5ae6d25000012c2c09080496.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图 3 主要节点的依存路径</p>
+
+<p><code class="highlighter-rouge">Minipar</code>有42个主要的依存关系，比如<code class="highlighter-rouge">subj (subjective)</code> 表示主观关系；<code class="highlighter-rouge">mod (modifying)</code> 表示修饰关系；<code class="highlighter-rouge">pcomp-n (nominal complement of a preposition)</code> 表示介词的名词补充。</p>
+
+<p><strong>2.2 模糊依存关系匹配分数计算</strong></p>
+
+<p>以图3为例，我们需要计算问题句<code class="highlighter-rouge">question</code>的依存关系路径<code class="highlighter-rouge">（&lt;subj&gt;-&lt;head, whn, prep, pcomp-n&gt;-&lt;gen&gt;）</code>和答案句<code class="highlighter-rouge">S1</code>的依存关系路径<code class="highlighter-rouge">（&lt;pcomp-n, mod, i&gt;-&lt;obj, mod, pcomp-n&gt;-&lt;gen&gt;）</code>间的匹配分数，注意到这里的node是一样的。</p>
+
+<p>我们<strong>将候选答案句子的关系路径的匹配分数看作是从问题句中的对应路径转换到候选答案句的关系路径的概率</strong>。计算公式如下。（这里有个小思考：<strong>两个关系路径的最小编辑距离应该也可以作为模型特征工程的一部分</strong>）</p>
+
+<p><img title="一种基于模糊依存关系匹配的问答模型构建方法_" 图片1="" src="https://img.mukewang.com/5ae6d25f0001973307260104.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>其中，<code class="highlighter-rouge">P_s</code>表示候选答案句的依存关系路径，其长度为<code class="highlighter-rouge">n</code>；<code class="highlighter-rouge">P_Q</code>表示问题句的依存关系路径，其长度为<code class="highlighter-rouge">m</code>；<code class="highlighter-rouge">Rel_(s)_i</code>表示<code class="highlighter-rouge">P_s</code>中第<code class="highlighter-rouge">i</code>个关系，<code class="highlighter-rouge">Rel_(Q)_ai</code>则为在<code class="highlighter-rouge">P_Q</code>中对应的关系；<code class="highlighter-rouge">P_t(Rel_(s)_i | Rel_(Q)_j)</code>表示两种依存关系转换的概率。这里假设每一种关系都可以转换成另一种关系，所以<code class="highlighter-rouge">P_t(Rel_(s)_i | Rel_(Q)_j)</code>是大于0，小于等于1的值，当<code class="highlighter-rouge">P_t(Rel_(s)_i | Rel_(Q)_j)=1</code>时，表示<code class="highlighter-rouge">Rel_(s)_i</code>和<code class="highlighter-rouge">Rel_(Q)_j</code>是一样的，那么自己匹配自己时，其匹配概率是100%。</p>
+
+<p>分析语料库，在实际依存关系匹配中，<strong>我们不需要匹配两个句子所有的依存关系路径，而是只要从关系路径中的每个关系中找到对应路径中最可能映射的关系来计算匹配分数即可</strong>。于是公式可简化为：</p>
+
+<p><img title="一种基于模糊依存关系匹配的问答模型构建方法_" 图片1="" src="https://img.mukewang.com/5ae6d26c0001714f05380080.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>其中，<code class="highlighter-rouge">A_i</code>表示最有可能映射的关系组合。</p>
+
+<p>最终的匹配分数计算公式为：</p>
+
+<p><img title="一种基于模糊依存关系匹配的问答模型构建方法_" 图片1="" src="https://img.mukewang.com/5ae6d2780001239105840156.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>到这，我们只需要得到<code class="highlighter-rouge">P_t(Rel_(s)_i | Rel_(Q)_j)</code>就能计算最终的匹配分数，两种依存关系的相关性通过依存关系路径的双向共现量<code class="highlighter-rouge">（bipartite co-occurrences）</code>来测量，计算公式如下所示：</p>
+
+<p><img title="一种基于模糊依存关系匹配的问答模型构建方法_" 图片1="" src="https://img.mukewang.com/5ae6d2860001e69106560104.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>其中，<img title="一种基于模糊依存关系匹配的问答模型构建方法_" 图片1="" src="https://img.mukewang.com/5ae6d29100015ddb02260042.png" alt="图片描述" style="width:20%" />为一个分段函数，当依存关系<code class="highlighter-rouge">Rel_(Q)_j</code>和<code class="highlighter-rouge">Rel_(S)_i</code>在依存关系路径中都出现了，那么其值为<code class="highlighter-rouge">1</code>，否则为<code class="highlighter-rouge">0</code>；<code class="highlighter-rouge">γ</code>是两条依存关系路径长度之和的倒数。<code class="highlighter-rouge">|Rel_(Q)_j|</code>为所有问题句的依存关系路径中包含依存关系<code class="highlighter-rouge">Rel_(Q)_j</code>的个数；<code class="highlighter-rouge">|Rel_(S)_i|</code>为所有答案句的依存关系路径中包含依存关系<code class="highlighter-rouge">Rel_(S)_i</code>的个数。</p>
+
+<p>从计算过程中，我们可以看出，<strong>如果问题句的长度越长，依存关系路径也可能越长，那么在一定程度上其包含的信息越多，得到正确答案的概率就越大</strong>。</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">依存关系</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">模糊匹配</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">问答模型</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>

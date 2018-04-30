@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="中文自然语言处理建模过程中的特征工程" name="description">
+  
+  
+    <meta name="keywords" content="自然语言处理, 建模, 特征工程">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|中文自然语言处理建模过程中的特征工程
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DataMining/">DataMining</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 28 Apr 2018</span>
+                        <h1>
+                            中文自然语言处理建模过程中的特征工程
+                        </h1>
+                    </div>
+                    	<p>近来在尝试用传统机器学习方法来做一个中文问答系统，传统机器学习方法建模其实<strong>主要的工作在于模型的特征工程</strong>，本文主要受哈工大的《中文语义角色标注的特征工程》及其参考文献的启发，分析及总结了在中文的自然语言处理任务的特征工程中可能用到的特征，以及特征提取的方法。</p>
+
+<p>其实在<a href="https://zhoum1118.github.io/deeplearning/2018/04/25/%E5%9F%BA%E4%BA%8E%E6%9C%80%E5%A4%A7%E7%86%B5%E7%9A%84%E4%B8%AD%E6%96%87%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%A8%A1%E5%9E%8B.html">《基于最大熵的中文阅读理解模型》</a>中我们分析了词层面和句法层面的特征及提取，对于词层面的特征提取，通常需要进行<strong>分词、词性标注以及命名实体（NE）识别</strong>。在《你需要知道的几个好用的中文词法分析工具》中调研了几个常用的中文自然语言处理工具，通过调用接口、jar包等方式，我们可以很方便地使用这些工具来完成分词、词性标注以及命名实体标注等基本功能。</p>
+
+<p>1、在对句子进行<strong>分词、词性标注和命名实体标注</strong>后，我们可以统计句子中词频，各类型词性个数以及句子中命名实体的种类和数量，并将其转化为特征；</p>
+
+<p>2、<strong>中心词及其词性特征及提取</strong>：中心词是指在句子中具有重要意义的成分，中心词可以挖掘动词与施事者、受事者之间的关系。通过分析实验的语料库并统计中心词的词频，提取适合当前任务的中心词词典，图1展示了《Shallow Semantic Parsing of Chinese》中前20个中心词。</p>
+
+<p><img title="中文自然语言处理建模过程中的特征工程_" 图片1="" src="https://img.mukewang.com/5ae3c72c000107d807780446.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图1 《Shallow Semantic Parsing of Chinese》中前20个中心词</p>
+
+<p>3、<strong>句法分析树</strong>：在<a href="https://zhoum1118.github.io/deeplearning/2018/04/26/%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E4%B8%AA%E5%A5%BD%E7%94%A8%E7%9A%84%E4%B8%AD%E6%96%87%E8%AF%8D%E6%B3%95%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7.html">《你需要知道的几个好用的中文词法分析工具》</a>中我们也介绍了一些句法分析树构造工具，将句子转化成如图2所示的句法分析树，以此提取句法分析树特征。句法分析树特征可包含：</p>
+
+<ul>
+  <li>句法分析树中<strong>左、右兄弟句法成分的短语类型</strong>；</li>
+  <li>由谓语动词的父节点、谓语动词本身以及谓语动词子节点构成<strong>子类框架</strong>（如图2中的“通过”的子类框架为：<code class="highlighter-rouge">VP-VV-(NP-OBJ)</code>）；</li>
+  <li>句法分析树中<strong>当前句法成分到谓语动词的句法路径</strong>（“委员会”的句法路径为：<code class="highlighter-rouge">(NP-SBJ)-IP-VP-VP-VV</code>）；</li>
+  <li><strong>部分路径</strong>，当前句法成分到它和当前谓语动词的最近共同父节点的句法路径（“委员会”的部分路径为：<code class="highlighter-rouge">(NP-SBJ)-IP-VP</code>）；</li>
+  <li><strong>位置特征</strong>，句法成分在谓语动词的前面还是后面；</li>
+  <li><strong>句法框架特征</strong>，包含句子的谓语动词和围绕谓语动词的名词短语。</li>
+</ul>
+
+<p><img title="中文自然语言处理建模过程中的特征工程_" 图片1="" src="https://img.mukewang.com/5ae3c7450001a15908480586.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p style="text-align:center">图2 句法分析树</p>
+
+<p>4、<strong>谓语动词的类别信息</strong></p>
+
+<p>5、<strong>语义角色类型</strong>：IO（简接宾语）、OBJ（直接宾语）、SBJ（主语）等，这些功能标记暗示着语义角色类型。Chinese Proposition Bank（CPB）语料库手工标记了语义角色类型。通过语义角色类型，我们可以进一步分析不同句法成分之间的关系，包含主谓关系，动宾关系等。图3展示了《基于句法模式识别的中文关系抽取方法研究与实现》中论元和关系词抽取流程。图 4 展示了句法成分的依存关系。</p>
+
+<p><img title="中文自然语言处理建模过程中的特征工程_" 图片1="" src="https://img.mukewang.com/5ae3c75600013bcd08441316.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p style="text-align:center">图 3 论元和关系词抽取流程</p>
+
+<p><img title="中文自然语言处理建模过程中的特征工程_" 图片1="" src="https://img.mukewang.com/5ae3c7650001ef0413500180.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图4 句法成分的依存关系</p>
+
+<p>6、<strong>句子包含的子句数</strong></p>
+
+<p>7、<strong>句法成分与谓语动词的相对位置</strong>：</p>
+
+<ul>
+  <li>是否有兄弟节点关系；</li>
+  <li>是否有相同动词短语的子节点；</li>
+  <li>是否属于相同子句或短语的子节点。</li>
+</ul>
+
+<p><strong>参考文献</strong></p>
+
+<ol>
+  <li>刘怀军, 车万翔, 刘挺. 中文语义角色标注的特征工程[J]. 中文信息学报, 2007, 21(1):79-84.</li>
+  <li>Sun H, Jurafsky D. Shallow Semantic Parsing of Chinese[J].
+Proceedings of Naacl, 2004.</li>
+  <li>郝博. 基于句法模式识别的中文关系抽取方法研究与实现[D].电子科技大学,2017.</li>
+  <li>潘苏. 中文语义角色标注研究及系统实现[D].苏州大学,2017</li>
+</ol>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">自然语言处理</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">建模</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">特征工程</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
