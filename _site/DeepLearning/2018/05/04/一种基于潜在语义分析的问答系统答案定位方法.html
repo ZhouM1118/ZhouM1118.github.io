@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="一种基于潜在语义分析的问答系统答案定位方法" name="description">
+  
+  
+    <meta name="keywords" content="潜在语义分析, 问答系统, 答案定位">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|一种基于潜在语义分析的问答系统答案定位方法
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DataMining/">DataMining</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 4 May 2018</span>
+                        <h1>
+                            一种基于潜在语义分析的问答系统答案定位方法
+                        </h1>
+                    </div>
+                    	<h1 id="0-前言"><strong>0 前言</strong></h1>
+
+<p>在上一篇博文<a href="https://zhoum1118.github.io/deeplearning/2018/04/30/%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%A8%A1%E7%B3%8A%E4%BE%9D%E5%AD%98%E5%85%B3%E7%B3%BB%E5%8C%B9%E9%85%8D%E7%9A%84%E9%97%AE%E7%AD%94%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95.html">《一种基于模糊依存关系匹配的问答模型构建方法》</a>我们分析了基于模糊依存关系匹配的问答模型构建，其基本思想是通过模糊匹配问题（question）和包含候选答案的句子（Sentence）间的依存关系来定位问题的答案，<strong>依存关系主要反映的是句子中核心词和依存词之间的语义关系</strong>，这种分析方法也可能为传统机器学习方法的特征工程提供一些思路，还是出于构建特征工程需要的考虑，受余正涛教授的《基于潜在语义分析的汉语问答系统答案提取》的启发，我们继续挖掘问题（question）和包含候选答案的句子（Sentence）中词与词之间的潜在语义关系，并基于此利用潜在语义分析（Latent Semantic Analysis，LSA）思想来定位答案所在的句子。</p>
+
+<h1 id="1-背景"><strong>1 背景</strong></h1>
+
+<p>在<a href="https://zhoum1118.github.io/deeplearning/2018/04/30/%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%A8%A1%E7%B3%8A%E4%BE%9D%E5%AD%98%E5%85%B3%E7%B3%BB%E5%8C%B9%E9%85%8D%E7%9A%84%E9%97%AE%E7%AD%94%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95.html">《一种基于模糊依存关系匹配的问答模型构建方法》</a>中我们介绍了传统问答系统定位答案的过程，在其中第二步，还可以在细分为，提取包含答案的句子，然后再从句子中提取答案。由此可见定位答案所在的句子是答案更细粒度的一种表示，而《基于潜在语义分析的汉语问答系统答案提取》便是针对事实简单陈述问题的答案句子的提取。</p>
+
+<p>不难发现，定位答案所在的句子，即计算问题（question）和文档各个句子的相似度，相似度最高的句子即为答案。问题转化为计算两个句子的相似度，相似度传统的计算方法为关键词匹配方法，在<a href="https://zhoum1118.github.io/deeplearning/2018/04/30/%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%A8%A1%E7%B3%8A%E4%BE%9D%E5%AD%98%E5%85%B3%E7%B3%BB%E5%8C%B9%E9%85%8D%E7%9A%84%E9%97%AE%E7%AD%94%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95.html">《一种基于模糊依存关系匹配的问答模型构建方法》</a>一文中有提到，即通过统计两个句子中拥有共同关键词的数量来确定两者的相似程度。<strong>但这种方法过于简单，且对于中文问答系统，句子中的词存在同义或多义现象。</strong>所以如果不考虑关键词所在的上下文信息和关键词的词性，那么对于基于关键词匹配方法，句子中出现词同义而又过于追求词匹配，则可能导致漏掉包含正确答案的句子。比如，问题Q1：北京奥运会开幕时间是什么时候？关键词是“北京奥运会”和“开幕时间”，那么对于“北京奥运会于2008年8月8日晚上8时开始”或“北京奥运会2008年8月8日晚上8时整于中华人民共和国首都北京举办”等包含正确答案的句子将可能被漏掉。如果句子中出现词多义的情况，比如“代表”，其可作为名词和动词，那么基于关键词匹配方法就很可能出现把错误的句子定位成正确的。</p>
+
+<p>基于关键词匹配方法的不足，出现了一种基于LSA的答案定位方法。<strong>LSA的基本思想是通过统计分析文档中词与词之间的某种语义结构，消除词同义和多义的影响。</strong>这是对传统向量空间技术的一种改良，在信息检索、信息过滤、文档分类、自动摘要以及文旦系统等领域都有较好的应用效果。基于潜在语义分析的问答系统答案定位方法使用LSA思想，通过统计分析构造了一个词-句子的语义空间，以此来消除词之间的相关性，然后基于词-句子的语义空间计算问题（question）和句子之间的相似度，最终定位答案所在的句子，在一定程度上提高了答案定位的准确率。</p>
+
+<h1 id="2-基于潜在语义分析的问答系统答案定位方法"><strong>2 基于潜在语义分析的问答系统答案定位方法</strong></h1>
+
+<h2 id="21-lsa"><strong>2.1 LSA</strong></h2>
+
+<p>首先，定义一个 <code class="highlighter-rouge">m * n</code> 的词-文档矩阵<code class="highlighter-rouge">A</code>：</p>
+
+<p><img title="一种基于潜在语义分析的问答系统答案定位方法_" 图片1="" src="https://img.mukewang.com/5aebb7990001a91b08000088.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>其中，<code class="highlighter-rouge">a_ij</code>表示第<code class="highlighter-rouge">i</code>个词在第<code class="highlighter-rouge">j</code>个文档中出现的次数，<code class="highlighter-rouge">m</code>表示关键词的个数，<code class="highlighter-rouge">n</code>表示文档树。</p>
+
+<p>经过矩阵奇异值分解后：</p>
+
+<p><img title="一种基于潜在语义分析的问答系统答案定位方法_" 图片1="" src="https://img.mukewang.com/5aebb7b9000174bb07300086.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>其中，<code class="highlighter-rouge">U</code>为 <code class="highlighter-rouge">m * m</code> 的正交矩阵，<img title="一种基于潜在语义分析的问答系统答案定位方法_" 图片1="" src="https://img.mukewang.com/5aebb7cc0001d6ea00620056.png" alt="图片描述" style="width:3%" />为 <code class="highlighter-rouge">m * n</code> 的对角矩阵，<code class="highlighter-rouge">V</code>为 <code class="highlighter-rouge">n * n</code> 的正交矩阵。</p>
+
+<p>分析易得，<code class="highlighter-rouge">m</code>一般对大于<code class="highlighter-rouge">n</code>，且每个关键词只会出现在少量的文档中，所以<code class="highlighter-rouge">A</code>一般为高阶稀疏矩阵，而这里进行<strong>奇异值分解的意义</strong>在于：</p>
+
+<blockquote>
+  <p>奇异值往往对应着矩阵中隐含的重要信息，且重要性和奇异值大小正相关。每个矩阵A都可以表示为一系列秩为1的“小矩阵”之和，而奇异值则衡量了这些“小矩阵”对于A的权重。</p>
+</blockquote>
+
+<p>为了在降低计算复杂度的前提下，最大程度的构建包含丰富潜在语义的向量空间，我们假设经过奇异值分解后的<code class="highlighter-rouge">A</code>的秩为<code class="highlighter-rouge">r</code>，存在一个<code class="highlighter-rouge">k</code>，<code class="highlighter-rouge">k &lt;= r</code>，且<code class="highlighter-rouge">k &lt;&lt; min(m, n)</code>，则<code class="highlighter-rouge">A</code>的<code class="highlighter-rouge">k</code>秩近似矩阵<code class="highlighter-rouge">A_k</code>为：</p>
+
+<p><img title="一种基于潜在语义分析的问答系统答案定位方法_" 图片1="" src="https://img.mukewang.com/5aebb7e600010f0707400086.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>其中，<code class="highlighter-rouge">U_k</code>为 <code class="highlighter-rouge">m * k</code> 的矩阵，由<code class="highlighter-rouge">U</code>的前<code class="highlighter-rouge">k</code>列组成；<img title="一种基于潜在语义分析的问答系统答案定位方法_" 图片1="" src="https://img.mukewang.com/5aebb7f900018c5e00560056.png" alt="图片描述" style="width:3%" />是 <code class="highlighter-rouge">k * k</code> 的矩阵，由<img title="一种基于潜在语义分析的问答系统答案定位方法_" 图片1="" src="https://img.mukewang.com/5aebb8060001d6ea00620056.png" alt="图片描述" style="width:3%" />的前<code class="highlighter-rouge">k</code>行、前<code class="highlighter-rouge">k</code>列组成；<code class="highlighter-rouge">V_k</code>是 <code class="highlighter-rouge">k * n</code> 的矩阵，由<code class="highlighter-rouge">V</code>的前<code class="highlighter-rouge">k</code>行组成。</p>
+
+<p><code class="highlighter-rouge">A_k</code>近似保存了词与文档之间的潜在语义关系，且去除了大量因词汇同义或多义产生的“噪点”，也就是说，<strong>那些经常出现在相似的上下文中的词，在<code class="highlighter-rouge">A_k</code>的<code class="highlighter-rouge">k</code>维词空间中的距离也就比较小</strong>。</p>
+
+<p><strong>潜在语义空间转换是一个降维过程，具体降多少维视任务情况而定，如果<code class="highlighter-rouge">k</code>过大，接近标准向量空间，也就失去表示词相依性的能力，且存在大量噪点，计算复杂度也大；<code class="highlighter-rouge">k</code>过小，也无法表示丰富的语义结构，模型也就毫无意义。</strong>一般来说<code class="highlighter-rouge">k</code>值在<code class="highlighter-rouge">100~300</code>之间。</p>
+
+<h2 id="22-相似度计算方法"><strong>2.2 相似度计算方法</strong></h2>
+
+<p><strong>2.2.1 向量空间模型（Vector Space Model，VSM）</strong></p>
+
+<p>问题（question）向量表示为<code class="highlighter-rouge">q=(q_1, q_2, …, q_i, …, q_n)</code>，其中<code class="highlighter-rouge">n</code>表示语料库中所有关键词的数量，<code class="highlighter-rouge">q_i</code>表示第<code class="highlighter-rouge">i</code>个关键词在问题中出现的次数；同样的，候选答案句子<code class="highlighter-rouge">S</code>可表示为<code class="highlighter-rouge">S=(s_1, s_2, …, s_i, …, s_n)</code>，计算两个向量的余弦值作为两者相似度的一个度量：</p>
+
+<p><img title="一种基于潜在语义分析的问答系统答案定位方法_" 图片1="" src="https://img.mukewang.com/5aebb8200001435009040258.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>其中，<code class="highlighter-rouge">n</code>为问题中包含关键词的总个数，<code class="highlighter-rouge">tf_i</code>为问题的第<code class="highlighter-rouge">i</code>个关键词在问题<code class="highlighter-rouge">q</code>和候选答案句子<code class="highlighter-rouge">S</code>中出现的频率，<code class="highlighter-rouge">idf_i</code>为问题的第<code class="highlighter-rouge">i</code>个关键词的倒排频率，<code class="highlighter-rouge">Sentence_Length</code>为候选答案句子所包含词（这里应该是全部的词）的个数，<code class="highlighter-rouge">Sentence_length_avg</code>表示语料库所有句子包含词个数的平均值。</p>
+
+<p>从计算过程可以看出，<strong>这种方法仅仅考察的是问题与候选答案句子中关键词的词频信息，而没有考虑词在上下文的语义信息，所以具有一定的局限性，但从特征工程的角度看，这或许可以作为其中特征之一来构建模型。</strong></p>
+
+<p><strong>2.2.2 基于LSA的问题与候选答案句子相似度计算</strong></p>
+
+<p>首先，如2.1所述，构造一个 <code class="highlighter-rouge">m * n</code> 的关键词-句子矩阵<code class="highlighter-rouge">A</code>，其中每个关键词<code class="highlighter-rouge">t_i</code>在句子<code class="highlighter-rouge">s_j</code>中的权重<code class="highlighter-rouge">a_ij</code>定义为：</p>
+
+<p><img title="一种基于潜在语义分析的问答系统答案定位方法_" 图片1="" src="https://img.mukewang.com/5aebb86b00017f4408340252.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>其中，<code class="highlighter-rouge">tf_ij</code>为词<code class="highlighter-rouge">t_i</code>在句子<code class="highlighter-rouge">s_j</code>中的词频，<code class="highlighter-rouge">N</code>为语料库中句子总数，<code class="highlighter-rouge">nt_i</code>为语料库句子中出现关键词<code class="highlighter-rouge">t_i</code>的句子数，分母为其归一化因子。</p>
+
+<p>然后经过矩阵奇异值分解并降维后得到一个潜在词-句子的语义空间<code class="highlighter-rouge">A_k</code>，将问题向量<code class="highlighter-rouge">q</code>和候选答案句子向量<code class="highlighter-rouge">S</code>映射到这个语义空间，向量表示方法和2.2.1一致，映射公式如下所示：</p>
+
+<p><img title="一种基于潜在语义分析的问答系统答案定位方法_" 图片1="" src="https://img.mukewang.com/5aebb88500016ed409400076.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>其中，<img title="一种基于潜在语义分析的问答系统答案定位方法_" 图片1="" src="https://img.mukewang.com/5aebb8950001072800800056.png" alt="图片描述" style="width:4%" />是<img title="一种基于潜在语义分析的问答系统答案定位方法_" 图片1="" src="https://img.mukewang.com/5aebb8a000018c5e00560056.png" alt="图片描述" style="width:3%" />的逆矩阵，<code class="highlighter-rouge">X</code>为映射前的向量。</p>
+
+<p><strong>通常映射前的向量<code class="highlighter-rouge">X</code>中大部分元素为0，在映射后0元素基本没有，即经过语义空间转换的向量不在是简单的关键词词频组成的，而是包含了其在上下文语义关系的权值信息，反映了关键词之间的一定的相关性</strong>，此时相似度计算公式为：</p>
+
+<p><img title="一种基于潜在语义分析的问答系统答案定位方法_" 图片1="" src="https://img.mukewang.com/5aebb8b40001098708860268.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>其中，<code class="highlighter-rouge">q~*</code>为问题语义向量，<code class="highlighter-rouge">s_j</code>为第<code class="highlighter-rouge">j</code>个候选答案句子向量，<code class="highlighter-rouge">k</code>为语义空间的维数，<code class="highlighter-rouge">q_m</code>和<code class="highlighter-rouge">s_jm</code>分别为问题语义向量和候选答案句子向量中第<code class="highlighter-rouge">m</code>维权值。</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">潜在语义分析</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">问答系统</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">答案定位</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>

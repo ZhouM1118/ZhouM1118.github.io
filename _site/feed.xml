@@ -5,15 +5,108 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 30 Apr 2018 17:17:19 +0800</pubDate>
-    <lastBuildDate>Mon, 30 Apr 2018 17:17:19 +0800</lastBuildDate>
+    <pubDate>Fri, 04 May 2018 10:08:04 +0800</pubDate>
+    <lastBuildDate>Fri, 04 May 2018 10:08:04 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>一种基于潜在语义分析的问答系统答案定位方法</title>
+        <description>&lt;h1 id=&quot;0-前言&quot;&gt;&lt;strong&gt;0 前言&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;在上一篇博文&lt;a href=&quot;https://zhoum1118.github.io/deeplearning/2018/04/30/%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%A8%A1%E7%B3%8A%E4%BE%9D%E5%AD%98%E5%85%B3%E7%B3%BB%E5%8C%B9%E9%85%8D%E7%9A%84%E9%97%AE%E7%AD%94%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95.html&quot;&gt;《一种基于模糊依存关系匹配的问答模型构建方法》&lt;/a&gt;我们分析了基于模糊依存关系匹配的问答模型构建，其基本思想是通过模糊匹配问题（question）和包含候选答案的句子（Sentence）间的依存关系来定位问题的答案，&lt;strong&gt;依存关系主要反映的是句子中核心词和依存词之间的语义关系&lt;/strong&gt;，这种分析方法也可能为传统机器学习方法的特征工程提供一些思路，还是出于构建特征工程需要的考虑，受余正涛教授的《基于潜在语义分析的汉语问答系统答案提取》的启发，我们继续挖掘问题（question）和包含候选答案的句子（Sentence）中词与词之间的潜在语义关系，并基于此利用潜在语义分析（Latent Semantic Analysis，LSA）思想来定位答案所在的句子。&lt;/p&gt;
+
+&lt;h1 id=&quot;1-背景&quot;&gt;&lt;strong&gt;1 背景&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;在&lt;a href=&quot;https://zhoum1118.github.io/deeplearning/2018/04/30/%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%A8%A1%E7%B3%8A%E4%BE%9D%E5%AD%98%E5%85%B3%E7%B3%BB%E5%8C%B9%E9%85%8D%E7%9A%84%E9%97%AE%E7%AD%94%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95.html&quot;&gt;《一种基于模糊依存关系匹配的问答模型构建方法》&lt;/a&gt;中我们介绍了传统问答系统定位答案的过程，在其中第二步，还可以在细分为，提取包含答案的句子，然后再从句子中提取答案。由此可见定位答案所在的句子是答案更细粒度的一种表示，而《基于潜在语义分析的汉语问答系统答案提取》便是针对事实简单陈述问题的答案句子的提取。&lt;/p&gt;
+
+&lt;p&gt;不难发现，定位答案所在的句子，即计算问题（question）和文档各个句子的相似度，相似度最高的句子即为答案。问题转化为计算两个句子的相似度，相似度传统的计算方法为关键词匹配方法，在&lt;a href=&quot;https://zhoum1118.github.io/deeplearning/2018/04/30/%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%A8%A1%E7%B3%8A%E4%BE%9D%E5%AD%98%E5%85%B3%E7%B3%BB%E5%8C%B9%E9%85%8D%E7%9A%84%E9%97%AE%E7%AD%94%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95.html&quot;&gt;《一种基于模糊依存关系匹配的问答模型构建方法》&lt;/a&gt;一文中有提到，即通过统计两个句子中拥有共同关键词的数量来确定两者的相似程度。&lt;strong&gt;但这种方法过于简单，且对于中文问答系统，句子中的词存在同义或多义现象。&lt;/strong&gt;所以如果不考虑关键词所在的上下文信息和关键词的词性，那么对于基于关键词匹配方法，句子中出现词同义而又过于追求词匹配，则可能导致漏掉包含正确答案的句子。比如，问题Q1：北京奥运会开幕时间是什么时候？关键词是“北京奥运会”和“开幕时间”，那么对于“北京奥运会于2008年8月8日晚上8时开始”或“北京奥运会2008年8月8日晚上8时整于中华人民共和国首都北京举办”等包含正确答案的句子将可能被漏掉。如果句子中出现词多义的情况，比如“代表”，其可作为名词和动词，那么基于关键词匹配方法就很可能出现把错误的句子定位成正确的。&lt;/p&gt;
+
+&lt;p&gt;基于关键词匹配方法的不足，出现了一种基于LSA的答案定位方法。&lt;strong&gt;LSA的基本思想是通过统计分析文档中词与词之间的某种语义结构，消除词同义和多义的影响。&lt;/strong&gt;这是对传统向量空间技术的一种改良，在信息检索、信息过滤、文档分类、自动摘要以及文旦系统等领域都有较好的应用效果。基于潜在语义分析的问答系统答案定位方法使用LSA思想，通过统计分析构造了一个词-句子的语义空间，以此来消除词之间的相关性，然后基于词-句子的语义空间计算问题（question）和句子之间的相似度，最终定位答案所在的句子，在一定程度上提高了答案定位的准确率。&lt;/p&gt;
+
+&lt;h1 id=&quot;2-基于潜在语义分析的问答系统答案定位方法&quot;&gt;&lt;strong&gt;2 基于潜在语义分析的问答系统答案定位方法&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;h2 id=&quot;21-lsa&quot;&gt;&lt;strong&gt;2.1 LSA&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;首先，定义一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;m * n&lt;/code&gt; 的词-文档矩阵&lt;code class=&quot;highlighter-rouge&quot;&gt;A&lt;/code&gt;：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于潜在语义分析的问答系统答案定位方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aebb7990001a91b08000088.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;a_ij&lt;/code&gt;表示第&lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt;个词在第&lt;code class=&quot;highlighter-rouge&quot;&gt;j&lt;/code&gt;个文档中出现的次数，&lt;code class=&quot;highlighter-rouge&quot;&gt;m&lt;/code&gt;表示关键词的个数，&lt;code class=&quot;highlighter-rouge&quot;&gt;n&lt;/code&gt;表示文档树。&lt;/p&gt;
+
+&lt;p&gt;经过矩阵奇异值分解后：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于潜在语义分析的问答系统答案定位方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aebb7b9000174bb07300086.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;U&lt;/code&gt;为 &lt;code class=&quot;highlighter-rouge&quot;&gt;m * m&lt;/code&gt; 的正交矩阵，&lt;img title=&quot;一种基于潜在语义分析的问答系统答案定位方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aebb7cc0001d6ea00620056.png&quot; alt=&quot;图片描述&quot; style=&quot;width:3%&quot; /&gt;为 &lt;code class=&quot;highlighter-rouge&quot;&gt;m * n&lt;/code&gt; 的对角矩阵，&lt;code class=&quot;highlighter-rouge&quot;&gt;V&lt;/code&gt;为 &lt;code class=&quot;highlighter-rouge&quot;&gt;n * n&lt;/code&gt; 的正交矩阵。&lt;/p&gt;
+
+&lt;p&gt;分析易得，&lt;code class=&quot;highlighter-rouge&quot;&gt;m&lt;/code&gt;一般对大于&lt;code class=&quot;highlighter-rouge&quot;&gt;n&lt;/code&gt;，且每个关键词只会出现在少量的文档中，所以&lt;code class=&quot;highlighter-rouge&quot;&gt;A&lt;/code&gt;一般为高阶稀疏矩阵，而这里进行&lt;strong&gt;奇异值分解的意义&lt;/strong&gt;在于：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;奇异值往往对应着矩阵中隐含的重要信息，且重要性和奇异值大小正相关。每个矩阵A都可以表示为一系列秩为1的“小矩阵”之和，而奇异值则衡量了这些“小矩阵”对于A的权重。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;为了在降低计算复杂度的前提下，最大程度的构建包含丰富潜在语义的向量空间，我们假设经过奇异值分解后的&lt;code class=&quot;highlighter-rouge&quot;&gt;A&lt;/code&gt;的秩为&lt;code class=&quot;highlighter-rouge&quot;&gt;r&lt;/code&gt;，存在一个&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;k &amp;lt;= r&lt;/code&gt;，且&lt;code class=&quot;highlighter-rouge&quot;&gt;k &amp;lt;&amp;lt; min(m, n)&lt;/code&gt;，则&lt;code class=&quot;highlighter-rouge&quot;&gt;A&lt;/code&gt;的&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;秩近似矩阵&lt;code class=&quot;highlighter-rouge&quot;&gt;A_k&lt;/code&gt;为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于潜在语义分析的问答系统答案定位方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aebb7e600010f0707400086.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;U_k&lt;/code&gt;为 &lt;code class=&quot;highlighter-rouge&quot;&gt;m * k&lt;/code&gt; 的矩阵，由&lt;code class=&quot;highlighter-rouge&quot;&gt;U&lt;/code&gt;的前&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;列组成；&lt;img title=&quot;一种基于潜在语义分析的问答系统答案定位方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aebb7f900018c5e00560056.png&quot; alt=&quot;图片描述&quot; style=&quot;width:3%&quot; /&gt;是 &lt;code class=&quot;highlighter-rouge&quot;&gt;k * k&lt;/code&gt; 的矩阵，由&lt;img title=&quot;一种基于潜在语义分析的问答系统答案定位方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aebb8060001d6ea00620056.png&quot; alt=&quot;图片描述&quot; style=&quot;width:3%&quot; /&gt;的前&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;行、前&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;列组成；&lt;code class=&quot;highlighter-rouge&quot;&gt;V_k&lt;/code&gt;是 &lt;code class=&quot;highlighter-rouge&quot;&gt;k * n&lt;/code&gt; 的矩阵，由&lt;code class=&quot;highlighter-rouge&quot;&gt;V&lt;/code&gt;的前&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;行组成。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;A_k&lt;/code&gt;近似保存了词与文档之间的潜在语义关系，且去除了大量因词汇同义或多义产生的“噪点”，也就是说，&lt;strong&gt;那些经常出现在相似的上下文中的词，在&lt;code class=&quot;highlighter-rouge&quot;&gt;A_k&lt;/code&gt;的&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;维词空间中的距离也就比较小&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;潜在语义空间转换是一个降维过程，具体降多少维视任务情况而定，如果&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;过大，接近标准向量空间，也就失去表示词相依性的能力，且存在大量噪点，计算复杂度也大；&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;过小，也无法表示丰富的语义结构，模型也就毫无意义。&lt;/strong&gt;一般来说&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;值在&lt;code class=&quot;highlighter-rouge&quot;&gt;100~300&lt;/code&gt;之间。&lt;/p&gt;
+
+&lt;h2 id=&quot;22-相似度计算方法&quot;&gt;&lt;strong&gt;2.2 相似度计算方法&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;2.2.1 向量空间模型（Vector Space Model，VSM）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;问题（question）向量表示为&lt;code class=&quot;highlighter-rouge&quot;&gt;q=(q_1, q_2, …, q_i, …, q_n)&lt;/code&gt;，其中&lt;code class=&quot;highlighter-rouge&quot;&gt;n&lt;/code&gt;表示语料库中所有关键词的数量，&lt;code class=&quot;highlighter-rouge&quot;&gt;q_i&lt;/code&gt;表示第&lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt;个关键词在问题中出现的次数；同样的，候选答案句子&lt;code class=&quot;highlighter-rouge&quot;&gt;S&lt;/code&gt;可表示为&lt;code class=&quot;highlighter-rouge&quot;&gt;S=(s_1, s_2, …, s_i, …, s_n)&lt;/code&gt;，计算两个向量的余弦值作为两者相似度的一个度量：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于潜在语义分析的问答系统答案定位方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aebb8200001435009040258.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;n&lt;/code&gt;为问题中包含关键词的总个数，&lt;code class=&quot;highlighter-rouge&quot;&gt;tf_i&lt;/code&gt;为问题的第&lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt;个关键词在问题&lt;code class=&quot;highlighter-rouge&quot;&gt;q&lt;/code&gt;和候选答案句子&lt;code class=&quot;highlighter-rouge&quot;&gt;S&lt;/code&gt;中出现的频率，&lt;code class=&quot;highlighter-rouge&quot;&gt;idf_i&lt;/code&gt;为问题的第&lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt;个关键词的倒排频率，&lt;code class=&quot;highlighter-rouge&quot;&gt;Sentence_Length&lt;/code&gt;为候选答案句子所包含词（这里应该是全部的词）的个数，&lt;code class=&quot;highlighter-rouge&quot;&gt;Sentence_length_avg&lt;/code&gt;表示语料库所有句子包含词个数的平均值。&lt;/p&gt;
+
+&lt;p&gt;从计算过程可以看出，&lt;strong&gt;这种方法仅仅考察的是问题与候选答案句子中关键词的词频信息，而没有考虑词在上下文的语义信息，所以具有一定的局限性，但从特征工程的角度看，这或许可以作为其中特征之一来构建模型。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2.2.2 基于LSA的问题与候选答案句子相似度计算&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;首先，如2.1所述，构造一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;m * n&lt;/code&gt; 的关键词-句子矩阵&lt;code class=&quot;highlighter-rouge&quot;&gt;A&lt;/code&gt;，其中每个关键词&lt;code class=&quot;highlighter-rouge&quot;&gt;t_i&lt;/code&gt;在句子&lt;code class=&quot;highlighter-rouge&quot;&gt;s_j&lt;/code&gt;中的权重&lt;code class=&quot;highlighter-rouge&quot;&gt;a_ij&lt;/code&gt;定义为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于潜在语义分析的问答系统答案定位方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aebb86b00017f4408340252.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;tf_ij&lt;/code&gt;为词&lt;code class=&quot;highlighter-rouge&quot;&gt;t_i&lt;/code&gt;在句子&lt;code class=&quot;highlighter-rouge&quot;&gt;s_j&lt;/code&gt;中的词频，&lt;code class=&quot;highlighter-rouge&quot;&gt;N&lt;/code&gt;为语料库中句子总数，&lt;code class=&quot;highlighter-rouge&quot;&gt;nt_i&lt;/code&gt;为语料库句子中出现关键词&lt;code class=&quot;highlighter-rouge&quot;&gt;t_i&lt;/code&gt;的句子数，分母为其归一化因子。&lt;/p&gt;
+
+&lt;p&gt;然后经过矩阵奇异值分解并降维后得到一个潜在词-句子的语义空间&lt;code class=&quot;highlighter-rouge&quot;&gt;A_k&lt;/code&gt;，将问题向量&lt;code class=&quot;highlighter-rouge&quot;&gt;q&lt;/code&gt;和候选答案句子向量&lt;code class=&quot;highlighter-rouge&quot;&gt;S&lt;/code&gt;映射到这个语义空间，向量表示方法和2.2.1一致，映射公式如下所示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于潜在语义分析的问答系统答案定位方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aebb88500016ed409400076.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;img title=&quot;一种基于潜在语义分析的问答系统答案定位方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aebb8950001072800800056.png&quot; alt=&quot;图片描述&quot; style=&quot;width:4%&quot; /&gt;是&lt;img title=&quot;一种基于潜在语义分析的问答系统答案定位方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aebb8a000018c5e00560056.png&quot; alt=&quot;图片描述&quot; style=&quot;width:3%&quot; /&gt;的逆矩阵，&lt;code class=&quot;highlighter-rouge&quot;&gt;X&lt;/code&gt;为映射前的向量。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;通常映射前的向量&lt;code class=&quot;highlighter-rouge&quot;&gt;X&lt;/code&gt;中大部分元素为0，在映射后0元素基本没有，即经过语义空间转换的向量不在是简单的关键词词频组成的，而是包含了其在上下文语义关系的权值信息，反映了关键词之间的一定的相关性&lt;/strong&gt;，此时相似度计算公式为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;一种基于潜在语义分析的问答系统答案定位方法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5aebb8b40001098708860268.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;q~*&lt;/code&gt;为问题语义向量，&lt;code class=&quot;highlighter-rouge&quot;&gt;s_j&lt;/code&gt;为第&lt;code class=&quot;highlighter-rouge&quot;&gt;j&lt;/code&gt;个候选答案句子向量，&lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt;为语义空间的维数，&lt;code class=&quot;highlighter-rouge&quot;&gt;q_m&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;s_jm&lt;/code&gt;分别为问题语义向量和候选答案句子向量中第&lt;code class=&quot;highlighter-rouge&quot;&gt;m&lt;/code&gt;维权值。&lt;/p&gt;
+</description>
+        <pubDate>Fri, 04 May 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/05/04/%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%BD%9C%E5%9C%A8%E8%AF%AD%E4%B9%89%E5%88%86%E6%9E%90%E7%9A%84%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F%E7%AD%94%E6%A1%88%E5%AE%9A%E4%BD%8D%E6%96%B9%E6%B3%95.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/05/04/%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%BD%9C%E5%9C%A8%E8%AF%AD%E4%B9%89%E5%88%86%E6%9E%90%E7%9A%84%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F%E7%AD%94%E6%A1%88%E5%AE%9A%E4%BD%8D%E6%96%B9%E6%B3%95.html</guid>
+        
+        <category>潜在语义分析</category>
+        
+        <category>问答系统</category>
+        
+        <category>答案定位</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>一种基于模糊依存关系匹配的问答模型构建方法</title>
         <description>&lt;h1 id=&quot;0-前言&quot;&gt;&lt;strong&gt;0 前言&lt;/strong&gt;&lt;/h1&gt;
 
-&lt;p&gt;基于传统机器学习方法构建问答模型的主要工作是构建适合当前任务的特征工程，在&lt;a href=&quot;&quot;&gt;《中文自然语言处理建模过程中的特征工程》&lt;/a&gt;一文中，我们介绍了很多可提取的特征以及提取方法，主要的特征集中在句法分析上。我们都知道，&lt;strong&gt;句法分析是NLP中的关键底层技术之一，也是构建特征工程时经常用到的，其基本目标是确定句子的句法结构或者句子中词汇之间的依存关系。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;基于传统机器学习方法构建问答模型的主要工作是构建适合当前任务的特征工程，在&lt;a href=&quot;https://zhoum1118.github.io/deeplearning/2018/04/28/%E4%B8%AD%E6%96%87%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86%E5%BB%BA%E6%A8%A1%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B.html&quot;&gt;《中文自然语言处理建模过程中的特征工程》&lt;/a&gt;一文中，我们介绍了很多可提取的特征以及提取方法，主要的特征集中在句法分析上。我们都知道，&lt;strong&gt;句法分析是NLP中的关键底层技术之一，也是构建特征工程时经常用到的，其基本目标是确定句子的句法结构或者句子中词汇之间的依存关系。&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;句法分析分为&lt;strong&gt;句法结构分析&lt;/strong&gt;（syntactic structure parsing）和&lt;strong&gt;依存关系分析&lt;/strong&gt;（dependency parsing）。句法结构分析以其目的不同分为&lt;strong&gt;成分结构分析&lt;/strong&gt;（constituent structure parsing）或者&lt;strong&gt;短语结构分析&lt;/strong&gt;（phrase structure parsing），成分结构分析以获取整个句子的句法结构为目的，而短语结构分析以获取完全短语结构为目的；&lt;strong&gt;依存关系分析&lt;/strong&gt;则以获取局部成分之间的依存关系为目的。&lt;/p&gt;
 
