@@ -5,9 +5,97 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 04 May 2018 10:08:04 +0800</pubDate>
-    <lastBuildDate>Fri, 04 May 2018 10:08:04 +0800</lastBuildDate>
+    <pubDate>Sat, 05 May 2018 11:59:15 +0800</pubDate>
+    <lastBuildDate>Sat, 05 May 2018 11:59:15 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>基于SVM的中文问答系统的答案提取模型</title>
+        <description>&lt;h1 id=&quot;0-前言&quot;&gt;&lt;strong&gt;0 前言&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;前面两篇博文基本是使用自然语言处理方法分析问题与答案的依存关系或潜在语义关系，然后使用统计学方法或数学方法计算问题与答案的相似度来找出最可能的答案句子。&lt;strong&gt;基于这两篇博文，我们将其应用到传统机器学习中的特征选择中，提取出其中适合作为特征的部分并加入特征工程中。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;传统完整的问答系统包含以下三点：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;问题分析：确定问题类型；提取问题中关键字；&lt;/li&gt;
+  &lt;li&gt;信息检索：利用问题的关键字组成查询条件，提供给搜索引擎进行检索，并返回相关的文档或段落；&lt;/li&gt;
+  &lt;li&gt;答案提取（关键环节）：从候选的文档或段落提取正确答案。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这里&lt;strong&gt;我们主要分析答案提取&lt;/strong&gt;，也就是说对于问题分析和信息检索是我们讨论的已知前提。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;对于问题分析&lt;/strong&gt;，主要的工作在于生成查询词，其主要的步骤为：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;根据问题集，生成疑问词字典，疑问词包含：“谁”、“哪”、“什么”等词；&lt;/li&gt;
+  &lt;li&gt;对问题进行分词和词性标注，将问题中的疑问词及其后面的量词作为疑问词剔除，比如“哪一年”；&lt;/li&gt;
+  &lt;li&gt;去除停用词，停用词包含：“的”、“在”等词；&lt;/li&gt;
+  &lt;li&gt;将剩余词作为问题的关键词，构成查询条件。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;信息检索&lt;/strong&gt;，即将问题分析提取的关键词组成查询条件，通过Google搜索引擎获取其前100个文本片段作为问题的文档。&lt;/p&gt;
+
+&lt;p&gt;以上两步一般机器阅读理解数据集都已经做了，这些数据集大多提供问题以及其对应的文档，需要做的是在这些问题对应的文档中抽取某个词或片段作为问题的答案，这里我们&lt;strong&gt;主要分析传统机器学习方法在中文问答系统中的应用，并基于传统机器学习方法SVM来构建答案提取模型，模型提取答案所在句子作为问题最终答案&lt;/strong&gt;。特征工程是模型构建的重点和难点，下面我们主要介绍模型的特征工程。&lt;/p&gt;
+
+&lt;h1 id=&quot;1-特征工程&quot;&gt;&lt;strong&gt;1 特征工程&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;h2 id=&quot;11-数量特征&quot;&gt;&lt;strong&gt;1.1 数量特征&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;候选答案句子中关键词匹配的个数占问题关键词个数的比例&lt;/strong&gt;，该特征反映了候选答案句子与问题在词汇匹配层面的相似度。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;候选答案句子中名词、动词、形容词或数量词的个数占问题关键词个数的比例&lt;/strong&gt;，该特征反映了候选答案句子与问题在指定词性的词汇匹配层面的相似度。&lt;/p&gt;
+
+&lt;h2 id=&quot;12-距离特征&quot;&gt;&lt;strong&gt;1.2 距离特征&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;候选答案与其前面出现的第一个匹配名词（动词、形容词或数量词）之间的距离占候选答案句长度的比例&lt;/strong&gt;，该特征反映了候选答案与前面指定词性的匹配词的距离远近，同时也表示了候选答案的前面是否出现了指定词性的匹配词，如果没有出现则特征值为0。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;候选答案与其后面出现的第一个匹配名词（动词、形容词或数量词）之间的距离占候选答案句长度的比例。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;关键词最小匹配紧密度&lt;/strong&gt;，将问题与文档分词并提取关键词后，计算包含所有匹配词的最小窗口长度与窗口中的匹配词的总数的比例，该特征反映的是候选答案句子中所有匹配词出现时的紧密程度。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;候选答案与最近匹配词之间的距离&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;候选答案与各匹配词之间的平均距离&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;13-顺序特征&quot;&gt;&lt;strong&gt;1.3 顺序特征&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;候选答案句子的词序列与问题的词序列的顺序相似度&lt;/strong&gt;，此特征反映了候选答案句子中的匹配词出现的顺序是否与其在问题中的顺序相同，并用顺序相同的词数占查询词数的比例来度量，在这里，候选答案句子中的候选答案可以与问题中的疑问词相匹配，所以为了更好的体现顺序相似度，&lt;strong&gt;可以将问题转化为称述句之后再计算词序列的顺序相似度&lt;/strong&gt;。顺序相似度的计算方法为：候选答案句子的词序列与问题词序列中出现顺序相同的词的个数与问题词序列中词的个数之比。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;不考虑候选答案的候选答案句子的词序列（即为匹配词序列）与不考虑疑问词的问题的词序列（即为查询词序列）的顺序相似度&lt;/strong&gt;，这与上一个特征相似。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;各匹配词与候选答案之间的顺序关系和各查询词与疑问词的顺序关系相同的个数占查询词个数的比例&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;14-句法结构特征&quot;&gt;&lt;strong&gt;1.4 句法结构特征&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;针对候选答案句子中每两个匹配词，分别&lt;strong&gt;提取其在问题和候选答案句中的句法依存关系路径&lt;/strong&gt;，计算两个路径的相似度，最后求平均值作为特征值。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;问题中疑问词与查询词之间的路径与候选答案句子中的候选答案与匹配词之间的路径的相似度的平均值&lt;/strong&gt;。这特征主要衡量了候选答案与查询词的句法结构与问题句中疑问词与匹配词的句法结构的相似性。&lt;/p&gt;
+
+&lt;h1 id=&quot;2-结论&quot;&gt;&lt;strong&gt;2 结论&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;问题集和依存树解析软件均来源于&lt;a href=&quot;http://ir.hit.edu.cn/demo/ltp/Sharing_Plan.htm&quot;&gt;哈工大信息检索研究室&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;我们将答案提取问题看成是一个分类任务，即判断一个句子是否是包含答案的句子，这里实验了三种分类方法：&lt;strong&gt;BP神经网络（ANN），朴素贝叶斯（NB）以及支持向量机（SVM）&lt;/strong&gt;。实验的评价方法为&lt;strong&gt;准确率（Precision）和召回率（Recall）&lt;/strong&gt;。实验结果发现，基于第1节介绍的特征工程，不管是在时间类、人物类、地点类、实体类等问题，&lt;strong&gt;使用SVM方法构建的答案提取模型性能最好（平均准确率为76%，平均召回率为80%），其次是ANN，最后是NB，但三者分类效果差距不明显。&lt;/strong&gt;NB性能较差的原因在于，特征工程中的特征并不能完全满足NB的条件独立性原则，两个数量特征具有一定的相关性，且数据经过离散化处理后，丢失了部分信息。同时在数据样本规模较小的情况下，使用SVM比BP要好些。&lt;strong&gt;而且特征工程中句法结构特征对模型性能具有较大影响，加入句法结构特征的模型比不加入句法结构特征的模型在召回率上均有5%的提升&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h1 id=&quot;参考文献&quot;&gt;&lt;strong&gt;参考文献&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;胡宝顺, 王大玲, 于戈,等. 基于句法结构特征分析及分类技术的答案提取算法[J]. 计算机学报, 2008, 31(4):662-676.&lt;/p&gt;
+</description>
+        <pubDate>Sat, 05 May 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/05/05/%E5%9F%BA%E4%BA%8ESVM%E7%9A%84%E4%B8%AD%E6%96%87%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%AD%94%E6%A1%88%E6%8F%90%E5%8F%96%E6%A8%A1%E5%9E%8B.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/05/05/%E5%9F%BA%E4%BA%8ESVM%E7%9A%84%E4%B8%AD%E6%96%87%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%AD%94%E6%A1%88%E6%8F%90%E5%8F%96%E6%A8%A1%E5%9E%8B.html</guid>
+        
+        <category>SVM</category>
+        
+        <category>中文问答系统</category>
+        
+        <category>答案提取</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>一种基于潜在语义分析的问答系统答案定位方法</title>
