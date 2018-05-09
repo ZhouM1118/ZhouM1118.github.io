@@ -5,9 +5,128 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 05 May 2018 11:59:15 +0800</pubDate>
-    <lastBuildDate>Sat, 05 May 2018 11:59:15 +0800</lastBuildDate>
+    <pubDate>Wed, 09 May 2018 19:49:21 +0800</pubDate>
+    <lastBuildDate>Wed, 09 May 2018 19:49:21 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>ASReader：一个经典的机器阅读理解深度学习模型</title>
+        <description>&lt;h1 id=&quot;0-前言&quot;&gt;&lt;strong&gt;0 前言&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;前面的博文我们更多关注的是&lt;strong&gt;机器阅读理解的数据集介绍以及基于传统机器学习方法的问答模型的建模&lt;/strong&gt;，随着2015年前后大量的大规模机器阅读理解数据集的发布（主要的机器阅读理解数据集前面博文有介绍），基于深度学习方法的机器阅读理解模型如雨后春笋，发展非常迅速，今天我们来介绍一种经典的&lt;strong&gt;ASReader模型&lt;/strong&gt;，ASReader模型在2016年ACL会议上的《Text Understanding with the Attention Sum Reader Network 》提出。&lt;a href=&quot;http://www.aclweb.org/anthology/P/P16/P16-1086.pdf&quot;&gt;论文地址&lt;/a&gt;，&lt;a href=&quot;https://github.com/rkadlec/asreader&quot;&gt;github源码地址&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;该论文提出了一个新的、简单的模型ASReader，它使用注意力机制从上下文中选择答案，而不是像在之前我们介绍的模型一样，使用文档与问题的相似度或提取特征构建特征工程等方式来定位答案。&lt;/p&gt;
+
+&lt;h1 id=&quot;1-数据集&quot;&gt;&lt;strong&gt;1 数据集&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;h2 id=&quot;11-cnndaily-mail&quot;&gt;&lt;strong&gt;1.1 CNN&amp;amp;Daily Mail&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;这个数据集我们在&lt;a href=&quot;https://zhoum1118.github.io/deeplearning/2018/04/15/CNN&amp;amp;Dailymail-Teaching-Machines-to-Read-and-Comprehend.html&quot;&gt;《CNN&amp;amp;Dailymail：Teaching Machines to Read and Comprehend》&lt;/a&gt;博文中介绍过，这是一个完形填空式的机器阅读理解数据集，从美国有线新闻网（CNN）和每日邮报网抽取近一百万篇文章，每篇文章作为一个文档（document），在文档的summary中剔除一个实体类单词，并作为问题（question），剔除的实体类单词即作为答案（answer），该文档中所有的实体类单词均可为候选答案（candidate answers）。其中每个样本使用命名实体识别方法将文本中所有的命名实体用类似“&lt;code class=&quot;highlighter-rouge&quot;&gt;@entity1&lt;/code&gt;”替代，并随机打乱表示。&lt;/p&gt;
+
+&lt;h2 id=&quot;12-儿童故事childrens-book-testcbt&quot;&gt;&lt;strong&gt;1.2 儿童故事（Children’s Book Test，CBT）&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;从每一个儿童故事中提取20个连续的句子作为文档（document），第21个句子作为问题（question），并从中剔除一个实体类单词作为答案（answer）。机器阅读理解任务的复杂度往往随着答案的类型（命名实体、普通名词、动词、介词）变化而变化，标准LSTM语言模型在预测动词和介词类型的答案的性能基本可以达到人类的水平，但是它对命名实体和普通名词类型的答案的预测效果并不好。于是在这篇论文中&lt;strong&gt;只关注命名实体和普通名词类型的答案的预测&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;图1展示了数据集的统计信息，其中CBT CN代表的是以普通名词为答案的CBT数据集，CBT NE代表的是以命名实体为答案的CBT数据集。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;ASReader：一个经典的机器阅读理解深度学习模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5af2dc19000142a018060430.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图1 数据集的统计信息&lt;/p&gt;
+
+&lt;h1 id=&quot;2-asreader模型&quot;&gt;&lt;strong&gt;2 ASReader模型&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;图2展示了ASReader模型框架图。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;ASReader：一个经典的机器阅读理解深度学习模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5af2dc300001c8fb14580806.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:60%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图2 ASReader模型框架图&lt;/p&gt;
+
+&lt;h2 id=&quot;21-embedding层&quot;&gt;&lt;strong&gt;2.1 embedding层&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;该层主要功能为将文本转化为词向量表示方法，在图2中用e()表示。源码使用深度学习框架&lt;code class=&quot;highlighter-rouge&quot;&gt;Blocks&lt;/code&gt;的&lt;code class=&quot;highlighter-rouge&quot;&gt;blocks.bricks.lookup.LookupTable&lt;/code&gt;来构建：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;lookup = LookupTable(symbols_num, embedding_dims,
+weights_init=Uniform(width=0.2))&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;其中&lt;code class=&quot;highlighter-rouge&quot;&gt;symbols_num&lt;/code&gt;为&lt;code class=&quot;highlighter-rouge&quot;&gt;LookupTable&lt;/code&gt;的大小，这里初始化为&lt;code class=&quot;highlighter-rouge&quot;&gt;500&lt;/code&gt;；&lt;code class=&quot;highlighter-rouge&quot;&gt;embedding_dims&lt;/code&gt;为词向量维度，这里初始化为&lt;code class=&quot;highlighter-rouge&quot;&gt;256&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;22-encode层&quot;&gt;&lt;strong&gt;2.2 Encode层&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;这层的主要功能是对文档（document）和问题（question）进行编码（encode）。&lt;strong&gt;对于文档的编码&lt;/strong&gt;，使用了一个单层双向GRU，对于文档中每个词用GRU正向隐藏层的输出与GRU反向隐藏层的输出的拼接向量来表示，这时候的拼接向量包含了这个词的上下文信息，在图2中使用&lt;code class=&quot;highlighter-rouge&quot;&gt;f()&lt;/code&gt;表示；&lt;strong&gt;对于问题的编码&lt;/strong&gt;，由于问题一般比文档要短很多，所以这时候将问题看作一个整体，同样使用了一个单层双向GRU来encode，但这时候不考虑每个词的隐藏层的输出，而是只考虑正向GRU最后的输出与反向GRU最后的输出，将这两个输出拼接作为问题的encode向量，在图2中使用&lt;code class=&quot;highlighter-rouge&quot;&gt;g()&lt;/code&gt;表示。&lt;/p&gt;
+
+&lt;h2 id=&quot;23-点积dot-products&quot;&gt;&lt;strong&gt;2.3 点积（Dot products）&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;将文档中每个编码后得到的word vector与问题编码后得到的question vector计算点积。&lt;/p&gt;
+
+&lt;h2 id=&quot;24-softmax层&quot;&gt;&lt;strong&gt;2.4 Softmax层&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;这层主要将点积后的结果通过一个softmax函数，结果为注意力权重，代表&lt;strong&gt;问题question与文档document中的每个词之前的相关性度量&lt;/strong&gt;。计算公式如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;ASReader：一个经典的机器阅读理解深度学习模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5af2dc4b0001001404480072.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:30%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;f_i(d)&lt;/code&gt;表示文档中第&lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt;个词的encode后的向量表示，&lt;code class=&quot;highlighter-rouge&quot;&gt;g(q)&lt;/code&gt;为问题encode后的向量表示，&lt;code class=&quot;highlighter-rouge&quot;&gt;s_i&lt;/code&gt;为第&lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt;个单词为正确答案的概率。&lt;/p&gt;
+
+&lt;h2 id=&quot;25-累加&quot;&gt;&lt;strong&gt;2.5 累加&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;候选答案词可能在文档中出现多次，&lt;strong&gt;我们将候选答案词在文档出现地方的Softmax结果进行累加，得到每个候选答案词的概率&lt;/strong&gt;，最终最大概率的那个候选答案词即为正确答案answer。计算公式如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;ASReader：一个经典的机器阅读理解深度学习模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5af2dc5c00011b5d04780148.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:30%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;I(w, d)&lt;/code&gt;表示文档&lt;code class=&quot;highlighter-rouge&quot;&gt;d&lt;/code&gt;中的&lt;code class=&quot;highlighter-rouge&quot;&gt;w&lt;/code&gt;出现的位置集合。&lt;/p&gt;
+
+&lt;p&gt;这里有个细节：&lt;strong&gt;得到文档中每个单词为正确答案的概率做的是累加而不是累加后取平均值，这是因为作者分析实验语料库后发现一般（注意是一般，不是绝对）正确答案的单词在文档会出现更多次，取平均数可能会稀释总概率&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h1 id=&quot;3-实验结果及分析&quot;&gt;&lt;strong&gt;3 实验结果及分析&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;h2 id=&quot;31-实验设置&quot;&gt;&lt;strong&gt;3.1 实验设置&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;优化函数：Adam&lt;/li&gt;
+  &lt;li&gt;学习率：0.001、0.0005&lt;/li&gt;
+  &lt;li&gt;
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;损失函数：-logP(a&lt;/td&gt;
+          &lt;td&gt;q, d)&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/li&gt;
+  &lt;li&gt;embedding层权重矩阵初始化范围：[-0.1, 0.1]&lt;/li&gt;
+  &lt;li&gt;GRU网络中的权值初始化：随机正交矩阵&lt;/li&gt;
+  &lt;li&gt;GRU网络中的偏置初始化：0&lt;/li&gt;
+  &lt;li&gt;batch size：32&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;在模型中，&lt;code class=&quot;highlighter-rouge&quot;&gt;e，f，g&lt;/code&gt;中的权重和偏置都需要训练&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;32-实验结果&quot;&gt;&lt;strong&gt;3.2 实验结果&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;图3展示了模型对比实验结果。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;ASReader：一个经典的机器阅读理解深度学习模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5af2dc710001173213500952.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图3 模型对比实验结果&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;ASReader（avg for top 20%）&lt;/code&gt;表示对超参数设计多种不同组合，并训练多个ASReader模型，取在验证集上效果最好的前20%个模型做bagging后得到的模型；&lt;code class=&quot;highlighter-rouge&quot;&gt;ASReader（avg ensemble）&lt;/code&gt;取前效果最好的前70%的模型做bagging得到的模型；&lt;code class=&quot;highlighter-rouge&quot;&gt;ASReader（greedy ensemble）&lt;/code&gt;每次取前效果最好的模型做bagging得到的模型。&lt;/p&gt;
+</description>
+        <pubDate>Wed, 09 May 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/05/09/ASReader-%E4%B8%80%E4%B8%AA%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%9E%8B.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/05/09/ASReader-%E4%B8%80%E4%B8%AA%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%9E%8B.html</guid>
+        
+        <category>ASReader</category>
+        
+        <category>机器阅读理解</category>
+        
+        <category>深度学习</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>基于SVM的中文问答系统的答案提取模型</title>
