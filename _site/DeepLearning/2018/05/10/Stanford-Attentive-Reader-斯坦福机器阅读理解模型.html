@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="Stanford Attentive Reader：斯坦福机器阅读理解模型" name="description">
+  
+  
+    <meta name="keywords" content="Stanford Attentive Reader, 机器阅读理解, 深度学习">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|Stanford Attentive Reader：斯坦福机器阅读理解模型
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DataMining/">DataMining</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 10 May 2018</span>
+                        <h1>
+                            Stanford Attentive Reader：斯坦福机器阅读理解模型
+                        </h1>
+                    </div>
+                    	<h1 id="0-前言"><strong>0 前言</strong></h1>
+
+<p>Stanford Attentive Reader是斯坦福在2016年的ACL会议上的《A Thorough Examination of the CNN/Daily Mail Reading Comprehension Task》（<a href="http://arxiv.org/abs/1606.02858">论文地址</a>，<a href="https://github.com/danqi/rc-cnn-dailymail">GitHub源码</a>，代码要求<code class="highlighter-rouge">Python 2.7，Theano &gt;= 0.7，Lasagne 0.2.dev1</code>，代码整体风格非常简洁易懂）发布的一个机器阅读理解模型，<strong>这篇论文通过设计一个基于双线性匹配函数的深度学习模型，完成在CNN&amp;Daily Mail完形填空式数据集上的机器阅读理解任务</strong>，Stanford Attentive Reader的性能要比上篇博文<a href="https://zhoum1118.github.io/deeplearning/2018/05/09/ASReader-%E4%B8%80%E4%B8%AA%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%9E%8B.html">《ASReader：一个经典的机器阅读理解深度学习模型》</a>中ASReader模型和<a href="https://zhoum1118.github.io/deeplearning/2018/04/15/CNN&amp;Dailymail-Teaching-Machines-to-Read-and-Comprehend.html">《CNN&amp;Dailymail：Teaching Machines to Read and Comprehend》</a>的Attentive Reader模型性能更好。</p>
+
+<p>这篇论文不仅探索了深度学习神经网络在机器阅读理解的应用，还构建了一个基于boosted决策树森林的机器阅读理解模型，下面我们就这两种方法进行分析，同时给出模型基本实验设置以及实验结果，实验数据集是CNN&amp;Dailymail，在<a href="https://zhoum1118.github.io/deeplearning/2018/04/15/CNN&amp;Dailymail-Teaching-Machines-to-Read-and-Comprehend.html">《CNN&amp;Dailymail：Teaching Machines to Read and Comprehend》</a>有详细介绍，这里就不再赘述了。</p>
+
+<h1 id="1-基于boosted决策树森林的机器阅读理解模型"><strong>1 基于boosted决策树森林的机器阅读理解模型</strong></h1>
+
+<p>由于数据集是完形填空式，且答案一定是实体类单词，所以特征一般围绕文档中实体来提取的。通过特征工程构建每个实体类单词<code class="highlighter-rouge">e</code>的特征向量<code class="highlighter-rouge">f_p,q(e)</code>，其中<code class="highlighter-rouge">q</code>表示文章（passage），<code class="highlighter-rouge">q</code>代表问题（question），特征工程中包含的特征有：</p>
+
+<ul>
+  <li>实体e是否在文章中出现；</li>
+  <li>实体e是否在问题中出现；</li>
+  <li>实体e在文章中的词频；</li>
+  <li>实体e在文章中第一次出现的位置；</li>
+  <li>实体e的n-gram匹配特征：计算在文章中实体e周围的的文本（左右1到2个单词）与问题中答案占位符周围的文本间的n-gram匹配度；</li>
+  <li>词距离特征：计算实体与问题中每个关键词的最小词距离的平均值；</li>
+  <li>句共现特征：在问题中的实体e与另一个实体或动词一起出现是否在文章的某些句子中也是一起出现；</li>
+  <li>依存句法特征：在<a href="https://zhoum1118.github.io/deeplearning/2018/04/30/%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%A8%A1%E7%B3%8A%E4%BE%9D%E5%AD%98%E5%85%B3%E7%B3%BB%E5%8C%B9%E9%85%8D%E7%9A%84%E9%97%AE%E7%AD%94%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95.html">《一种基于模糊依存关系匹配的问答模型构建方法》</a>有详细介绍。</li>
+</ul>
+
+<p>将机器阅读理解看成是一个排序问题，并使用<code class="highlighter-rouge">RankLib</code>包的<code class="highlighter-rouge">LambdaMART</code>来构建<strong>boosted决策树森林模型</strong>。</p>
+
+<h1 id="2-基于深度学习的机器阅读理解模型stanford-attentive-reader"><strong>2 基于深度学习的机器阅读理解模型：Stanford Attentive Reader</strong></h1>
+
+<p>图1展示了Stanford Attentive Reader模型结构图。</p>
+
+<p><img title="StanfordAttentiveReader：斯坦福机器阅读理解模型_" 图片1="" src="https://img.mukewang.com/5af3eb2400015bd813980728.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图1 Stanford Attentive Reader模型结构图</p>
+
+<h2 id="21-encoding层"><strong>2.1 Encoding层</strong></h2>
+
+<p>首先基于所有的文章和问题中构建一个词向量矩阵<code class="highlighter-rouge">E</code>，<code class="highlighter-rouge">E</code>的维度为<code class="highlighter-rouge">d * |V|</code>，<code class="highlighter-rouge">d</code>代表词向量的维度，<code class="highlighter-rouge">|V|</code>表示词字典大小；然后对文章（passage）和问题（question）进行编码（encode）。<strong>对于passage的编码</strong>，使用了一个单层双向GRU，对于文档中每个词用GRU正向隐藏层的输出与GRU反向隐藏层的输出的拼接向量来表示，这时候的拼接向量包含了这个词的上下文信息，过程如下图所示：</p>
+
+<p><img title="StanfordAttentiveReader：斯坦福机器阅读理解模型_" 图片1="" src="https://img.mukewang.com/5af3eb510001e5be07340164.png" alt="图片描述" style="display:block; margin:auto; width:40%" /></p>
+
+<p><strong>passage编码后可表示为</strong>：<img title="StanfordAttentiveReader：斯坦福机器阅读理解模型_" 图片1="" src="https://img.mukewang.com/5af3eb600001563604000076.png" alt="图片描述" style="width:24%" /></p>
+
+<p><strong>对于question的编码</strong>，由于问题一般比文档要短很多，所以这时候将问题看作一个整体，同样使用了一个单层双向GRU来encode，但这时候不考虑每个词的隐藏层的输出，而是只考虑正向GRU最后的输出与反向GRU最后的输出，将这两个输出拼接作为问题的encode向量，用<code class="highlighter-rouge">q</code>来表示。</p>
+
+<h2 id="22-attention层"><strong>2.2 Attention层</strong></h2>
+
+<p>这一层的目标是计算文章中每个实体词的embedding表示<code class="highlighter-rouge">p_i</code>与问题embedding表示<code class="highlighter-rouge">q</code>的相关度，并选择与问题最相关的实体词作为问题答案。<strong>不同ASReader模型的求点积，Stanford Attentive Reader使用了双线性函数作为匹配函数</strong>，然后累加相同词在不同文章不同位置的相似度。双线性函数可以计算<code class="highlighter-rouge">q</code>和<code class="highlighter-rouge">p_i</code>之间的相似性，比用点积更灵活。计算公式如下：</p>
+
+<p><img title="StanfordAttentiveReader：斯坦福机器阅读理解模型_" 图片1="" src="https://img.mukewang.com/5af3ebb30001536005260144.png" alt="图片描述" style="display:block; margin:auto; width:30%" /></p>
+
+<p>其中，<code class="highlighter-rouge">W_s</code>即为双线性项，其维度为<code class="highlighter-rouge">h * h</code>，<code class="highlighter-rouge">h</code>为单层双向GRU隐藏层大小，<code class="highlighter-rouge">O</code>为这一层的输出向量，代表了文章中所有单词的带attention的embedding表示。</p>
+
+<p><strong>双线性函数的核心代码</strong>：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>import theano.tensor as T
+def get_output_for(self, inputs, **kwargs):
+        # inputs[0]: batch * len * h
+        # inputs[1]: batch * h
+        # W: h * h
+        M = T.dot(inputs[1], self.W).dimshuffle(0, 'x', 1)
+        alpha = T.nnet.softmax(T.sum(inputs[0] * M, axis=2))
+        if len(inputs) == 3:
+            alpha = alpha * inputs[2]
+            alpha = alpha / alpha.sum(axis=1).reshape((alpha.shape[0], 1))
+        return T.sum(inputs[0] * alpha.dimshuffle(0, 1, 'x'), axis=1)
+</code></pre>
+</div>
+
+<h2 id="23-prediction层"><strong>2.3 Prediction层</strong></h2>
+
+<p>不同于原有模型用一层非线性层对<code class="highlighter-rouge">O</code>和question embedding进行结合再做预测，而是直接在<code class="highlighter-rouge">O</code>上加一层softmax层计算概率最大的答案，计算公式如下：</p>
+
+<p><img title="StanfordAttentiveReader：斯坦福机器阅读理解模型_" 图片1="" src="https://img.mukewang.com/5af3ec4800010cd504760100.png" alt="图片描述" style="display:block; margin:auto; width:30%" /></p>
+
+<p><strong>从同一年的ACL会议两篇论文分析发现，Stanford Attentive Reader模型与ASReader模型步骤基本一致，只是在Attention层中，匹配函数有所不同，说明在CNN&amp;Dailymail数据集上的机器阅读理解模型在这个时候模型基本无太大差异，重要的研究点在于匹配函数。</strong></p>
+
+<h1 id="3-实验设置及结果"><strong>3 实验设置及结果</strong></h1>
+
+<h2 id="31-实验设置"><strong>3.1 实验设置</strong></h2>
+
+<ul>
+  <li>优化函数：SGD</li>
+  <li>词向量维度：100（使用预训练好的100维glove词向量）</li>
+  <li>学习率：0.1</li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>损失函数：-logP(a</td>
+          <td>q, d)</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>GRU网络中的权值初始化：满足高斯分布N(0, 0.1)</li>
+  <li>隐藏层大小h：CNN(128)，Dailymail(256)</li>
+  <li>Attention层权重矩阵初始化范围：[-0.01, 0.01]</li>
+  <li>batch size：32</li>
+  <li>dropout：0.2</li>
+</ul>
+
+<h2 id="32-实验结果"><strong>3.2 实验结果</strong></h2>
+
+<p><img title="StanfordAttentiveReader：斯坦福机器阅读理解模型_" 图片1="" src="https://img.mukewang.com/5af3ec8a0001cd2316700974.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>同时对于基于boosted决策树森林的机器阅读理解模型，实验分析了不同特征对模型的影响。图2展示了在CNN数据集中模型的特征消融分析实验结果，Accuracy表示从特征工程中排除相应特征后的准确性，<strong>准确率越低表示对应特征越重要，从图2可以看出，词频特征和n-gram特征最重要。</strong></p>
+
+<p><img title="StanfordAttentiveReader：斯坦福机器阅读理解模型_" 图片1="" src="https://img.mukewang.com/5af3ec9800016eb808200620.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p style="text-align:center">图2 CNN数据集中模型的特征消融分析实验结果</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">Stanford Attentive Reader</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">机器阅读理解</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">深度学习</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>

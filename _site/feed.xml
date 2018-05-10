@@ -5,9 +5,134 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 09 May 2018 19:49:21 +0800</pubDate>
-    <lastBuildDate>Wed, 09 May 2018 19:49:21 +0800</lastBuildDate>
+    <pubDate>Thu, 10 May 2018 15:05:35 +0800</pubDate>
+    <lastBuildDate>Thu, 10 May 2018 15:05:35 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>Stanford Attentive Reader：斯坦福机器阅读理解模型</title>
+        <description>&lt;h1 id=&quot;0-前言&quot;&gt;&lt;strong&gt;0 前言&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;Stanford Attentive Reader是斯坦福在2016年的ACL会议上的《A Thorough Examination of the CNN/Daily Mail Reading Comprehension Task》（&lt;a href=&quot;http://arxiv.org/abs/1606.02858&quot;&gt;论文地址&lt;/a&gt;，&lt;a href=&quot;https://github.com/danqi/rc-cnn-dailymail&quot;&gt;GitHub源码&lt;/a&gt;，代码要求&lt;code class=&quot;highlighter-rouge&quot;&gt;Python 2.7，Theano &amp;gt;= 0.7，Lasagne 0.2.dev1&lt;/code&gt;，代码整体风格非常简洁易懂）发布的一个机器阅读理解模型，&lt;strong&gt;这篇论文通过设计一个基于双线性匹配函数的深度学习模型，完成在CNN&amp;amp;Daily Mail完形填空式数据集上的机器阅读理解任务&lt;/strong&gt;，Stanford Attentive Reader的性能要比上篇博文&lt;a href=&quot;https://zhoum1118.github.io/deeplearning/2018/05/09/ASReader-%E4%B8%80%E4%B8%AA%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%9E%8B.html&quot;&gt;《ASReader：一个经典的机器阅读理解深度学习模型》&lt;/a&gt;中ASReader模型和&lt;a href=&quot;https://zhoum1118.github.io/deeplearning/2018/04/15/CNN&amp;amp;Dailymail-Teaching-Machines-to-Read-and-Comprehend.html&quot;&gt;《CNN&amp;amp;Dailymail：Teaching Machines to Read and Comprehend》&lt;/a&gt;的Attentive Reader模型性能更好。&lt;/p&gt;
+
+&lt;p&gt;这篇论文不仅探索了深度学习神经网络在机器阅读理解的应用，还构建了一个基于boosted决策树森林的机器阅读理解模型，下面我们就这两种方法进行分析，同时给出模型基本实验设置以及实验结果，实验数据集是CNN&amp;amp;Dailymail，在&lt;a href=&quot;https://zhoum1118.github.io/deeplearning/2018/04/15/CNN&amp;amp;Dailymail-Teaching-Machines-to-Read-and-Comprehend.html&quot;&gt;《CNN&amp;amp;Dailymail：Teaching Machines to Read and Comprehend》&lt;/a&gt;有详细介绍，这里就不再赘述了。&lt;/p&gt;
+
+&lt;h1 id=&quot;1-基于boosted决策树森林的机器阅读理解模型&quot;&gt;&lt;strong&gt;1 基于boosted决策树森林的机器阅读理解模型&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;由于数据集是完形填空式，且答案一定是实体类单词，所以特征一般围绕文档中实体来提取的。通过特征工程构建每个实体类单词&lt;code class=&quot;highlighter-rouge&quot;&gt;e&lt;/code&gt;的特征向量&lt;code class=&quot;highlighter-rouge&quot;&gt;f_p,q(e)&lt;/code&gt;，其中&lt;code class=&quot;highlighter-rouge&quot;&gt;q&lt;/code&gt;表示文章（passage），&lt;code class=&quot;highlighter-rouge&quot;&gt;q&lt;/code&gt;代表问题（question），特征工程中包含的特征有：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;实体e是否在文章中出现；&lt;/li&gt;
+  &lt;li&gt;实体e是否在问题中出现；&lt;/li&gt;
+  &lt;li&gt;实体e在文章中的词频；&lt;/li&gt;
+  &lt;li&gt;实体e在文章中第一次出现的位置；&lt;/li&gt;
+  &lt;li&gt;实体e的n-gram匹配特征：计算在文章中实体e周围的的文本（左右1到2个单词）与问题中答案占位符周围的文本间的n-gram匹配度；&lt;/li&gt;
+  &lt;li&gt;词距离特征：计算实体与问题中每个关键词的最小词距离的平均值；&lt;/li&gt;
+  &lt;li&gt;句共现特征：在问题中的实体e与另一个实体或动词一起出现是否在文章的某些句子中也是一起出现；&lt;/li&gt;
+  &lt;li&gt;依存句法特征：在&lt;a href=&quot;https://zhoum1118.github.io/deeplearning/2018/04/30/%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%A8%A1%E7%B3%8A%E4%BE%9D%E5%AD%98%E5%85%B3%E7%B3%BB%E5%8C%B9%E9%85%8D%E7%9A%84%E9%97%AE%E7%AD%94%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E6%96%B9%E6%B3%95.html&quot;&gt;《一种基于模糊依存关系匹配的问答模型构建方法》&lt;/a&gt;有详细介绍。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;将机器阅读理解看成是一个排序问题，并使用&lt;code class=&quot;highlighter-rouge&quot;&gt;RankLib&lt;/code&gt;包的&lt;code class=&quot;highlighter-rouge&quot;&gt;LambdaMART&lt;/code&gt;来构建&lt;strong&gt;boosted决策树森林模型&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;h1 id=&quot;2-基于深度学习的机器阅读理解模型stanford-attentive-reader&quot;&gt;&lt;strong&gt;2 基于深度学习的机器阅读理解模型：Stanford Attentive Reader&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;图1展示了Stanford Attentive Reader模型结构图。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;StanfordAttentiveReader：斯坦福机器阅读理解模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5af3eb2400015bd813980728.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:70%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图1 Stanford Attentive Reader模型结构图&lt;/p&gt;
+
+&lt;h2 id=&quot;21-encoding层&quot;&gt;&lt;strong&gt;2.1 Encoding层&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;首先基于所有的文章和问题中构建一个词向量矩阵&lt;code class=&quot;highlighter-rouge&quot;&gt;E&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;E&lt;/code&gt;的维度为&lt;code class=&quot;highlighter-rouge&quot;&gt;d * |V|&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;d&lt;/code&gt;代表词向量的维度，&lt;code class=&quot;highlighter-rouge&quot;&gt;|V|&lt;/code&gt;表示词字典大小；然后对文章（passage）和问题（question）进行编码（encode）。&lt;strong&gt;对于passage的编码&lt;/strong&gt;，使用了一个单层双向GRU，对于文档中每个词用GRU正向隐藏层的输出与GRU反向隐藏层的输出的拼接向量来表示，这时候的拼接向量包含了这个词的上下文信息，过程如下图所示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;StanfordAttentiveReader：斯坦福机器阅读理解模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5af3eb510001e5be07340164.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:40%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;passage编码后可表示为&lt;/strong&gt;：&lt;img title=&quot;StanfordAttentiveReader：斯坦福机器阅读理解模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5af3eb600001563604000076.png&quot; alt=&quot;图片描述&quot; style=&quot;width:24%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;对于question的编码&lt;/strong&gt;，由于问题一般比文档要短很多，所以这时候将问题看作一个整体，同样使用了一个单层双向GRU来encode，但这时候不考虑每个词的隐藏层的输出，而是只考虑正向GRU最后的输出与反向GRU最后的输出，将这两个输出拼接作为问题的encode向量，用&lt;code class=&quot;highlighter-rouge&quot;&gt;q&lt;/code&gt;来表示。&lt;/p&gt;
+
+&lt;h2 id=&quot;22-attention层&quot;&gt;&lt;strong&gt;2.2 Attention层&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;这一层的目标是计算文章中每个实体词的embedding表示&lt;code class=&quot;highlighter-rouge&quot;&gt;p_i&lt;/code&gt;与问题embedding表示&lt;code class=&quot;highlighter-rouge&quot;&gt;q&lt;/code&gt;的相关度，并选择与问题最相关的实体词作为问题答案。&lt;strong&gt;不同ASReader模型的求点积，Stanford Attentive Reader使用了双线性函数作为匹配函数&lt;/strong&gt;，然后累加相同词在不同文章不同位置的相似度。双线性函数可以计算&lt;code class=&quot;highlighter-rouge&quot;&gt;q&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;p_i&lt;/code&gt;之间的相似性，比用点积更灵活。计算公式如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;StanfordAttentiveReader：斯坦福机器阅读理解模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5af3ebb30001536005260144.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:30%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;W_s&lt;/code&gt;即为双线性项，其维度为&lt;code class=&quot;highlighter-rouge&quot;&gt;h * h&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;h&lt;/code&gt;为单层双向GRU隐藏层大小，&lt;code class=&quot;highlighter-rouge&quot;&gt;O&lt;/code&gt;为这一层的输出向量，代表了文章中所有单词的带attention的embedding表示。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;双线性函数的核心代码&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import theano.tensor as T
+def get_output_for(self, inputs, **kwargs):
+        # inputs[0]: batch * len * h
+        # inputs[1]: batch * h
+        # W: h * h
+        M = T.dot(inputs[1], self.W).dimshuffle(0, 'x', 1)
+        alpha = T.nnet.softmax(T.sum(inputs[0] * M, axis=2))
+        if len(inputs) == 3:
+            alpha = alpha * inputs[2]
+            alpha = alpha / alpha.sum(axis=1).reshape((alpha.shape[0], 1))
+        return T.sum(inputs[0] * alpha.dimshuffle(0, 1, 'x'), axis=1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;23-prediction层&quot;&gt;&lt;strong&gt;2.3 Prediction层&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;不同于原有模型用一层非线性层对&lt;code class=&quot;highlighter-rouge&quot;&gt;O&lt;/code&gt;和question embedding进行结合再做预测，而是直接在&lt;code class=&quot;highlighter-rouge&quot;&gt;O&lt;/code&gt;上加一层softmax层计算概率最大的答案，计算公式如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;StanfordAttentiveReader：斯坦福机器阅读理解模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5af3ec4800010cd504760100.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:30%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;从同一年的ACL会议两篇论文分析发现，Stanford Attentive Reader模型与ASReader模型步骤基本一致，只是在Attention层中，匹配函数有所不同，说明在CNN&amp;amp;Dailymail数据集上的机器阅读理解模型在这个时候模型基本无太大差异，重要的研究点在于匹配函数。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;3-实验设置及结果&quot;&gt;&lt;strong&gt;3 实验设置及结果&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;h2 id=&quot;31-实验设置&quot;&gt;&lt;strong&gt;3.1 实验设置&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;优化函数：SGD&lt;/li&gt;
+  &lt;li&gt;词向量维度：100（使用预训练好的100维glove词向量）&lt;/li&gt;
+  &lt;li&gt;学习率：0.1&lt;/li&gt;
+  &lt;li&gt;
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;损失函数：-logP(a&lt;/td&gt;
+          &lt;td&gt;q, d)&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/li&gt;
+  &lt;li&gt;GRU网络中的权值初始化：满足高斯分布N(0, 0.1)&lt;/li&gt;
+  &lt;li&gt;隐藏层大小h：CNN(128)，Dailymail(256)&lt;/li&gt;
+  &lt;li&gt;Attention层权重矩阵初始化范围：[-0.01, 0.01]&lt;/li&gt;
+  &lt;li&gt;batch size：32&lt;/li&gt;
+  &lt;li&gt;dropout：0.2&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;32-实验结果&quot;&gt;&lt;strong&gt;3.2 实验结果&lt;/strong&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;img title=&quot;StanfordAttentiveReader：斯坦福机器阅读理解模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5af3ec8a0001cd2316700974.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;同时对于基于boosted决策树森林的机器阅读理解模型，实验分析了不同特征对模型的影响。图2展示了在CNN数据集中模型的特征消融分析实验结果，Accuracy表示从特征工程中排除相应特征后的准确性，&lt;strong&gt;准确率越低表示对应特征越重要，从图2可以看出，词频特征和n-gram特征最重要。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;StanfordAttentiveReader：斯坦福机器阅读理解模型_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5af3ec9800016eb808200620.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图2 CNN数据集中模型的特征消融分析实验结果&lt;/p&gt;
+</description>
+        <pubDate>Thu, 10 May 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/05/10/Stanford-Attentive-Reader-%E6%96%AF%E5%9D%A6%E7%A6%8F%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%A8%A1%E5%9E%8B.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/05/10/Stanford-Attentive-Reader-%E6%96%AF%E5%9D%A6%E7%A6%8F%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%A8%A1%E5%9E%8B.html</guid>
+        
+        <category>Stanford Attentive Reader</category>
+        
+        <category>机器阅读理解</category>
+        
+        <category>深度学习</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>ASReader：一个经典的机器阅读理解深度学习模型</title>
