@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="机器阅读理解模型Stanford Attentive Reader源码解析" name="description">
+  
+  
+    <meta name="keywords" content="Stanford Attentive Reader, 机器阅读理解, 源码解析">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|机器阅读理解模型Stanford Attentive Reader源码解析
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DataMining/">DataMining</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 15 May 2018</span>
+                        <h1>
+                            机器阅读理解模型Stanford Attentive Reader源码解析
+                        </h1>
+                    </div>
+                    	<h1 id="0-前言"><strong>0 前言</strong></h1>
+
+<p>Stanford Attentive Reader是斯坦福在2016年的ACL会议上的《A Thorough Examination of the CNN/Daily Mail Reading Comprehension Task》（<a href="http://arxiv.org/abs/1606.02858">论文地址</a>，<a href="https://github.com/danqi/rc-cnn-dailymail">GitHub源码</a>，代码要求Python 2.7，Theano &gt;= 0.7，深度学习框架<a href="http://lasagne.readthedocs.io/en/latest/index.html">Lasagne 0.2.dev1</a>，代码整体风格非常简洁易懂）发布的一个机器阅读理解模型。我们对Stanford Attentive Reader模型的源码进行了解析，力求通过分析其源码来深入研究一个机器阅读理解模型是如何工作的。</p>
+
+<p>采用的数据集有两个：CNN和Daily Mail，下载地址分别为<a href="http://cs.stanford.edu/~danqi/data/cnn.tar.gz">CNN</a> (546M)和<a href="http://cs.stanford.edu/~danqi/data/dailymail.tar.gz">Daily Mail</a> (1.4G)；100维glove词向量<a href="http://nlp.stanford.edu/data/glove.6B.zip">下载地址</a>。</p>
+
+<h1 id="1-载入数据load_data"><strong>1 载入数据load_data</strong></h1>
+
+<p><strong>这部分主要是载入训练集、验证集以及测试集的CNN和Daily Mail数据</strong>，输入参数主要有三个：</p>
+
+<ol>
+  <li>in_file：表示数据文件地址；</li>
+  <li>max_example：如果在debug模式下，该值为100，表示只采用数据集中前100个样本，如果在非debug模式下，该值为None，表示采用数据集中全部数据；</li>
+  <li>relabeling：bool型，如果要求对数据集中实体类单词重新编号，则该值为True，若要求重新编号则按照实体类单词出现的顺序进行编号，默认为True。</li>
+</ol>
+
+<p><strong>输出为文档集合、问题集合和答案集合。</strong></p>
+
+<p>从load_data输入输出可看出，其功能主要是分别提取每个数据集样本中的文档、问题以及答案，并按对应顺序放到三个不同的list中，从<code class="highlighter-rouge">answer = entity_dict[answer]</code>中可以看出，<strong>答案一定是文档或问题中的某个实体类单词。</strong></p>
+
+<p><strong>源码为：</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>def load_data(in_file, max_example=None, relabeling=True):
+    documents = []
+    questions = []
+    answers = []
+    num_examples = 0
+    f = open(in_file, 'r')
+    while True:
+        line = f.readline()
+        if not line:
+            break
+        question = line.strip().lower()
+        answer = f.readline().strip()
+        document = f.readline().strip().lower()
+
+        if relabeling:
+            q_words = question.split(' ')
+            d_words = document.split(' ')
+            assert answer in d_words
+
+            entity_dict = {}
+            entity_id = 0
+            for word in d_words + q_words:
+                if (word.startswith('@entity')) and (word not in entity_dict):
+                    entity_dict[word] = '@entity' + str(entity_id)
+                    entity_id += 1
+
+            q_words = [entity_dict[w] if w in entity_dict else w for w in q_words]
+            d_words = [entity_dict[w] if w in entity_dict else w for w in d_words]
+            answer = entity_dict[answer]
+
+            question = ' '.join(q_words)
+            document = ' '.join(d_words)
+
+        questions.append(question)
+        answers.append(answer)
+        documents.append(document)
+        num_examples += 1
+
+        f.readline()
+        if (max_example is not None) and (num_examples &gt;= max_example):
+            break
+    f.close()
+    return (documents, questions, answers)
+</code></pre>
+</div>
+
+<p>载入训练集和验证集数据后，则开始构建单词字典。</p>
+
+<h1 id="2-单词字典build_dict"><strong>2 单词字典build_dict</strong></h1>
+
+<p>输入为文档集合和问题集合<code class="highlighter-rouge">sentences</code>；最大词数<code class="highlighter-rouge">max_words</code>，默认为50000。</p>
+
+<p>输出即为文档和问题集合的单词字典<code class="highlighter-rouge">word_dict</code>，<code class="highlighter-rouge">key</code>为单词，<code class="highlighter-rouge">value</code>为按照词频排序的序号。</p>
+
+<p>build_dict使用了Python集合类的<code class="highlighter-rouge">Counter</code>子类来完成文档与问题的单词统计，<code class="highlighter-rouge">Counter</code>可以便捷和快速地进行哈希的对象计数，并返回一个无序的容器，元素被作为字典的<code class="highlighter-rouge">key</code>存储，它们的计数作为字典的<code class="highlighter-rouge">value</code>存储。然后使用<code class="highlighter-rouge">most_common</code>方法从多到少返回一个有前<code class="highlighter-rouge">max_words</code>多的元素的列表<code class="highlighter-rouge">ls</code>，相同数量的元素次序任意。最后返回一个由ls组成的单词字典，值得注意的是，<code class="highlighter-rouge">ls</code>列表的数据从字典的第三个开始填充，单词字典第一个为“无法识别的词”即字典第一个元素为<code class="highlighter-rouge">”&lt;UNK&gt;”:0</code>，第二个为分隔符即<code class="highlighter-rouge">”|||”:1</code>。</p>
+
+<p><strong>源码为:</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>def build_dict(sentences, max_words=50000):
+    word_count = Counter()
+    for sent in sentences:
+        for w in sent.split(' '):
+            word_count[w] += 1
+
+    ls = word_count.most_common(max_words)
+
+    return {w[0]: index + 2 for (index, w) in enumerate(ls)}
+</code></pre>
+</div>
+
+<p><strong>把机器阅读理解问题看作一个分类问题</strong>。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>entity_markers = list(set([w for w in word_dict.keys() if w.startswith('@entity')] + train_examples[2]))
+entity_markers = ['&lt;unk_entity&gt;'] + entity_markers
+entity_dict = {w: index for (index, w) in enumerate(entity_markers)}
+args.num_labels = len(entity_dict)
+</code></pre>
+</div>
+
+<h1 id="3-embedding字典"><strong>3 embedding字典</strong></h1>
+
+<p>根据单词字典<code class="highlighter-rouge">word_dict</code>来构建嵌入层<code class="highlighter-rouge">gen_embeddings</code>，<code class="highlighter-rouge">gen_embeddings</code>的输入包含四个参数：</p>
+
+<ol>
+  <li><code class="highlighter-rouge">word_dict</code>：表示单词字典；</li>
+  <li><code class="highlighter-rouge">dim</code>：表示词向量维度；</li>
+  <li><code class="highlighter-rouge">in_file</code>：如果为None，则表示不使用预训练好的词向量来初始化嵌入层，这时使用第四个参数的参数初始化方法<code class="highlighter-rouge">lasagne.init.Uniform()</code>，即对嵌入层权值进行均匀分布初始化，如果不为None，则应该输入预训练词向量的文件地址，这里默认使用的是100维的glove词向量来初始化嵌入层，值得注意的是，类似于“@entity1”这种单词显然不包含在glove词向量中，那么对于这类词也采用均匀分布初始化的方法；</li>
+  <li><code class="highlighter-rouge">init</code>：默认为使用深度学习框架<code class="highlighter-rouge">lasagne</code>的均匀分布初始化方法。</li>
+</ol>
+
+<p><code class="highlighter-rouge">gen_embeddings</code>的输出即为<code class="highlighter-rouge">embeddings</code>字典，<code class="highlighter-rouge">key</code>表示<code class="highlighter-rouge">word_dict</code>中对应词的<code class="highlighter-rouge">value</code>，即按照词频排序的序号，<code class="highlighter-rouge">value</code>为一个列表，表示<code class="highlighter-rouge">key</code>的词向量，词向量中的值为<code class="highlighter-rouge">float</code>类型。</p>
+
+<p><strong>源码为：</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>def gen_embeddings(word_dict, dim, in_file=None,
+                   init=lasagne.init.Uniform()):
+
+    num_words = max(word_dict.values()) + 1
+    embeddings = init((num_words, dim))
+
+    if in_file is not None:
+        pre_trained = 0
+        for line in open(in_file).readlines():
+            sp = line.split()
+            if sp[0] in word_dict:
+                pre_trained += 1
+                embeddings[word_dict[sp[0]]] = [float(x) for x in sp[1:]]
+    return embeddings
+</code></pre>
+</div>
+
+<h1 id="4-encode层"><strong>4 Encode层</strong></h1>
+
+<p>将构建的<code class="highlighter-rouge">embeddings</code>字典来初始化<code class="highlighter-rouge">lasagne.layers.EmbeddingLayer</code>的权重，这里默认使用双向GRU（<code class="highlighter-rouge">lasagne.layers.GRULayer</code>）来构建文档和问题的encode层，在<code class="highlighter-rouge">rnn_layer</code>中的参数<code class="highlighter-rouge">backwards</code>表示了是否使用双向GRU。对于文档的encode，即<code class="highlighter-rouge">name=‘d’</code>的<code class="highlighter-rouge">stack_rnn</code>，其中参数<code class="highlighter-rouge">only_return_final</code>表示是否要只返回GRU的最终输出，<code class="highlighter-rouge">args.att_func</code>默认为<code class="highlighter-rouge">bilinear</code>，所以<code class="highlighter-rouge">only_return_final</code>为<code class="highlighter-rouge">False</code>，即对于文档的encode是使用GRU的正向与反向的隐藏层输出来构建的；对于问题的encode，即<code class="highlighter-rouge">name=‘q’</code>的<code class="highlighter-rouge">stack_rnn</code>，<code class="highlighter-rouge">only_return_final=True</code>代表问题的encode是使用GRU的正向与反向的最终输出来构建的。</p>
+
+<p><strong>源码为：</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>l_in1 = lasagne.layers.InputLayer((None, None), in_x1)
+l_mask1 = lasagne.layers.InputLayer((None, None), in_mask1)
+l_emb1 = lasagne.layers.EmbeddingLayer(l_in1, args.vocab_size, args.embedding_size, W=embeddings)
+
+l_in2 = lasagne.layers.InputLayer((None, None), in_x2)
+l_mask2 = lasagne.layers.InputLayer((None, None), in_mask2)
+l_emb2 = lasagne.layers.EmbeddingLayer(l_in2, args.vocab_size, args.embedding_size, W=l_emb1.W)
+
+network1 = nn_layers.stack_rnn(l_emb1, l_mask1, args.num_layers, args.hidden_size,
+                               grad_clipping=args.grad_clipping,
+                               dropout_rate=args.dropout_rate,
+                               only_return_final=(args.att_func == 'last'),
+                               bidir=args.bidir,
+                               name='d',
+                               rnn_layer=args.rnn_layer)
+
+network2 = nn_layers.stack_rnn(l_emb2, l_mask2, args.num_layers, args.hidden_size,
+                               grad_clipping=args.grad_clipping,
+                               dropout_rate=args.dropout_rate,
+                               only_return_final=True,
+                               bidir=args.bidir,
+                               name='q',
+                               rnn_layer=args.rnn_layer)
+</code></pre>
+</div>
+
+<p><code class="highlighter-rouge">stack_rnn</code>封装了<code class="highlighter-rouge">lasagne.layers.GRULayer</code>，对外使用<code class="highlighter-rouge">stack_rnn</code>来构建双向GRU。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>def stack_rnn(l_emb, l_mask, num_layers, num_units,
+              grad_clipping=10, dropout_rate=0.,
+              bidir=True,
+              only_return_final=False,
+              name='',
+              rnn_layer=lasagne.layers.LSTMLayer):
+
+    def _rnn(backwards=True, name=''):
+        network = l_emb
+        for layer in range(num_layers):
+            if dropout_rate &gt; 0:
+                network = lasagne.layers.DropoutLayer(network, p=dropout_rate)
+            c_only_return_final = only_return_final and (layer == num_layers - 1)
+            network = rnn_layer(network, num_units,
+                                grad_clipping=grad_clipping,
+                                mask_input=l_mask,
+                                only_return_final=c_only_return_final,
+                                backwards=backwards,
+                                name=name + '_layer' + str(layer + 1))
+        return network
+
+    network = _rnn(True, name)
+    if bidir:
+        network = lasagne.layers.ConcatLayer([network, _rnn(False, name + '_back')], axis=-1)
+    return network
+</code></pre>
+</div>
+
+<h1 id="5-attention层"><strong>5 Attention层</strong></h1>
+
+<p>从Encode层得到文档的上下文表示<code class="highlighter-rouge">network1</code>以及问题的上下文表示<code class="highlighter-rouge">network2</code>，使用一个双线性函数<code class="highlighter-rouge">nn_layers.BilinearAttentionLayer</code>作为<code class="highlighter-rouge">network1</code>和<code class="highlighter-rouge">network2</code>的匹配函数。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>att = nn_layers.BilinearAttentionLayer([network1, network2], args.rnn_output_size, mask_input=l_mask1)
+</code></pre>
+</div>
+
+<p><strong>核心计算代码为：</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>M = T.dot(inputs[1], self.W).dimshuffle(0, 'x', 1)
+alpha = T.nnet.softmax(T.sum(inputs[0] * M, axis=2))
+if len(inputs) == 3:
+    alpha = alpha * inputs[2]
+    alpha = alpha / alpha.sum(axis=1).reshape((alpha.shape[0], 1))
+return T.sum(inputs[0] * alpha.dimshuffle(0, 1, 'x'), axis=1)
+</code></pre>
+</div>
+
+<h1 id="6-全连接层dense"><strong>6 全连接层Dense</strong></h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>network = lasagne.layers.DenseLayer(att, args.num_labels, nonlinearity=lasagne.nonlinearities.softmax)
+</code></pre>
+</div>
+
+<p>其中的<code class="highlighter-rouge">att</code>为双线性函数的输出，<code class="highlighter-rouge">args.num_labels</code>为数据集中各类<code class="highlighter-rouge">@entity</code>，可参考单词字典<code class="highlighter-rouge">build_dict</code>，使用非线性激活函数<code class="highlighter-rouge">softmax</code>，得到每个<code class="highlighter-rouge">@entity</code>的为答案的概率。</p>
+
+<p><strong>模型使用SGD优化函数：</strong> <code class="highlighter-rouge">updates = lasagne.updates.sgd(loss, params, args.learning_rate)</code></p>
+
+<p><strong>损失函数：</strong><code class="highlighter-rouge">lasagne.objectives.categorical_crossentropy(train_prediction, in_y)</code>，计算正确答案和预测答案的交叉熵。</p>
+
+<h1 id="7-可能遇到的问题"><strong>7 可能遇到的问题：</strong></h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ImportError: cannot import name downsample
+</code></pre>
+</div>
+
+<p><strong>解决方法：</strong></p>
+
+<p>这主要是因为你安装的时候直接使用了<code class="highlighter-rouge">pip install lasagne</code>，这样安装的是<code class="highlighter-rouge">lasagneV0.1</code>，而这个模型需要的是<code class="highlighter-rouge">lasagneV0.2</code>，查看官网发现需使用<code class="highlighter-rouge">pip install --upgrade https://github.com/Lasagne/Lasagne/archive/master.zip来安装lasagneV0.2</code></p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">Stanford Attentive Reader</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">机器阅读理解</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">源码解析</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>

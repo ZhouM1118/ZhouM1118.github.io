@@ -5,9 +5,262 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 10 May 2018 15:10:25 +0800</pubDate>
-    <lastBuildDate>Thu, 10 May 2018 15:10:25 +0800</lastBuildDate>
+    <pubDate>Tue, 15 May 2018 14:36:00 +0800</pubDate>
+    <lastBuildDate>Tue, 15 May 2018 14:36:00 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>机器阅读理解模型Stanford Attentive Reader源码解析</title>
+        <description>&lt;h1 id=&quot;0-前言&quot;&gt;&lt;strong&gt;0 前言&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;Stanford Attentive Reader是斯坦福在2016年的ACL会议上的《A Thorough Examination of the CNN/Daily Mail Reading Comprehension Task》（&lt;a href=&quot;http://arxiv.org/abs/1606.02858&quot;&gt;论文地址&lt;/a&gt;，&lt;a href=&quot;https://github.com/danqi/rc-cnn-dailymail&quot;&gt;GitHub源码&lt;/a&gt;，代码要求Python 2.7，Theano &amp;gt;= 0.7，深度学习框架&lt;a href=&quot;http://lasagne.readthedocs.io/en/latest/index.html&quot;&gt;Lasagne 0.2.dev1&lt;/a&gt;，代码整体风格非常简洁易懂）发布的一个机器阅读理解模型。我们对Stanford Attentive Reader模型的源码进行了解析，力求通过分析其源码来深入研究一个机器阅读理解模型是如何工作的。&lt;/p&gt;
+
+&lt;p&gt;采用的数据集有两个：CNN和Daily Mail，下载地址分别为&lt;a href=&quot;http://cs.stanford.edu/~danqi/data/cnn.tar.gz&quot;&gt;CNN&lt;/a&gt; (546M)和&lt;a href=&quot;http://cs.stanford.edu/~danqi/data/dailymail.tar.gz&quot;&gt;Daily Mail&lt;/a&gt; (1.4G)；100维glove词向量&lt;a href=&quot;http://nlp.stanford.edu/data/glove.6B.zip&quot;&gt;下载地址&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h1 id=&quot;1-载入数据load_data&quot;&gt;&lt;strong&gt;1 载入数据load_data&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;这部分主要是载入训练集、验证集以及测试集的CNN和Daily Mail数据&lt;/strong&gt;，输入参数主要有三个：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;in_file：表示数据文件地址；&lt;/li&gt;
+  &lt;li&gt;max_example：如果在debug模式下，该值为100，表示只采用数据集中前100个样本，如果在非debug模式下，该值为None，表示采用数据集中全部数据；&lt;/li&gt;
+  &lt;li&gt;relabeling：bool型，如果要求对数据集中实体类单词重新编号，则该值为True，若要求重新编号则按照实体类单词出现的顺序进行编号，默认为True。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;输出为文档集合、问题集合和答案集合。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;从load_data输入输出可看出，其功能主要是分别提取每个数据集样本中的文档、问题以及答案，并按对应顺序放到三个不同的list中，从&lt;code class=&quot;highlighter-rouge&quot;&gt;answer = entity_dict[answer]&lt;/code&gt;中可以看出，&lt;strong&gt;答案一定是文档或问题中的某个实体类单词。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;源码为：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def load_data(in_file, max_example=None, relabeling=True):
+    documents = []
+    questions = []
+    answers = []
+    num_examples = 0
+    f = open(in_file, 'r')
+    while True:
+        line = f.readline()
+        if not line:
+            break
+        question = line.strip().lower()
+        answer = f.readline().strip()
+        document = f.readline().strip().lower()
+
+        if relabeling:
+            q_words = question.split(' ')
+            d_words = document.split(' ')
+            assert answer in d_words
+
+            entity_dict = {}
+            entity_id = 0
+            for word in d_words + q_words:
+                if (word.startswith('@entity')) and (word not in entity_dict):
+                    entity_dict[word] = '@entity' + str(entity_id)
+                    entity_id += 1
+
+            q_words = [entity_dict[w] if w in entity_dict else w for w in q_words]
+            d_words = [entity_dict[w] if w in entity_dict else w for w in d_words]
+            answer = entity_dict[answer]
+
+            question = ' '.join(q_words)
+            document = ' '.join(d_words)
+
+        questions.append(question)
+        answers.append(answer)
+        documents.append(document)
+        num_examples += 1
+
+        f.readline()
+        if (max_example is not None) and (num_examples &amp;gt;= max_example):
+            break
+    f.close()
+    return (documents, questions, answers)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;载入训练集和验证集数据后，则开始构建单词字典。&lt;/p&gt;
+
+&lt;h1 id=&quot;2-单词字典build_dict&quot;&gt;&lt;strong&gt;2 单词字典build_dict&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;输入为文档集合和问题集合&lt;code class=&quot;highlighter-rouge&quot;&gt;sentences&lt;/code&gt;；最大词数&lt;code class=&quot;highlighter-rouge&quot;&gt;max_words&lt;/code&gt;，默认为50000。&lt;/p&gt;
+
+&lt;p&gt;输出即为文档和问题集合的单词字典&lt;code class=&quot;highlighter-rouge&quot;&gt;word_dict&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;key&lt;/code&gt;为单词，&lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt;为按照词频排序的序号。&lt;/p&gt;
+
+&lt;p&gt;build_dict使用了Python集合类的&lt;code class=&quot;highlighter-rouge&quot;&gt;Counter&lt;/code&gt;子类来完成文档与问题的单词统计，&lt;code class=&quot;highlighter-rouge&quot;&gt;Counter&lt;/code&gt;可以便捷和快速地进行哈希的对象计数，并返回一个无序的容器，元素被作为字典的&lt;code class=&quot;highlighter-rouge&quot;&gt;key&lt;/code&gt;存储，它们的计数作为字典的&lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt;存储。然后使用&lt;code class=&quot;highlighter-rouge&quot;&gt;most_common&lt;/code&gt;方法从多到少返回一个有前&lt;code class=&quot;highlighter-rouge&quot;&gt;max_words&lt;/code&gt;多的元素的列表&lt;code class=&quot;highlighter-rouge&quot;&gt;ls&lt;/code&gt;，相同数量的元素次序任意。最后返回一个由ls组成的单词字典，值得注意的是，&lt;code class=&quot;highlighter-rouge&quot;&gt;ls&lt;/code&gt;列表的数据从字典的第三个开始填充，单词字典第一个为“无法识别的词”即字典第一个元素为&lt;code class=&quot;highlighter-rouge&quot;&gt;”&amp;lt;UNK&amp;gt;”:0&lt;/code&gt;，第二个为分隔符即&lt;code class=&quot;highlighter-rouge&quot;&gt;”|||”:1&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;源码为:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def build_dict(sentences, max_words=50000):
+    word_count = Counter()
+    for sent in sentences:
+        for w in sent.split(' '):
+            word_count[w] += 1
+
+    ls = word_count.most_common(max_words)
+
+    return {w[0]: index + 2 for (index, w) in enumerate(ls)}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;把机器阅读理解问题看作一个分类问题&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;entity_markers = list(set([w for w in word_dict.keys() if w.startswith('@entity')] + train_examples[2]))
+entity_markers = ['&amp;lt;unk_entity&amp;gt;'] + entity_markers
+entity_dict = {w: index for (index, w) in enumerate(entity_markers)}
+args.num_labels = len(entity_dict)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;3-embedding字典&quot;&gt;&lt;strong&gt;3 embedding字典&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;根据单词字典&lt;code class=&quot;highlighter-rouge&quot;&gt;word_dict&lt;/code&gt;来构建嵌入层&lt;code class=&quot;highlighter-rouge&quot;&gt;gen_embeddings&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;gen_embeddings&lt;/code&gt;的输入包含四个参数：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;word_dict&lt;/code&gt;：表示单词字典；&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dim&lt;/code&gt;：表示词向量维度；&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;in_file&lt;/code&gt;：如果为None，则表示不使用预训练好的词向量来初始化嵌入层，这时使用第四个参数的参数初始化方法&lt;code class=&quot;highlighter-rouge&quot;&gt;lasagne.init.Uniform()&lt;/code&gt;，即对嵌入层权值进行均匀分布初始化，如果不为None，则应该输入预训练词向量的文件地址，这里默认使用的是100维的glove词向量来初始化嵌入层，值得注意的是，类似于“@entity1”这种单词显然不包含在glove词向量中，那么对于这类词也采用均匀分布初始化的方法；&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;init&lt;/code&gt;：默认为使用深度学习框架&lt;code class=&quot;highlighter-rouge&quot;&gt;lasagne&lt;/code&gt;的均匀分布初始化方法。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;gen_embeddings&lt;/code&gt;的输出即为&lt;code class=&quot;highlighter-rouge&quot;&gt;embeddings&lt;/code&gt;字典，&lt;code class=&quot;highlighter-rouge&quot;&gt;key&lt;/code&gt;表示&lt;code class=&quot;highlighter-rouge&quot;&gt;word_dict&lt;/code&gt;中对应词的&lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt;，即按照词频排序的序号，&lt;code class=&quot;highlighter-rouge&quot;&gt;value&lt;/code&gt;为一个列表，表示&lt;code class=&quot;highlighter-rouge&quot;&gt;key&lt;/code&gt;的词向量，词向量中的值为&lt;code class=&quot;highlighter-rouge&quot;&gt;float&lt;/code&gt;类型。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;源码为：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def gen_embeddings(word_dict, dim, in_file=None,
+                   init=lasagne.init.Uniform()):
+
+    num_words = max(word_dict.values()) + 1
+    embeddings = init((num_words, dim))
+
+    if in_file is not None:
+        pre_trained = 0
+        for line in open(in_file).readlines():
+            sp = line.split()
+            if sp[0] in word_dict:
+                pre_trained += 1
+                embeddings[word_dict[sp[0]]] = [float(x) for x in sp[1:]]
+    return embeddings
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;4-encode层&quot;&gt;&lt;strong&gt;4 Encode层&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;将构建的&lt;code class=&quot;highlighter-rouge&quot;&gt;embeddings&lt;/code&gt;字典来初始化&lt;code class=&quot;highlighter-rouge&quot;&gt;lasagne.layers.EmbeddingLayer&lt;/code&gt;的权重，这里默认使用双向GRU（&lt;code class=&quot;highlighter-rouge&quot;&gt;lasagne.layers.GRULayer&lt;/code&gt;）来构建文档和问题的encode层，在&lt;code class=&quot;highlighter-rouge&quot;&gt;rnn_layer&lt;/code&gt;中的参数&lt;code class=&quot;highlighter-rouge&quot;&gt;backwards&lt;/code&gt;表示了是否使用双向GRU。对于文档的encode，即&lt;code class=&quot;highlighter-rouge&quot;&gt;name=‘d’&lt;/code&gt;的&lt;code class=&quot;highlighter-rouge&quot;&gt;stack_rnn&lt;/code&gt;，其中参数&lt;code class=&quot;highlighter-rouge&quot;&gt;only_return_final&lt;/code&gt;表示是否要只返回GRU的最终输出，&lt;code class=&quot;highlighter-rouge&quot;&gt;args.att_func&lt;/code&gt;默认为&lt;code class=&quot;highlighter-rouge&quot;&gt;bilinear&lt;/code&gt;，所以&lt;code class=&quot;highlighter-rouge&quot;&gt;only_return_final&lt;/code&gt;为&lt;code class=&quot;highlighter-rouge&quot;&gt;False&lt;/code&gt;，即对于文档的encode是使用GRU的正向与反向的隐藏层输出来构建的；对于问题的encode，即&lt;code class=&quot;highlighter-rouge&quot;&gt;name=‘q’&lt;/code&gt;的&lt;code class=&quot;highlighter-rouge&quot;&gt;stack_rnn&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;only_return_final=True&lt;/code&gt;代表问题的encode是使用GRU的正向与反向的最终输出来构建的。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;源码为：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;l_in1 = lasagne.layers.InputLayer((None, None), in_x1)
+l_mask1 = lasagne.layers.InputLayer((None, None), in_mask1)
+l_emb1 = lasagne.layers.EmbeddingLayer(l_in1, args.vocab_size, args.embedding_size, W=embeddings)
+
+l_in2 = lasagne.layers.InputLayer((None, None), in_x2)
+l_mask2 = lasagne.layers.InputLayer((None, None), in_mask2)
+l_emb2 = lasagne.layers.EmbeddingLayer(l_in2, args.vocab_size, args.embedding_size, W=l_emb1.W)
+
+network1 = nn_layers.stack_rnn(l_emb1, l_mask1, args.num_layers, args.hidden_size,
+                               grad_clipping=args.grad_clipping,
+                               dropout_rate=args.dropout_rate,
+                               only_return_final=(args.att_func == 'last'),
+                               bidir=args.bidir,
+                               name='d',
+                               rnn_layer=args.rnn_layer)
+
+network2 = nn_layers.stack_rnn(l_emb2, l_mask2, args.num_layers, args.hidden_size,
+                               grad_clipping=args.grad_clipping,
+                               dropout_rate=args.dropout_rate,
+                               only_return_final=True,
+                               bidir=args.bidir,
+                               name='q',
+                               rnn_layer=args.rnn_layer)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;stack_rnn&lt;/code&gt;封装了&lt;code class=&quot;highlighter-rouge&quot;&gt;lasagne.layers.GRULayer&lt;/code&gt;，对外使用&lt;code class=&quot;highlighter-rouge&quot;&gt;stack_rnn&lt;/code&gt;来构建双向GRU。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def stack_rnn(l_emb, l_mask, num_layers, num_units,
+              grad_clipping=10, dropout_rate=0.,
+              bidir=True,
+              only_return_final=False,
+              name='',
+              rnn_layer=lasagne.layers.LSTMLayer):
+
+    def _rnn(backwards=True, name=''):
+        network = l_emb
+        for layer in range(num_layers):
+            if dropout_rate &amp;gt; 0:
+                network = lasagne.layers.DropoutLayer(network, p=dropout_rate)
+            c_only_return_final = only_return_final and (layer == num_layers - 1)
+            network = rnn_layer(network, num_units,
+                                grad_clipping=grad_clipping,
+                                mask_input=l_mask,
+                                only_return_final=c_only_return_final,
+                                backwards=backwards,
+                                name=name + '_layer' + str(layer + 1))
+        return network
+
+    network = _rnn(True, name)
+    if bidir:
+        network = lasagne.layers.ConcatLayer([network, _rnn(False, name + '_back')], axis=-1)
+    return network
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;5-attention层&quot;&gt;&lt;strong&gt;5 Attention层&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;从Encode层得到文档的上下文表示&lt;code class=&quot;highlighter-rouge&quot;&gt;network1&lt;/code&gt;以及问题的上下文表示&lt;code class=&quot;highlighter-rouge&quot;&gt;network2&lt;/code&gt;，使用一个双线性函数&lt;code class=&quot;highlighter-rouge&quot;&gt;nn_layers.BilinearAttentionLayer&lt;/code&gt;作为&lt;code class=&quot;highlighter-rouge&quot;&gt;network1&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;network2&lt;/code&gt;的匹配函数。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;att = nn_layers.BilinearAttentionLayer([network1, network2], args.rnn_output_size, mask_input=l_mask1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;核心计算代码为：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;M = T.dot(inputs[1], self.W).dimshuffle(0, 'x', 1)
+alpha = T.nnet.softmax(T.sum(inputs[0] * M, axis=2))
+if len(inputs) == 3:
+    alpha = alpha * inputs[2]
+    alpha = alpha / alpha.sum(axis=1).reshape((alpha.shape[0], 1))
+return T.sum(inputs[0] * alpha.dimshuffle(0, 1, 'x'), axis=1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;6-全连接层dense&quot;&gt;&lt;strong&gt;6 全连接层Dense&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;network = lasagne.layers.DenseLayer(att, args.num_labels, nonlinearity=lasagne.nonlinearities.softmax)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;其中的&lt;code class=&quot;highlighter-rouge&quot;&gt;att&lt;/code&gt;为双线性函数的输出，&lt;code class=&quot;highlighter-rouge&quot;&gt;args.num_labels&lt;/code&gt;为数据集中各类&lt;code class=&quot;highlighter-rouge&quot;&gt;@entity&lt;/code&gt;，可参考单词字典&lt;code class=&quot;highlighter-rouge&quot;&gt;build_dict&lt;/code&gt;，使用非线性激活函数&lt;code class=&quot;highlighter-rouge&quot;&gt;softmax&lt;/code&gt;，得到每个&lt;code class=&quot;highlighter-rouge&quot;&gt;@entity&lt;/code&gt;的为答案的概率。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;模型使用SGD优化函数：&lt;/strong&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;updates = lasagne.updates.sgd(loss, params, args.learning_rate)&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;损失函数：&lt;/strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lasagne.objectives.categorical_crossentropy(train_prediction, in_y)&lt;/code&gt;，计算正确答案和预测答案的交叉熵。&lt;/p&gt;
+
+&lt;h1 id=&quot;7-可能遇到的问题&quot;&gt;&lt;strong&gt;7 可能遇到的问题：&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ImportError: cannot import name downsample
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;解决方法：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;这主要是因为你安装的时候直接使用了&lt;code class=&quot;highlighter-rouge&quot;&gt;pip install lasagne&lt;/code&gt;，这样安装的是&lt;code class=&quot;highlighter-rouge&quot;&gt;lasagneV0.1&lt;/code&gt;，而这个模型需要的是&lt;code class=&quot;highlighter-rouge&quot;&gt;lasagneV0.2&lt;/code&gt;，查看官网发现需使用&lt;code class=&quot;highlighter-rouge&quot;&gt;pip install --upgrade https://github.com/Lasagne/Lasagne/archive/master.zip来安装lasagneV0.2&lt;/code&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 15 May 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/deeplearning/2018/05/15/%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%A8%A1%E5%9E%8BStanford-Attentive-Reader%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90.html</link>
+        <guid isPermaLink="true">http://localhost:4000/deeplearning/2018/05/15/%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%A8%A1%E5%9E%8BStanford-Attentive-Reader%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90.html</guid>
+        
+        <category>Stanford Attentive Reader</category>
+        
+        <category>机器阅读理解</category>
+        
+        <category>源码解析</category>
+        
+        
+        <category>Deeplearning</category>
+        
+      </item>
     
       <item>
         <title>Stanford Attentive Reader：斯坦福机器阅读理解模型</title>
