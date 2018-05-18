@@ -3,6 +3,14 @@
 	"data" : [
 	 
 	{
+		"title" : "机器阅读理解Attention-over-Attention模型 - 2018-05-18",
+		"url" : "/deeplearning/2018/05/18/%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3Attention-over-Attention%E6%A8%A1%E5%9E%8B.html"
+	}
+	
+	,
+	
+    
+	{
 		"title" : "机器阅读理解模型Stanford Attentive Reader源码解析 - 2018-05-15",
 		"url" : "/deeplearning/2018/05/15/%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%A8%A1%E5%9E%8BStanford-Attentive-Reader%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90.html"
 	}

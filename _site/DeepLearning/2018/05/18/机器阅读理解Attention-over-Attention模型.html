@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="机器阅读理解Attention-over-Attention模型" name="description">
+  
+  
+    <meta name="keywords" content="Attention-over-Attention, 机器阅读理解, 深度学习">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|机器阅读理解Attention-over-Attention模型
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DataMining/">DataMining</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 18 May 2018</span>
+                        <h1>
+                            机器阅读理解Attention-over-Attention模型
+                        </h1>
+                    </div>
+                    	<h1 id="0-前言"><strong>0 前言</strong></h1>
+
+<p>Attention-over-Attention模型（AOA Reader模型）是科大讯飞和哈工大在2017ACL会议上的《Attention-over-Attention Neural Networks for Reading Comprehension》（<a href="https://arxiv.org/abs/1607.04423">论文地址</a>）联合提出的。科大讯飞和哈工大在2016ACL会议上发表的另一篇论文《Consensus Attention-based Neural Networks for Chinese Reading Comprehension》提出了CAS Reader模型（在博文<a href="https://zhoum1118.github.io/deeplearning/2018/04/26/HFL-RC-%E7%A7%91%E5%A4%A7%E8%AE%AF%E9%A3%9E%E5%A1%AB%E7%A9%BA%E5%BC%8F%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E9%9B%86.html">《HFL-RC：科大讯飞填空式机器阅读理解数据集》</a>有详细介绍），<strong>AOA Reader正是基于CAS Reader进行改进的，两个模型都属于二维匹配模型</strong>，CAS Reader仅按照列的方式进行Attention计算，但AOA Reader结合了按照列和按照行的方式进行Attention计算，同时使用了二次验证的方法对AOA Reader模型计算出的答案进行再次验证。下面我们将详细分析下AOA Reader模型的实现过程。</p>
+
+<h1 id="1-数据集及任务分析"><strong>1 数据集及任务分析</strong></h1>
+
+<p>数据集采用完形填空式的数据集，包含CNN&amp;Daily Mail以及儿童故事（Children’s Book Test，CBT），数据集介绍在<a href="https://zhoum1118.github.io/deeplearning/2018/05/09/ASReader-%E4%B8%80%E4%B8%AA%E7%BB%8F%E5%85%B8%E7%9A%84%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%9E%8B.html">《ASReader：一个经典的机器阅读理解深度学习模型》</a>中有，这里就不再赘述。</p>
+
+<p>一个完形填空式阅读理解样本可描述为一个三元组：<code class="highlighter-rouge">&lt;D, Q, A&gt;</code>，其中<code class="highlighter-rouge">D</code>代表文档（document），<code class="highlighter-rouge">Q</code>代表问题（query），<code class="highlighter-rouge">A</code>则代表问题的答案（Answer），<strong>答案是文档中某个词，答案词的类型为固定搭配中的介词或命名实体</strong>。</p>
+
+<h1 id="2-aoa-reader模型"><strong>2 AOA Reader模型</strong></h1>
+
+<p>图1 展示了AOA Reader模型的框架图</p>
+
+<p><img title="机器阅读理解Attention-over-Attention模型_" 图片1="" src="https://img.mukewang.com/5afe86a5000131b618741214.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图1 AOA Reader模型的框架图</p>
+
+<h2 id="21-contextual-embedding"><strong>2.1 Contextual Embedding</strong></h2>
+
+<p>首先将文档<code class="highlighter-rouge">D</code>和问题<code class="highlighter-rouge">Q</code>转化为<code class="highlighter-rouge">one-hot向量</code>，然后将<code class="highlighter-rouge">one-hot向量</code>输入embedding层，这里的<strong>文档嵌入层和问题嵌入层的权值矩阵共享</strong>，通过共享词嵌入，文档和问题都可以参与嵌入的学习过程，然后使用双向GRU分别对文档和问题进行编码，<strong>文档和问题的编码都拼接正向和反向GRU的隐藏层输出，这时编码得到的文档和问题词向量都包含了上下文信息</strong>。计算过程如下所示：</p>
+
+<p><img title="机器阅读理解Attention-over-Attention模型_" 图片1="" src="https://img.mukewang.com/5afe86c10001e66906480350.png" alt="图片描述" style="display:block; margin:auto; width:30%" /></p>
+
+<p>文档的<code class="highlighter-rouge">Contextual Embedding</code>表示为<code class="highlighter-rouge">h_doc</code>，维度为<code class="highlighter-rouge">|D| * 2d</code>，问题的<code class="highlighter-rouge">Contextual Embedding</code>表示为<code class="highlighter-rouge">h_query</code>，维度为<code class="highlighter-rouge">|Q| * 2d</code>，<code class="highlighter-rouge">d</code>为GRU的节点数。</p>
+
+<h2 id="2-2-pair-wise-matching-score"><strong>2 .2 Pair-wise Matching Score</strong></h2>
+
+<p>将<code class="highlighter-rouge">h_doc</code>和<code class="highlighter-rouge">h_query</code>进行<strong>点积计算</strong>得到成对匹配矩阵<code class="highlighter-rouge">（pair-wise matching matrix）</code>，表示如下：</p>
+
+<p><img title="机器阅读理解Attention-over-Attention模型_" 图片1="" src="https://img.mukewang.com/5afe86de0001625505720102.png" alt="图片描述" style="display:block; margin:auto; width:30%" /></p>
+
+<p><code class="highlighter-rouge">M(i, j)</code>代表文档中第<code class="highlighter-rouge">i</code>个单词的<code class="highlighter-rouge">Contextual Embedding</code>与问题中第<code class="highlighter-rouge">j</code>个单词的<code class="highlighter-rouge">Contextual Embedding</code>的点积之和，<code class="highlighter-rouge">M(i, j)</code>这个矩阵即图1中点积之后得到的矩阵，横向表示问题，纵向表示文档，故<code class="highlighter-rouge">M(i, j)</code>的维度为<code class="highlighter-rouge">|D| * |Q|</code>。</p>
+
+<h2 id="23-individual-attentions"><strong>2.3 Individual Attentions</strong></h2>
+
+<p>这一步和<a href="https://zhoum1118.github.io/deeplearning/2018/04/26/HFL-RC-%E7%A7%91%E5%A4%A7%E8%AE%AF%E9%A3%9E%E5%A1%AB%E7%A9%BA%E5%BC%8F%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E6%95%B0%E6%8D%AE%E9%9B%86.html">《HFL-RC：科大讯飞填空式机器阅读理解数据集》</a>中的CAS Reader模型一样：<strong>在二维模型中是按列进行计算的，计算的是文档中每个单词对问题中的某个单词的重要程度（即注意力）</strong>，最后形成一个文档级别的注意力分布<code class="highlighter-rouge">a(t)</code>，问题中有多少个单词就有多少个这样的分布，文档中的某些单词都对问题中的单词A有注意力，同时也对问题中的单词B有注意力，那么将文档中某个单词对问题中单词的注意力进行汇总，汇总的方式有取平均数，累加，最大值等。</p>
+
+<p>计算过程如下：</p>
+
+<p><img title="机器阅读理解Attention-over-Attention模型_" 图片1="" src="https://img.mukewang.com/5afe86f700015efb07580152.png" alt="图片描述" style="display:block; margin:auto; width:35%" /></p>
+
+<p><strong>说人话就是：</strong>你在回答问题的时候，每阅读问题的一个单词，心中就会有一个文档中的单词对这个问题单词的相关性分布，当你读完整个问题之后，将文档中每个单词在这些分布中的值进行汇总，如果说是取最大值，那么意味着将文档中每个单词在这些分布中的最大值取出作为该单词对问题的相关性，（文档中某单词可能出现多次，那么会有多个相关性值，将其进行累加再作为该单词对问题的相关性），最后取相关性最高的词作为问题的答案。</p>
+
+<p>其中，</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>a(1) = softmax(M(1, 1), …, M(|D|, 1))；
+a(2) = softmax(M(1, 2), …, M(|D|, 2))
+</code></pre>
+</div>
+
+<p>那么<code class="highlighter-rouge">a=[a(1), a(2),…, a(|Q|)]</code>，也就是<code class="highlighter-rouge">a</code>的维度为<code class="highlighter-rouge">|D| * |Q|</code>。</p>
+
+<p>在CAS Reader模型中，对于矩阵<code class="highlighter-rouge">a</code>，<strong>进行如下三种运算之一</strong>：</p>
+
+<p><img title="机器阅读理解Attention-over-Attention模型_" 图片1="" src="https://img.mukewang.com/5afe870a000192c309460322.png" alt="图片描述" style="display:block; margin:auto; width:40%" /></p>
+
+<p>其中，<code class="highlighter-rouge">m</code>为问题的单词个数，也就是说如果<code class="highlighter-rouge">mode=sum</code>，则对矩阵<code class="highlighter-rouge">a</code>按列进行累加，最后<strong>累加值最大对应的文档的单词即为答案</strong>。</p>
+
+<p><strong>但AOA Reader在得到<code class="highlighter-rouge">a</code>矩阵之后，并没有进行以上运算而是再对二维模型进行了按行计算。</strong></p>
+
+<h2 id="24-attention-over-attention"><strong>2.4 Attention-over-Attention</strong></h2>
+
+<p><strong>在二维模型中按行进行计算，计算的是问题中的每个单词对文档中某个单词的重要程度（即注意力）</strong>，形成一个问题级别的注意力分布<code class="highlighter-rouge">B(t)</code>，文档中有多少个单词就有多少个这样的分布，然后对这些分布进行累加并求平均得到<code class="highlighter-rouge">B</code>，最后将<code class="highlighter-rouge">Individual Attentions</code>中得到的<code class="highlighter-rouge">a</code>与<code class="highlighter-rouge">Attention-over-Attention</code>得到的<code class="highlighter-rouge">B</code>进行<strong>点积计算</strong>得到<code class="highlighter-rouge">s</code>，这里的<code class="highlighter-rouge">a</code>的维度为<code class="highlighter-rouge">|D| * |Q|</code>，<code class="highlighter-rouge">B</code>的维度为<code class="highlighter-rouge">|Q| * 1</code>。计算过程如下：</p>
+
+<p><img title="机器阅读理解Attention-over-Attention模型_" 图片1="" src="https://img.mukewang.com/5afe871e000112df07520088.png" alt="图片描述" style="display:block; margin:auto; width:40%" /></p>
+
+<p><img title="机器阅读理解Attention-over-Attention模型_" 图片1="" src="https://img.mukewang.com/5afe8728000125ff03360180.png" alt="图片描述" style="display:block; margin:auto; width:20%" /></p>
+
+<p><strong>说人话就是，</strong>我们在看问题的时候，并不是问题的每个单词我们都需要用到解题中，即问题中的单词的重要性是不一样的，在一步我们主要分析问题中每个单词的贡献，先定位贡献最大的单词，然后再在文档中定位和这个贡献最大的单词相关性最高的词作为问题的答案。</p>
+
+<h2 id="25-final-predictions"><strong>2.5 Final Predictions</strong></h2>
+
+<p>最后和CAS Reader模型一样计算单词<code class="highlighter-rouge">w</code>是答案的条件概率，文档<code class="highlighter-rouge">D</code>的单词组成单词空间<code class="highlighter-rouge">V</code>，单词<code class="highlighter-rouge">w</code>可能在单词空间<code class="highlighter-rouge">V</code>中出现了多次，其出现的位置i组成一个集合<code class="highlighter-rouge">I(w, D)</code>，对每个单词<code class="highlighter-rouge">w</code>，我们<strong>通过计算它的注意力值并求和得到单词<code class="highlighter-rouge">w</code>是答案的条件概率</strong>，计算公式如下所示：</p>
+
+<p><img title="机器阅读理解Attention-over-Attention模型_" 图片1="" src="https://img.mukewang.com/5afe8738000118d706460158.png" alt="图片描述" style="display:block; margin:auto; width:30%" /></p>
+
+<h1 id="3-二次验证n-best-re-ranking-strategy"><strong>3 二次验证：N-best Re-ranking Strategy</strong></h1>
+
+<p>对于完形填空式的阅读理解数据集，可将2中构建的神经网络模型预测的候选答案带入到问题的空白处进行二次验证，选取前<code class="highlighter-rouge">n</code>个最有可能的候选答案组成<code class="highlighter-rouge">N-best list</code>，将候选答案填入问题中，并提取以下三种特征：</p>
+
+<ol>
+  <li>Global N-gram LM：基于训练集中所有的document训练8-gram模型，判断候选答案所在句子的合理性；</li>
+  <li>Local N-gram LM：基于问题所对应的的document训练8-gram模型；</li>
+  <li>Word-class LM：和Global N-gram LM类似，基于训练集中所有的document，但Word-class
+LM使用聚类方法对候选答案进行打分，这里使用了mkcls工具产生1000个单词类别。</li>
+</ol>
+
+<p>采用<code class="highlighter-rouge">K-best MIRA</code>算法对三种特征进行权值训练，最后累加权值，选择损失函数最小的值作为最终的正确答案。</p>
+
+<h1 id="4-实验设置及结果"><strong>4 实验设置及结果</strong></h1>
+
+<h2 id="41-实验设置"><strong>4.1 实验设置</strong></h2>
+
+<ul>
+  <li>嵌入层（使用未预训练词向量）权值初始化：[−0.05, 0.05]；</li>
+  <li>l2正则化：0.0001；</li>
+  <li>dropout：0.1；</li>
+  <li>优化函数：Adam；</li>
+  <li>学习率初始化：0.001；</li>
+  <li>gradient clip：5；</li>
+  <li>batch size：32；</li>
+</ul>
+
+<p>根据不同的语料库，嵌入层和GRU隐藏层的节点数如图2所示。</p>
+
+<p><img title="机器阅读理解Attention-over-Attention模型_" 图片1="" src="https://img.mukewang.com/5afe874700011c3e09080318.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p style="text-align:center">图2 不同的语料库，嵌入层和GRU隐藏层的节点数</p>
+
+<h2 id="42-实验结果"><strong>4.2 实验结果</strong></h2>
+
+<p><img title="机器阅读理解Attention-over-Attention模型_" 图片1="" src="https://img.mukewang.com/5afe875400015dd917361228.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">Attention-over-Attention</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">机器阅读理解</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">深度学习</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
