@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="深度学习技术在机器阅读理解应用的研究进展" name="description">
+  
+  
+    <meta name="keywords" content="深度学习, 机器阅读理解">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|深度学习技术在机器阅读理解应用的研究进展
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DataMining/">DataMining</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Deeplearning</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 19 May 2018</span>
+                        <h1>
+                            深度学习技术在机器阅读理解应用的研究进展
+                        </h1>
+                    </div>
+                    	<h1 id="0-前言"><strong>0 前言</strong></h1>
+
+<p>前几篇博文主要是介绍传统机器学习方法在问答系统或其主要分支：机器阅读理解上的研究与应用，在之前介绍的大规模机器阅读理解数据集的基础上，我们来分析下深度学习方法在机器阅读理解领域的研究进展，这里我们主要是在<strong>张俊林的<a href="https://blog.csdn.net/malefactor/article/details/52832134">《深度学习解决机器阅读理解任务的研究进展》</a>的基础上，整理了深度学习技术在机器阅读理解应用的研究进展</strong>。</p>
+
+<h1 id="1-机器阅读理解"><strong>1 机器阅读理解</strong></h1>
+
+<p>阅读理解，相信中国学生都不陌生，不管是语文考试还是英语考试，阅读理解是非常常规的考试内容，一般形式就是给出一篇文章，然后针对这些文章提出一些问题，<strong>问题的类型包括选择题、填空题或者分析题</strong>，学生通过回答这些问题来证明自己理解了文章所要传达的主旨内容。</p>
+
+<p>而机器阅读理解就是机器自主来完成以上过程，<strong>教会机器学会阅读理解是自然语言处理（NLP）中的核心任务之一，也是机器真正智能化的体现</strong>，目前在国内外的人工智能和自然语言处理等研究领域中，机器阅读理解都已经成为了一大研究热点。</p>
+
+<p>欲先攻其事必先利其器，要完成机器阅读理解任务，首先需要大规模机器阅读理解数据集，为了降低任务难度，较早出现的大规模机器阅读理解数据集都将世界知识（World Knowledge）排除在外，采用人工构造的比较简单的数据集，以及回答一些相对简单的问题。<strong>机器阅读理解数据集常见的形式包括人工合成问答、完形填空式（Cloze-style queries）、选择题和问答题等方式。</strong></p>
+
+<p><strong>人工合成问答</strong>是由人工构造的由若干简单事实形成的文章以及给出对应问题，要求机器阅读文章内容并作出一定的推理，从而得出正确答案，正确答案往往是文章中的某个关键词或者实体。图1展示了人工合成阅读理解任务的示例。<strong>图1示例中前四句陈述句是人工合成的文章内容，<code class="highlighter-rouge">Q</code>是问题，而<code class="highlighter-rouge">A</code>是标准答案。</strong></p>
+
+<p><img title="深度学习技术在机器阅读理解应用的研究进展_" 图片1="" src="https://img.mukewang.com/5aff73660001f6bb06330260.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图1 人工合成阅读理解任务示例</p>
+
+<p><strong>Cloze-style queries</strong>是类似于“完形填空”的任务，就是让计算机阅读并理解一篇文章内容后，要求对指定问题进行回答，问题往往是抽掉某个单词或者实体词的一个句子，而机器回答问题的过程就是将问题句子中被抽掉的单词或者实体词预测补全出来，一般要求这个被抽掉的单词或者实体词是在文章中出现过的。<code class="highlighter-rouge">典型的数据集有：CNN&amp;Dailymail、HLF-RC等。</code>图2展示了完形填空式阅读理解任务的示例。图中表明了文章内容、问题及其对应的答案。<strong>这个例子是将真实的新闻数据中的实体词比如人名、地名等隐去，用实体标记符号替换掉实体词具体名称，问题中一般包含个占位符placeholder，这个占位符代表文章中的某个实体标记，机器阅读理解就是在文章中找出能够回答问题的某个真实答案的实体标记。</strong></p>
+
+<p><img title="深度学习技术在机器阅读理解应用的研究进展_" 图片1="" src="https://img.mukewang.com/5aff73940001f33405440369.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图2 完形填空式阅读理解</p>
+
+<p><strong>选择题</strong>，就是机器阅读完一篇文章后，对给出问题，从给定几个候选答案选项中选择出正确答案，比如托福的听力测试，图3展示了托福听力测试题示例。如果形式化地对阅读理解任务和数据集进行描述的话，可以将该任务看作是四元组<code class="highlighter-rouge">&lt;D, Q, A, a&gt;</code>，其中，<code class="highlighter-rouge">D</code>代表一篇文章，<code class="highlighter-rouge">Q</code>代表针对文章内容提出的一个问题，<code class="highlighter-rouge">A</code>是问题的正确答案候选集合，而<code class="highlighter-rouge">a</code>代表正确答案。<strong>对于选择题类型来说，就是明确提供的答案候选集合而是其中的正确选项。</strong></p>
+
+<p><img title="深度学习技术在机器阅读理解应用的研究进展_" 图片1="" src="https://img.mukewang.com/5aff73a80001433906390282.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图3 托福听力测试题示例</p>
+
+<p><strong>问答题</strong>，和语文考试中的阅读题类似，在读完一篇文章后，提出几个问题并回答。问答题类型的数据集一般要求较强的推理能力，<code class="highlighter-rouge">典型的数据集有：SQuAD、DuReader等</code>。图4展示了DuReader问答题示例。</p>
+
+<p><img title="深度学习技术在机器阅读理解应用的研究进展_" 图片1="" src="https://img.mukewang.com/5aff73bb0001dc8915141338.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图4 DuReader问答题示例</p>
+
+<h1 id="2-深度学习技术在机器阅读理解应用的研究进展"><strong>2 深度学习技术在机器阅读理解应用的研究进展</strong></h1>
+
+<h2 id="21-文档和问题的表示方法"><strong>2.1 文档和问题的表示方法</strong></h2>
+
+<p>让机器学会阅读理解，<strong>首先要将文档（document）和问题（question）的文本表示转化为机器能够”读懂“的表示方法</strong>。我们可以从现有机器阅读理解相关文献中归纳总结出常用的表示方法，其中常见的<strong>文档神经网络表示方法有两种，问题的神经网络表示方法有三种</strong>。</p>
+
+<p><img title="深度学习技术在机器阅读理解应用的研究进展_" 图片1="" src="https://img.mukewang.com/5aff73d0000194a602720156.png" alt="图片描述" style="display:block; margin:auto; width:40%" /></p>
+
+<p style="text-align:center">图5 文档表示方法一</p>
+
+<p>图5展示了文档表示方法一，其将一篇文档看成有序的单词流序列，图中每个圆即代表文档中某个单词的神经网络语义表达，<strong>BiRNN代表双向RNN模型</strong>，在这个有序序列上使用RNN来对文档进行建模表达，每个单词对应RNN序列中的一个时间步t的输入，RNN的隐层状态代表融合了本身词义以及其上下文语义的语言编码。<strong>这种表示方法并不对文章整体语义进行编码，而是对每个单词及其上下文语义进行编码，在实际使用的时候是使用每个单词的RNN隐层状态来进行计算。</strong>至于具体的RNN模型，<code class="highlighter-rouge">常见的有标准RNN、LSTM、GRU及其对应的双向版本等</code>。</p>
+
+<p>对于机器阅读理解来说双向RNN是最常用的表示方法，<strong>一般每个单词的语义表示由正向RNN隐层状态和反向RNN隐层状态拼接来表示</strong>。</p>
+
+<p><img title="深度学习技术在机器阅读理解应用的研究进展_" 图片1="" src="https://img.mukewang.com/5aff73df000186ef04940346.png" alt="图片描述" style="display:block; margin:auto; width:40%" /></p>
+
+<p style="text-align:center">图6 文档表示方法二</p>
+
+<p>方法二的含义是：首先类似于方法一，用双向RNN来对文档中的每个单词及其上下文进行语义表征，形成隐层状态表示，然后对于向量的每一维数值，乘以某个系数，<strong>这个系数代表了单词对于整个文档最终语义表达的重要程度</strong>，将每个单词的系数调整后的隐层状态累加即可得到文档的Word Embedding语义表达。而每个单词的权重系数通常用Attention计算机制来计算获得，也有不使用权重系数直接累加的方式，这等价于每个单词的权重系数都是1的情形，所以可以看作加权平均方法的特殊版本。文档语义表达公式如下：</p>
+
+<p><img title="深度学习技术在机器阅读理解应用的研究进展_" 图片1="" src="https://img.mukewang.com/5aff73f60001bc0701600034.png" alt="图片描述" style="display:block; margin:auto; width:40%" /></p>
+
+<p>以上文档的两种表示方法均可用于问题的表示，表示方法如图7和图8所示。我们来介绍问题的第三种表示。</p>
+
+<p><img title="深度学习技术在机器阅读理解应用的研究进展_" 图片1="" src="https://img.mukewang.com/5aff740a000119cc02600140.png" alt="图片描述" style="display:block; margin:auto; width:40%" /></p>
+
+<p style="text-align:center">图7 问题表示方法一</p>
+
+<p><img title="深度学习技术在机器阅读理解应用的研究进展_" 图片1="" src="https://img.mukewang.com/5aff741f0001f46504980354.png" alt="图片描述" style="display:block; margin:auto; width:40%" /></p>
+
+<p style="text-align:center">图8 问题表示方法二</p>
+
+<p><img title="深度学习技术在机器阅读理解应用的研究进展_" 图片1="" src="https://img.mukewang.com/5aff74300001a82602620217.png" alt="图片描述" style="display:block; margin:auto; width:40%" /></p>
+
+<p style="text-align:center">图 9 问题表示方法三</p>
+
+<p>方法三也是在方法一的基础之上的改进方法，也是NLP任务中表达句子语义的最常见的表达方式。首先类似于方法一，使用双向RNN来表征每个单词及其上下文的语义信息。<strong>对于正向RNN来说，其尾部单词（句尾词）RNN隐层节点代表了融合了整个句子语义的信息；而反向RNN的尾部单词（句首词）则逆向融合了整个句子的语义信息，将这两个时刻RNN节点的隐层状态拼接起来则可以表征问题的整体语义。</strong></p>
+
+<p>理论上问题表示方法三也可以用来表征文档的语义信息，但是一般不会这么用，主要原因是文档往往都比较长，RNN对于太长的内容表征能力不足，所以问题表示方法三会造成大量的信息丢失，而“问题”一般来说都是比较短的一句话，所以用方法三表征是比较合适的。</p>
+
+<h2 id="22-机器阅读理解的深度学习模型"><strong>2.2 机器阅读理解的深度学习模型</strong></h2>
+
+<p>目前机器阅读理解研究领域出现了非常多的具体模型，如果对这些模型进行技术思路梳理的话，会发现本质上大多数模型都是论文<code class="highlighter-rouge">“Teaching Machines to Read and Comprehend”</code>提出的两个基础模型<code class="highlighter-rouge">” Attentive Reader”和“Impatient Reader”</code>的变体，这篇论文我们在[《CNN&amp;Dailymail：Teaching Machines to Read and Comprehend》][12]博文中有所介绍。在此之后的模型在结构上看上去有了很大的变化，但是如果仔细推敲的话会发现根源和基础思路并未发生颠覆性的改变。</p>
+
+<p>对主流模型技术思路进行归纳梳理以及某些技术点进行剥离组合，可以将其归类为<strong>“一维匹配模型”、“二维匹配模型”、“推理模型”</strong>等三类模型，其中“一维匹配模型”和“二维匹配模型”是基础模型，“推理模型”则是在基础模型上重点研究如何对文本内容进行推理的机制。</p>
+
+<p><strong>2.2.1 一维匹配模型</strong></p>
+
+<p>目前机器阅读理解任务的解决方案中，有相当多的模型可以被归类到“一维匹配模型”这种技术范型中，这类模型本质上是<strong>“Attentive Reader”</strong>的变体。我们首先介绍这种技术思路的总体流程结构，然后说明下主流方法在这个框架下的一些区别。图10展示了“一维匹配模型”的技术流程示意图。</p>
+
+<p><img title="深度学习技术在机器阅读理解应用的研究进展_" 图片1="" src="https://img.mukewang.com/5aff744b0001be2305450309.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图10 “一维匹配模型”的技术流程示意图</p>
+
+<p>由图10可知：</p>
+
+<p>首先，<strong>对文档内容使用“文档表示方法一”的方式对文档语义内容进行编码，对于问题来说，则一般会使用“问题表示方法三”的方式对问题进行语义编码，即使用双向RNN的头尾部节点RNN隐层状态拼接作为问题的语义表示</strong>。</p>
+
+<p>然后，通过某种匹配函数来计算文档中每个单词<code class="highlighter-rouge">Di</code>（编码中包括单词语义及其上下文单词的语义）语义和问题<code class="highlighter-rouge">Q</code>整体语义的匹配程度，从含义上可以理解为<strong><code class="highlighter-rouge">F</code>是计算某个单词<code class="highlighter-rouge">Di</code>是问题<code class="highlighter-rouge">Q</code>的答案的可能性映射函数</strong>。</p>
+
+<p>接下来，对每个单词的匹配函数值通过<code class="highlighter-rouge">SoftMax</code>函数进行归一化，整个过程可以理解为<code class="highlighter-rouge">Attention</code>操作，<strong>意在凸显出哪些单词是问题答案的可能性</strong>。</p>
+
+<p>最后，因为一篇文档中，某个单词可能在多处出现，而在不同位置出现的同一个单词都会有相应的<code class="highlighter-rouge">Attention</code>计算结果，这代表了单词在其具体上下文中是问题答案的概率，将相同单词的<code class="highlighter-rouge">Attention</code>计算出的概率值进行累加，即可作为该单词是问题<code class="highlighter-rouge">Q</code>答案的可能性，<strong>选择可能性最大的那个单词作为问题的答案输出</strong>。在最后相同单词概率值累加这一步，一般容易质疑其方式：如果这样，那么意味着这个方法隐含一个假设，即出现次数越多的单词越可能成为问题的答案，这样是否合理呢？实验数据表明，这个假设基本是成立的，所以这种累加的方式目前是非常主流的技术方案，<code class="highlighter-rouge">AS Reader和GA Reader</code>采取了这种累加模式，而<code class="highlighter-rouge">Stanford AR和Attentive Reader</code>则采取非累加的模式。<strong>之所以将这个结构称为“一维匹配模型”，主要是其在计算问题和文章中单词序列的匹配过程形成了一维线性结构。</strong></p>
+
+<p>上述内容是“一维匹配模型”的基本思路，很多主流的模型基本都符合上述架构，模型之间的最大区别主要是匹配函数的定义不同。</p>
+
+<p><code class="highlighter-rouge">AS Reader</code>(文献2)可以看作是一维匹配结构的典型示例，其匹配函数定义为<code class="highlighter-rouge">D_i</code>和<code class="highlighter-rouge">Q</code>向量的点积：<code class="highlighter-rouge">F(D_i, Q) = D_i  Q</code>；</p>
+
+<p><code class="highlighter-rouge">Attentive Reader</code>(文献1)是最早提出的模型之一，所以在整体结构上和一维匹配结构有些差异，模型性能相对差些，<strong>不过这些结构上的差异点并非性能差异的关键，而匹配函数能够解释其和效果好的模型性能差异的主要原因</strong>，其采用了前向神经网络的形式：<code class="highlighter-rouge">F(D_i, Q) = tanh(W_D * D_i, W_Q * Q)；</code></p>
+
+<p><code class="highlighter-rouge">Stanford AR</code>(文献3)的匹配函数则采用了双线性（Bilinear）函数：<code class="highlighter-rouge">F(D_i, Q) = D_i * W * Q</code>，<strong>实验结果表明，双线性（Bilinear）函数效果明显优于很多其它匹配函数</strong>。</p>
+
+<p><code class="highlighter-rouge">AMRNN</code>(文献5)是用来让机器做TOFEL听力题的阅读理解系统采用的技术方案，类似于<code class="highlighter-rouge">GA Reader</code>(文献4)的整体结构，其是由一维匹配模型加深层网络组合而成的方案，同样的，深层网络是为了进行推理，如果摘除深层网络结构，其结构与<code class="highlighter-rouge">AS Reader</code>也是基本同构的。其采用的匹配函数则使用<code class="highlighter-rouge">Di</code>和<code class="highlighter-rouge">Q</code>的<strong>Cosine相似性</strong>，类似于<code class="highlighter-rouge">AS Reader</code>向量点积的思路。<strong><code class="highlighter-rouge">AMRNN</code>解决的是选择题而非完形填空任务，所以在输出阶段不是预测文中哪个单词或实体是问题的答案，而是对几个候选答案选项进行评估，从中选择正确答案</strong>。</p>
+
+<p>由上述模型对比可以看出，一维匹配模型是个结构简洁效果整体而言也不错的模型范式，目前相当多的具体模型可以映射到这个范式中，<strong>而其中的关键点在于匹配函数如何设计，这一点是导致具体模型性能差异的相当重要的影响因素。</strong></p>
+
+<p><strong>2.2.2 二维匹配模型</strong></p>
+
+<p>“二维匹配模型”是相对“一维匹配模型”而言的，其最初的思想其实体现在<code class="highlighter-rouge">”Impatient Reader”</code>的思路中。图11是机器阅读理解中二维匹配模型的整体流程示意图。</p>
+
+<p><img title="深度学习技术在机器阅读理解应用的研究进展_" 图片1="" src="https://img.mukewang.com/5aff745e00015c2605530265.png" alt="图片描述" style="display:block; margin:auto; width:70%" /></p>
+
+<p style="text-align:center">图11 机器阅读理解中二维匹配模型的整体流程示意图</p>
+
+<p>从中可以看出，其整体结构与一维匹配模型是类似的，<strong>最主要的区别体现在如何计算文档和问题的匹配这个层面上。</strong>与一维匹配模型不同的是：二维匹配模型的问题表征方式采用“问题表示方法一”，就是说不是将问题的语义表达为一个整体，而是问题中的每个单词都单独用Word Embedding向量来表示。<strong>这样，假设文档长度为<code class="highlighter-rouge">||D||</code>，问题长度为<code class="highlighter-rouge">||Q||</code>，那么在计算问题和文档匹配的步骤中，就形成了<code class="highlighter-rouge">||D||*||Q||</code>的二维矩阵，就是说文档中任意单词<code class="highlighter-rouge">Di</code>和问题中的任意单词<code class="highlighter-rouge">Qj</code>都应用匹配函数来计算矩阵相应位置的值。</strong></p>
+
+<p>当二维矩阵的值根据匹配函数填充完毕后，就可以考虑进行<code class="highlighter-rouge">Attention</code>计算。因为是二维矩阵，所以可以有多种不同的<code class="highlighter-rouge">Attention</code>计算机制。比如可以按照二维矩阵的行来进行<code class="highlighter-rouge">Attention</code>计算，因为<strong>矩阵的一行代表文档中某个单词<code class="highlighter-rouge">Di</code>相对问题中每个单词<code class="highlighter-rouge">Qj(1&lt;j&lt;||Q||)</code>的匹配程度向量，按行计算Attention表达的是文档单词Di和问题中各个单词的语义相似程度</strong>。同样的，可以按照二维矩阵的列来进行<code class="highlighter-rouge">Attention</code>计算，因为<strong>矩阵的一列代表问题中某个单词<code class="highlighter-rouge">Qi</code>相对文档序列中每个单词<code class="highlighter-rouge">Dj(1&lt;j&lt;||D||)</code>的匹配程度向量，按列计算<code class="highlighter-rouge">Attention</code>表达的是问题单词<code class="highlighter-rouge">Qi</code>和文档序列中各个单词的语义相似程度</strong>。</p>
+
+<p><strong>Consensus Attention 模型（简称CA Reader，参考文献6）、Attention-over-Attention模型（简称AOA Reader，参考文献7）和Match-LSTM模型（参考文献8）基本都符合二维匹配结构的范式，其主要区别在于Attention计算机制的差异上。</strong></p>
+
+<p><code class="highlighter-rouge">CA Reader</code>按照列的方式进行<code class="highlighter-rouge">Attention</code>计算，然后对每一行文档单词对应的针对问题中每个单词的<code class="highlighter-rouge">Attention</code>向量，采取一些启发规则的方式比如取行向量中最大值或者平均值等方式获得文档每个单词对应的概率值。</p>
+
+<p><code class="highlighter-rouge">AOA Reader</code>（可参见<a href="https://zhoum1118.github.io/deeplearning/2018/05/18/%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3Attention-over-Attention%E6%A8%A1%E5%9E%8B.html">《机器阅读理解Attention-over-Attention模型》</a>）则对<code class="highlighter-rouge">CA Reader</code>进行了改进，同时结合了按照列和按照行的方式进行<code class="highlighter-rouge">Attention</code>计算，核心思想是把启发规则改为由按行计算的<code class="highlighter-rouge">Attention</code>值转换成的系数，然后用对按列计算出的<code class="highlighter-rouge">Attention</code>加权平均的计算方式获得文档每个单词对应的概率值。</p>
+
+<p><code class="highlighter-rouge">Match-LSTM</code>模型（可参见<a href="https://zhoum1118.github.io/deeplearning/2018/04/03/%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3Match-LSTM%E6%A8%A1%E5%9E%8B.html">《机器阅读理解Match-LSTM模型》</a>）则是按行进行<code class="highlighter-rouge">Attention</code>计算，同样地把这些<code class="highlighter-rouge">Attention</code>值转换成列的系数，不过与<code class="highlighter-rouge">AOA</code>不同的是，<strong>这些系数用来和问题中每个单词的Word Embedding相乘并对Word Embedding向量加权求和，拟合出整个问题的综合语义Word Embedding（类似于“问题表示方法二”思路），并和文章中每个单词的Word Embedding进行合并，构造出另外一个LSTM结构，在这个LSTM结构基础上去预测哪个或者那些单词应该是正确答案。</strong></p>
+
+<p>从上面的具体模型介绍可以看出，目前二维匹配模型相关工作还不多，而且<strong>都集中在二维结构的<code class="highlighter-rouge">Attention</code>计算机制上</strong>，由于模型的复杂性比较高，还有很多很明显的值得改进的思路可以引入。最直观的改进就是探索新的匹配函数，比如可以摸索双线性函数在二维结构下的效果等；再比如可以引入多层网络结构，这样将推理模型加入到阅读理解解决方案中等。可以预见，类似的思路很快会被探索。</p>
+
+<p><strong>2.2.3 机器阅读理解中的推理过程</strong></p>
+
+<p>人在理解阅读文章内容的时候，推理过程几乎是无处不在的，没有推理几乎可以断定人是无法完全理解内容的，对于机器也是如此。比如对于图1中所展示的人工合成任务的例子，所提的问题是问苹果在什么地方，而文章表达内容中，刚开始苹果在厨房，Sam将其拿到了卧室，所以不做推理的话，很可能会得出“苹果在厨房”的错误结论。</p>
+
+<p>乍一看“推理过程”是个很玄妙而且说不太清楚的过程，因为自然语言文本不像一阶逻辑那样，已经明确地定义出符号以及表达出符号之间的逻辑关系，可以在明确的符号及其关系上进行推理，自然语言表达有相当大的模糊性，所以其推理过程一直是很难处理好的问题。</p>
+
+<p>现有的工作中，记忆网络（<code class="highlighter-rouge">Memory Networks</code>，参考文献9）、<code class="highlighter-rouge">GA Reader、Iterative Alternating</code>神经网络（后文简称<code class="highlighter-rouge">IA Reader</code>，参考文献10）以及<code class="highlighter-rouge">AMRNN</code>都直接在网络结构中体现了这种推理策略。一般而言，<strong>机器阅读理解过程网络结构中的深层网络都是为了进行文本推理而设计的，就是说，通过加深网络层数来模拟不断增加的推理步骤</strong>。</p>
+
+<h1 id="3-参考文献"><strong>3 参考文献</strong></h1>
+
+<ol>
+  <li>Karl Moritz Hermann, Tomas Kocisky, Edward Grefenstette, Lasse Espeholt, Will Kay, Mustafa Suleyman,and Phil Blunsom. 2015. Teaching machines to read and comprehend. In Proc. of NIPS, pages 1684–1692.</li>
+  <li>Rudolf Kadlec, Martin Schmid, Ondrej Bajgar, andJan Kleindienst.2016. Text understanding with the attention sum reader network. tarXiv:1603.01547.</li>
+  <li>Danqi Chen, Jason Bolton, and Christopher D. Manning.2016. A
+thorough examination of the cnn / daily mail reading comprehension
+task. In Proc. of ACL.</li>
+  <li>Bhuwan Dhingra, Hanxiao Liu, William W Cohen, and Ruslan
+Salakhutdinov. 2016. Gated-attention readers for text comprehension.arXiv preprint arXiv:1606.01549</li>
+  <li>Bo-Hsiang Tseng, Sheng-Syun Shen, Hung-Yi Lee and Lin-Shan Lee,2016.Towards Machine Comprehension of Spoken Content:Initial TOEFL Listening Comprehension Test by Machine. arXiv preprint arXiv:1608.06378</li>
+  <li>Yiming Cui, Ting Liu, Zhipeng Chen, Shijin Wang, and Guoping Hu.2016. Consensus attention-based neural networks for chinese reading comprehension. arXiv preprint arXiv:1607.02250.</li>
+  <li>Yiming Cui, Zhipeng Chen, Si Wei, Shijin Wang, Ting Liu and Guoping Hu.2016. Attention-over-Attention Neural Networks for Reading Comprehension. arXiv preprint arXiv: 1607.04423v3.</li>
+  <li>Shuohang Wang and Jing Jiang.2016. Machine Comprehension Using Match-LSTM and Answer Pointer. arXiv preprint arXiv: 1608.07905</li>
+  <li>Sainbayar Sukhbaatar, Jason Weston, Rob Fergus, et al.2015.
+End-to-end memory networks. In Proc. of NIPS,pages 2431–2439.</li>
+  <li>Alessandro Sordoni, Phillip Bachman, and Yoshua Bengio. 2016. Iterative alternating neural attention for machine reading. arXiv
+preprint arXiv:1606.02245.</li>
+  <li>Adam Trischler, Zheng Ye, Xingdi Yuan, and Kaheer Suleman. 2016. Natural language comprehension with theepireader. arXiv preprint arXiv:1606.02270</li>
+  <li>Sosuke Kobayashi, Ran Tian,Naoaki Okazaki, and Kentaro Inui. 2016. Dynamic entity representations with max-pooling improves machine reading. In NAACL-HLT.</li>
+  <li>Pranav Rajpurkar, Jian Zhang, Konstantin Lopyrev, and Percy Liang. SQuAD: 100,000+ questionsfor machine comprehension of text. In Proceedings of the Conference on Empirical Methods in Natural Language Processing, 2016</li>
+</ol>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">深度学习</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">机器阅读理解</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
