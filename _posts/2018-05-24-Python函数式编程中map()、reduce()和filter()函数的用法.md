@@ -94,7 +94,7 @@ map()函数的Python3.x API文档
 
 由图2可以看出，`reduce()`函数先将可迭代集合中的前两个元素进行`function`操作运算，然后将运算结果与第三个元素再进行`function`操作运算，以此类推，直到迭代完集合中所有的元素，最终返回递归结果。
 
-# **3、filter()函数**
+# **4、filter()函数**
 
 `filter()`函数的Python3.x API文档
 
@@ -113,7 +113,7 @@ map()函数的Python3.x API文档
 [4, 5]
 ```
 
-# **4、map()、reduce()和filter()与for**
+# **5、map()、reduce()和filter()与for**
 
 在Python的函数式编程中的`map()`、`reduce()`和`filter()`函数，均可用for循环来实现，那么**为什么还需要map()、reduce()和filter()函数呢？**
 
