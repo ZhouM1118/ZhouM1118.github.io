@@ -5,9 +5,164 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 19 May 2018 09:47:26 +0800</pubDate>
-    <lastBuildDate>Sat, 19 May 2018 09:47:26 +0800</lastBuildDate>
+    <pubDate>Thu, 24 May 2018 16:47:35 +0800</pubDate>
+    <lastBuildDate>Thu, 24 May 2018 16:47:35 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>Python函数式编程中map()、reduce()和filter()函数的用法</title>
+        <description>&lt;p&gt;Python中&lt;code class=&quot;highlighter-rouge&quot;&gt;map()&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;filter()&lt;/code&gt;三个函数均是应用于序列的内置函数，&lt;strong&gt;分别对序列进行遍历、递归计算以及过滤操作&lt;/strong&gt;。这三个内置函数在实际使用过程中常常和&lt;code class=&quot;highlighter-rouge&quot;&gt;“行内函数”lambda函数&lt;/code&gt;联合使用，我们首先介绍下lambda函数。&lt;/p&gt;
+
+&lt;h1 id=&quot;1lambda函数&quot;&gt;&lt;strong&gt;1、lambda函数&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;lambda函数的Python3.x API文档&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;lambda
+An anonymous inline function consisting of a single expression which is evaluated when the function is called. The syntax to create a lambda function is lambda [arguments]: expression&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;由文档可知，lambda函数是匿名行内函数，其语法为&lt;code class=&quot;highlighter-rouge&quot;&gt;lambda [arguments]: expression&lt;/code&gt;，比如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;f = lambda x, y : x * y #定义了函数f(x, y) = x * y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;其非匿名函数表达如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def f(x, y)：
+    return x * y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;2map函数&quot;&gt;&lt;strong&gt;2、map()函数&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;map()函数的Python3.x API文档&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;map(function, iterable, …)
+Return an iterator that applies function to every item of iterable, yielding the results. If additional iterable arguments are passed, function must take that many arguments and is applied to the items from all iterables in parallel. With multiple iterables, the iterator stops when the shortest iterable is exhausted. For cases where the function inputs are already arranged into argument tuples, see itertools.starmap().&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;map()&lt;/code&gt;函数的&lt;strong&gt;输入是一个函数&lt;code class=&quot;highlighter-rouge&quot;&gt;function&lt;/code&gt;以及一个或多个可迭代的集合&lt;code class=&quot;highlighter-rouge&quot;&gt;iterable&lt;/code&gt;&lt;/strong&gt;，&lt;strong&gt;在Python 2.x中&lt;code class=&quot;highlighter-rouge&quot;&gt;map()&lt;/code&gt;函数的输出是一个集合，Python 3.x中输出的是一个迭代器&lt;/strong&gt;。&lt;code class=&quot;highlighter-rouge&quot;&gt;map()&lt;/code&gt;函数主要功能为对&lt;code class=&quot;highlighter-rouge&quot;&gt;iterable&lt;/code&gt;中的每个元素都进行&lt;code class=&quot;highlighter-rouge&quot;&gt;function&lt;/code&gt;函数操作，并将所有的返回结果放到集合或迭代器中。&lt;strong&gt;function如果是None，则其作用等同于zip()&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;例如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = map(lambda x, y : x * y, range(3), range(3))
+&amp;gt;&amp;gt;&amp;gt; b = list(a)
+&amp;gt;&amp;gt;&amp;gt; print(b)
+[0, 1, 4]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在Python 2.x中则不需要 &lt;code class=&quot;highlighter-rouge&quot;&gt;b = list(a)&lt;/code&gt;，因为在Python 2.x中&lt;code class=&quot;highlighter-rouge&quot;&gt;map()&lt;/code&gt;函数的输出直接就是一个集合。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;map()&lt;/code&gt;函数的具体执行过程图如图1所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;Python函数式编程中map()、reduce()和filter()函数的用法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5b0670f70001105b12800548.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图 1 map()函数的具体执行过程图&lt;/p&gt;
+
+&lt;p&gt;由图1可看出，使用map函数时，&lt;strong&gt;两个可迭代的集合中的元素可以并行进行计算。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;对于两个可迭代的集合的元素个数不一致的情况，&lt;code class=&quot;highlighter-rouge&quot;&gt;map()&lt;/code&gt;函数会自动截断更长的那个集合，并只计算两个集合对应的元素&lt;/strong&gt;，比如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = map(lambda x, y : x * y, range(3), range(2))
+&amp;gt;&amp;gt;&amp;gt; b = list(a)
+&amp;gt;&amp;gt;&amp;gt; print(b)
+[0, 1]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;3reduce函数&quot;&gt;&lt;strong&gt;3、reduce()函数&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt;函数的Python3.x API文档&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;functools.reduce(function, iterable[, initializer])
+Apply function of two arguments cumulatively to the items of sequence, from left to right, so as to reduce the sequence to a single value. For example, reduce(lambda x, y: x+y, [1, 2, 3, 4, 5]) calculates  ((((1+2)+3)+4)+5). The left argument, x, is the accumulated value and the right argument, y, is the update value from the sequence. If the optional initializer is present, it is placed before the items of the sequence in the calculation, and serves as a default when the sequence is empty. If initializer is not given and sequence contains only one item, the first item is returned.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt;函数的&lt;strong&gt;输入是一个函数&lt;code class=&quot;highlighter-rouge&quot;&gt;function&lt;/code&gt;、一个可迭代的集合&lt;code class=&quot;highlighter-rouge&quot;&gt;iterable&lt;/code&gt;以及一个可选的初始项&lt;code class=&quot;highlighter-rouge&quot;&gt;initializer&lt;/code&gt;，输出为一个值&lt;/strong&gt;。不同于&lt;code class=&quot;highlighter-rouge&quot;&gt;map()&lt;/code&gt;函数对序列中的元素进行逐一遍历，&lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt;函数对序列中的元素进行递归计算。比如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; from functools import reduce
+&amp;gt;&amp;gt;&amp;gt; a = reduce(lambda x, y : x * y, [1, 2, 3])
+&amp;gt;&amp;gt;&amp;gt; print(a)
+6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在 Python3 中，&lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt; 函数已经被从全局名字空间里移除了，它现在被放置在 &lt;code class=&quot;highlighter-rouge&quot;&gt;functools&lt;/code&gt;模块里，如果想要使用它，则需要通过引入 &lt;code class=&quot;highlighter-rouge&quot;&gt;functools&lt;/code&gt; 模块来调用 &lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt; 函数。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt; 函数的具体执行过程图如图2所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img title=&quot;Python函数式编程中map()、reduce()和filter()函数的用法_&quot; 图片1=&quot;&quot; src=&quot;https://img.mukewang.com/5b06710e0001d6dc05090439.png&quot; alt=&quot;图片描述&quot; style=&quot;display:block; margin:auto; width:50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center&quot;&gt;图2 reduce()函数的具体执行过程图&lt;/p&gt;
+
+&lt;p&gt;由图2可以看出，&lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt;函数先将可迭代集合中的前两个元素进行&lt;code class=&quot;highlighter-rouge&quot;&gt;function&lt;/code&gt;操作运算，然后将运算结果与第三个元素再进行&lt;code class=&quot;highlighter-rouge&quot;&gt;function&lt;/code&gt;操作运算，以此类推，直到迭代完集合中所有的元素，最终返回递归结果。&lt;/p&gt;
+
+&lt;h1 id=&quot;3filter函数&quot;&gt;&lt;strong&gt;3、filter()函数&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;filter()&lt;/code&gt;函数的Python3.x API文档&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;filter(function, iterable)
+Construct an iterator from those elements of iterable for which function returns true. iterable may be either a sequence, a container which supports iteration, or an iterator. If function is None, the identity function is assumed, that is, all elements of iterable that are false are removed. Note that filter(function, iterable) is equivalent to the generator expression (item for item in iterable if function(item)) if function is not Noneand (item for item in iterable if item) if function is None.
+See itertools.filterfalse() for the complementary function that returns elements of iterable for which function returns false.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;filter()&lt;/code&gt;函数的&lt;strong&gt;输入为一个函数&lt;code class=&quot;highlighter-rouge&quot;&gt;function&lt;/code&gt;和一个可迭代的集合&lt;code class=&quot;highlighter-rouge&quot;&gt;iterable&lt;/code&gt;，在Python 2.x中filter()函数的输出是一个集合，Python 3.x中输出的是一个filter类&lt;/strong&gt;。顾名思义，filter()函数主要是对指定可迭代集合进行过滤，筛选出集合中符合条件的元素。比如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = filter(lambda x: x &amp;gt; 3 and x &amp;lt; 6, range(7))
+&amp;gt;&amp;gt;&amp;gt; print(a)
+&amp;lt;filter object at 0x108bf2390&amp;gt;
+&amp;gt;&amp;gt;&amp;gt; b = list(a)
+&amp;gt;&amp;gt;&amp;gt; print(b)
+[4, 5]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;4mapreduce和filter与for&quot;&gt;&lt;strong&gt;4、map()、reduce()和filter()与for&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;在Python的函数式编程中的&lt;code class=&quot;highlighter-rouge&quot;&gt;map()&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;filter()&lt;/code&gt;函数，均可用for循环来实现，那么&lt;strong&gt;为什么还需要map()、reduce()和filter()函数呢？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;主要是因为Python的for命令效率不高且复杂，而&lt;code class=&quot;highlighter-rouge&quot;&gt;map()&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;filter()&lt;/code&gt;更为高效和简洁，&lt;code class=&quot;highlighter-rouge&quot;&gt;map()&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;filter()&lt;/code&gt;的循环速度比Python内置的for或while循环要快得多，其执行速度相当于C语言。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def demo_for():
+    x = [x for x in range(100000)]
+    y = [y for y in range(100000)]
+    result = []
+    for i in range(100000):
+        result.append(x[i] + y[i])
+    return result
+
+def demo_map():
+    a = map(lambda x, y: x + y, range(100000), range(100000))
+    return list(a)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在以上的十万个元素的对比计算中，&lt;strong&gt;demo_map的执行效率比demo_for的高2倍之多&lt;/strong&gt;。&lt;/p&gt;
+</description>
+        <pubDate>Thu, 24 May 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/python/2018/05/24/Python%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E4%B8%ADmap()-reduce()%E5%92%8Cfilter()%E5%87%BD%E6%95%B0%E7%9A%84%E7%94%A8%E6%B3%95.html</link>
+        <guid isPermaLink="true">http://localhost:4000/python/2018/05/24/Python%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E4%B8%ADmap()-reduce()%E5%92%8Cfilter()%E5%87%BD%E6%95%B0%E7%9A%84%E7%94%A8%E6%B3%95.html</guid>
+        
+        <category>Python</category>
+        
+        <category>函数式编程</category>
+        
+        <category>map</category>
+        
+        <category>reduce</category>
+        
+        <category>filter</category>
+        
+        
+        <category>Python</category>
+        
+      </item>
     
       <item>
         <title>深度学习技术在机器阅读理解应用的研究进展</title>

@@ -2,6 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
+        <loc>http://localhost:4000/python/2018/05/24/Python%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E4%B8%ADmap()-reduce()%E5%92%8Cfilter()%E5%87%BD%E6%95%B0%E7%9A%84%E7%94%A8%E6%B3%95.html</loc>
+    </url>
+
+    <url>
         <loc>http://localhost:4000/deeplearning/2018/05/19/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8A%80%E6%9C%AF%E5%9C%A8%E6%9C%BA%E5%99%A8%E9%98%85%E8%AF%BB%E7%90%86%E8%A7%A3%E5%BA%94%E7%94%A8%E7%9A%84%E7%A0%94%E7%A9%B6%E8%BF%9B%E5%B1%95.html</loc>
     </url>
 

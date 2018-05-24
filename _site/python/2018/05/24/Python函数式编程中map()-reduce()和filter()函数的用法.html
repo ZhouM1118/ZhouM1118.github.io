@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="Python函数式编程中map()、reduce()和filter()函数的用法" name="description">
+  
+  
+    <meta name="keywords" content="Python, 函数式编程, map, reduce, filter">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|Python函数式编程中map()、reduce()和filter()函数的用法
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DataMining/">DataMining</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Python</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 24 May 2018</span>
+                        <h1>
+                            Python函数式编程中map()、reduce()和filter()函数的用法
+                        </h1>
+                    </div>
+                    	<p>Python中<code class="highlighter-rouge">map()</code>、<code class="highlighter-rouge">reduce()</code>和<code class="highlighter-rouge">filter()</code>三个函数均是应用于序列的内置函数，<strong>分别对序列进行遍历、递归计算以及过滤操作</strong>。这三个内置函数在实际使用过程中常常和<code class="highlighter-rouge">“行内函数”lambda函数</code>联合使用，我们首先介绍下lambda函数。</p>
+
+<h1 id="1lambda函数"><strong>1、lambda函数</strong></h1>
+
+<p>lambda函数的Python3.x API文档</p>
+
+<blockquote>
+  <p>lambda
+An anonymous inline function consisting of a single expression which is evaluated when the function is called. The syntax to create a lambda function is lambda [arguments]: expression</p>
+</blockquote>
+
+<p>由文档可知，lambda函数是匿名行内函数，其语法为<code class="highlighter-rouge">lambda [arguments]: expression</code>，比如：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>f = lambda x, y : x * y #定义了函数f(x, y) = x * y
+</code></pre>
+</div>
+
+<p>其非匿名函数表达如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>def f(x, y)：
+    return x * y
+</code></pre>
+</div>
+
+<h1 id="2map函数"><strong>2、map()函数</strong></h1>
+
+<p>map()函数的Python3.x API文档</p>
+
+<blockquote>
+  <p>map(function, iterable, …)
+Return an iterator that applies function to every item of iterable, yielding the results. If additional iterable arguments are passed, function must take that many arguments and is applied to the items from all iterables in parallel. With multiple iterables, the iterator stops when the shortest iterable is exhausted. For cases where the function inputs are already arranged into argument tuples, see itertools.starmap().</p>
+</blockquote>
+
+<p><code class="highlighter-rouge">map()</code>函数的<strong>输入是一个函数<code class="highlighter-rouge">function</code>以及一个或多个可迭代的集合<code class="highlighter-rouge">iterable</code></strong>，<strong>在Python 2.x中<code class="highlighter-rouge">map()</code>函数的输出是一个集合，Python 3.x中输出的是一个迭代器</strong>。<code class="highlighter-rouge">map()</code>函数主要功能为对<code class="highlighter-rouge">iterable</code>中的每个元素都进行<code class="highlighter-rouge">function</code>函数操作，并将所有的返回结果放到集合或迭代器中。<strong>function如果是None，则其作用等同于zip()</strong>。</p>
+
+<p>例如：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = map(lambda x, y : x * y, range(3), range(3))
+&gt;&gt;&gt; b = list(a)
+&gt;&gt;&gt; print(b)
+[0, 1, 4]
+</code></pre>
+</div>
+
+<p>在Python 2.x中则不需要 <code class="highlighter-rouge">b = list(a)</code>，因为在Python 2.x中<code class="highlighter-rouge">map()</code>函数的输出直接就是一个集合。</p>
+
+<p><code class="highlighter-rouge">map()</code>函数的具体执行过程图如图1所示。</p>
+
+<p><img title="Python函数式编程中map()、reduce()和filter()函数的用法_" 图片1="" src="https://img.mukewang.com/5b0670f70001105b12800548.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p style="text-align:center">图 1 map()函数的具体执行过程图</p>
+
+<p>由图1可看出，使用map函数时，<strong>两个可迭代的集合中的元素可以并行进行计算。</strong></p>
+
+<p><strong>对于两个可迭代的集合的元素个数不一致的情况，<code class="highlighter-rouge">map()</code>函数会自动截断更长的那个集合，并只计算两个集合对应的元素</strong>，比如：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = map(lambda x, y : x * y, range(3), range(2))
+&gt;&gt;&gt; b = list(a)
+&gt;&gt;&gt; print(b)
+[0, 1]
+</code></pre>
+</div>
+
+<h1 id="3reduce函数"><strong>3、reduce()函数</strong></h1>
+
+<p><code class="highlighter-rouge">reduce()</code>函数的Python3.x API文档</p>
+
+<blockquote>
+  <p>functools.reduce(function, iterable[, initializer])
+Apply function of two arguments cumulatively to the items of sequence, from left to right, so as to reduce the sequence to a single value. For example, reduce(lambda x, y: x+y, [1, 2, 3, 4, 5]) calculates  ((((1+2)+3)+4)+5). The left argument, x, is the accumulated value and the right argument, y, is the update value from the sequence. If the optional initializer is present, it is placed before the items of the sequence in the calculation, and serves as a default when the sequence is empty. If initializer is not given and sequence contains only one item, the first item is returned.</p>
+</blockquote>
+
+<p><code class="highlighter-rouge">reduce()</code>函数的<strong>输入是一个函数<code class="highlighter-rouge">function</code>、一个可迭代的集合<code class="highlighter-rouge">iterable</code>以及一个可选的初始项<code class="highlighter-rouge">initializer</code>，输出为一个值</strong>。不同于<code class="highlighter-rouge">map()</code>函数对序列中的元素进行逐一遍历，<code class="highlighter-rouge">reduce()</code>函数对序列中的元素进行递归计算。比如：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; from functools import reduce
+&gt;&gt;&gt; a = reduce(lambda x, y : x * y, [1, 2, 3])
+&gt;&gt;&gt; print(a)
+6
+</code></pre>
+</div>
+
+<p>在 Python3 中，<code class="highlighter-rouge">reduce()</code> 函数已经被从全局名字空间里移除了，它现在被放置在 <code class="highlighter-rouge">functools</code>模块里，如果想要使用它，则需要通过引入 <code class="highlighter-rouge">functools</code> 模块来调用 <code class="highlighter-rouge">reduce()</code> 函数。</p>
+
+<p><code class="highlighter-rouge">reduce()</code> 函数的具体执行过程图如图2所示。</p>
+
+<p><img title="Python函数式编程中map()、reduce()和filter()函数的用法_" 图片1="" src="https://img.mukewang.com/5b06710e0001d6dc05090439.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p style="text-align:center">图2 reduce()函数的具体执行过程图</p>
+
+<p>由图2可以看出，<code class="highlighter-rouge">reduce()</code>函数先将可迭代集合中的前两个元素进行<code class="highlighter-rouge">function</code>操作运算，然后将运算结果与第三个元素再进行<code class="highlighter-rouge">function</code>操作运算，以此类推，直到迭代完集合中所有的元素，最终返回递归结果。</p>
+
+<h1 id="3filter函数"><strong>3、filter()函数</strong></h1>
+
+<p><code class="highlighter-rouge">filter()</code>函数的Python3.x API文档</p>
+
+<blockquote>
+  <p>filter(function, iterable)
+Construct an iterator from those elements of iterable for which function returns true. iterable may be either a sequence, a container which supports iteration, or an iterator. If function is None, the identity function is assumed, that is, all elements of iterable that are false are removed. Note that filter(function, iterable) is equivalent to the generator expression (item for item in iterable if function(item)) if function is not Noneand (item for item in iterable if item) if function is None.
+See itertools.filterfalse() for the complementary function that returns elements of iterable for which function returns false.</p>
+</blockquote>
+
+<p><code class="highlighter-rouge">filter()</code>函数的<strong>输入为一个函数<code class="highlighter-rouge">function</code>和一个可迭代的集合<code class="highlighter-rouge">iterable</code>，在Python 2.x中filter()函数的输出是一个集合，Python 3.x中输出的是一个filter类</strong>。顾名思义，filter()函数主要是对指定可迭代集合进行过滤，筛选出集合中符合条件的元素。比如：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = filter(lambda x: x &gt; 3 and x &lt; 6, range(7))
+&gt;&gt;&gt; print(a)
+&lt;filter object at 0x108bf2390&gt;
+&gt;&gt;&gt; b = list(a)
+&gt;&gt;&gt; print(b)
+[4, 5]
+</code></pre>
+</div>
+
+<h1 id="4mapreduce和filter与for"><strong>4、map()、reduce()和filter()与for</strong></h1>
+
+<p>在Python的函数式编程中的<code class="highlighter-rouge">map()</code>、<code class="highlighter-rouge">reduce()</code>和<code class="highlighter-rouge">filter()</code>函数，均可用for循环来实现，那么<strong>为什么还需要map()、reduce()和filter()函数呢？</strong></p>
+
+<p>主要是因为Python的for命令效率不高且复杂，而<code class="highlighter-rouge">map()</code>、<code class="highlighter-rouge">reduce()</code>和<code class="highlighter-rouge">filter()</code>更为高效和简洁，<code class="highlighter-rouge">map()</code>、<code class="highlighter-rouge">reduce()</code>和<code class="highlighter-rouge">filter()</code>的循环速度比Python内置的for或while循环要快得多，其执行速度相当于C语言。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>def demo_for():
+    x = [x for x in range(100000)]
+    y = [y for y in range(100000)]
+    result = []
+    for i in range(100000):
+        result.append(x[i] + y[i])
+    return result
+
+def demo_map():
+    a = map(lambda x, y: x + y, range(100000), range(100000))
+    return list(a)
+</code></pre>
+</div>
+
+<p>在以上的十万个元素的对比计算中，<strong>demo_map的执行效率比demo_for的高2倍之多</strong>。</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">Python</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">函数式编程</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">map</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">reduce</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">filter</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
