@@ -5,9 +5,660 @@
     <description>Jack's blog,use Jekyll and github pages.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 24 May 2018 16:47:35 +0800</pubDate>
-    <lastBuildDate>Thu, 24 May 2018 16:47:35 +0800</lastBuildDate>
+    <pubDate>Sat, 26 May 2018 11:37:41 +0800</pubDate>
+    <lastBuildDate>Sat, 26 May 2018 11:37:41 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>Python数据分析工具库-Numpy 数组支持库</title>
+        <description>&lt;h1 id=&quot;1-numpy数组&quot;&gt;&lt;strong&gt;1 Numpy数组&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;在Python中有类似数组功能的数据结构，比如&lt;code class=&quot;highlighter-rouge&quot;&gt;list&lt;/code&gt;，但在数据量大时，&lt;code class=&quot;highlighter-rouge&quot;&gt;list&lt;/code&gt;的运行速度便不尽如意，&lt;strong&gt;Numpy（Numerical Python）&lt;/strong&gt;提供了真正的数组功能，以及对数据进行快速处理的函数，&lt;strong&gt;Numpy中内置函数处理数据的速度是C语言级别的&lt;/strong&gt;。Numpy支持高级大量的维度数组与矩阵运算，此外也针对数组运算提供大量的数学函数库。Numpy中的&lt;code class=&quot;highlighter-rouge&quot;&gt;ndarray&lt;/code&gt;类提供了python对多维数组对象的支持，并具备对矢量进行运算的能力，运算更为快速且节省空间。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ndarray&lt;/code&gt;是N维数组对象（矩阵），其中所有的元素都必须是相同类型&lt;/strong&gt;。&lt;code class=&quot;highlighter-rouge&quot;&gt;ndarray&lt;/code&gt;主要包含以下几个属性：&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ndarray.ndim&lt;/code&gt;：表示数组对象或矩阵的维度；&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ndarray.shape&lt;/code&gt;：表示每个维度上的数组的大小；&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ndarray.size&lt;/code&gt;：表示数组中元素的总数，等同于ndarray.shape中两个元素的乘积；&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ndarray.dtype&lt;/code&gt;：表示数组中元素的类型；&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ndarray.itemsize&lt;/code&gt;：表示数组中每个元素的字节大小，比如数据类型为float64的数组，其元素的字节大小为64/8=8。&lt;/p&gt;
+
+&lt;p&gt;比如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; import numpy as np
+&amp;gt;&amp;gt;&amp;gt; a = np.arange(15).reshape(3, 5)
+&amp;gt;&amp;gt;&amp;gt; a
+array([[ 0,  1,  2,  3,  4],
+       [ 5,  6,  7,  8,  9],
+       [10, 11, 12, 13, 14]])
+&amp;gt;&amp;gt;&amp;gt; a.shape
+(3, 5)
+&amp;gt;&amp;gt;&amp;gt; a.ndim
+2
+&amp;gt;&amp;gt;&amp;gt; a.dtype.name
+'int64'
+&amp;gt;&amp;gt;&amp;gt; a.itemsize
+8
+&amp;gt;&amp;gt;&amp;gt; a.size
+15
+&amp;gt;&amp;gt;&amp;gt; type(a)
+&amp;lt;type 'numpy.ndarray'&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;2-创建numpy数组&quot;&gt;&lt;strong&gt;2 创建Numpy数组&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;array方法&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; import numpy as np
+&amp;gt;&amp;gt;&amp;gt; a = np.array([2,3,4])#创建一维数组
+&amp;gt;&amp;gt;&amp;gt; b = np.array([(1.5,2,3), (4,5,6)])#创建二维数组
+&amp;gt;&amp;gt;&amp;gt; c = np.array( [ [1,2], [3,4] ], dtype=float64 )#创建指定数据类型的数组
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;如果想创建指定shape的数组，并使用占位符来初始化数组，可以用以下方法&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; np.zeros( (3,4) )#创建3行4列矩阵，用0初始化矩阵中所有的元素
+array([[ 0.,  0.,  0.,  0.],
+       [ 0.,  0.,  0.,  0.],
+       [ 0.,  0.,  0.,  0.]])
+&amp;gt;&amp;gt;&amp;gt; np.ones( (2,3,4), dtype=np.int16 ) #创建三维矩阵，维度分别为2，3，4，且用1来初始化矩阵中所有的元素
+array([[[ 1, 1, 1, 1],
+        [ 1, 1, 1, 1],
+        [ 1, 1, 1, 1]],
+       [[ 1, 1, 1, 1],
+        [ 1, 1, 1, 1],
+        [ 1, 1, 1, 1]]], dtype=int16)
+&amp;gt;&amp;gt;&amp;gt; np.empty( (2,3) ) #创建2行3列空矩阵，矩阵中元素初始值随机，取决于内存状态，默认情况下，创建的数组的dtype为float64。
+array([[  3.73603959e-262,   6.02658058e-154,   6.55490914e-260],
+       [  5.30498948e-313,   3.14673309e-307,   1.00000000e+000]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;对应的&lt;code class=&quot;highlighter-rouge&quot;&gt;zeros、ones、empty&lt;/code&gt;还有&lt;code class=&quot;highlighter-rouge&quot;&gt;zeros_like、ones_like、empty_like&lt;/code&gt;，它们以另一个数组为参数，根据其形状和dtype创建数组。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;arange方法&lt;/strong&gt;，与Python内置的range相似：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; numpy.arange(6)
+array([0,1,2,3,4,5,])
+&amp;gt;&amp;gt;&amp;gt; np.arange( 10, 30, 5 )
+array([10, 15, 20, 25])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;3-数组基本数学操作&quot;&gt;&lt;strong&gt;3 数组基本数学操作&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;加、减、乘、点乘&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.array( [20,30,40,50] )
+&amp;gt;&amp;gt;&amp;gt; b = np.arange( 4 )
+&amp;gt;&amp;gt;&amp;gt; b
+array([0, 1, 2, 3])
+&amp;gt;&amp;gt;&amp;gt; c = a-b
+&amp;gt;&amp;gt;&amp;gt; c
+array([20, 29, 38, 47])
+&amp;gt;&amp;gt;&amp;gt; 10*np.sin(a)
+array([ 9.12945251, -9.88031624,  7.4511316 , -2.62374854])
+&amp;gt;&amp;gt;&amp;gt; a&amp;lt;35
+array([ True, True, False, False])
+&amp;gt;&amp;gt;&amp;gt; A = np.array( [[1,1],
+...             [0,1]] )
+&amp;gt;&amp;gt;&amp;gt; B = np.array( [[2,0],
+...             [3,4]] )
+&amp;gt;&amp;gt;&amp;gt; A*B #矩阵相乘
+array([[2, 0],
+       [0, 4]])
+&amp;gt;&amp;gt;&amp;gt; A.dot(B) #矩阵点乘
+array([[5, 4],
+       [3, 4]])
+&amp;gt;&amp;gt;&amp;gt; np.dot(A, B)  #矩阵点乘
+array([[5, 4],
+       [3, 4]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;叠加、叠乘&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.ones((2,3), dtype=int)
+&amp;gt;&amp;gt;&amp;gt; b = np.random.random((2,3))
+&amp;gt;&amp;gt;&amp;gt; a *= 3
+&amp;gt;&amp;gt;&amp;gt; a
+array([[3, 3, 3],
+       [3, 3, 3]])
+&amp;gt;&amp;gt;&amp;gt; b += a
+&amp;gt;&amp;gt;&amp;gt; b
+array([[ 3.417022  ,  3.72032449,  3.00011437],
+       [ 3.30233257,  3.14675589,  3.09233859]])
+&amp;gt;&amp;gt;&amp;gt; a += b  #浮点型不能转换成整型
+TypeError: Cannot cast ufunc add output from dtype('float64') to dtype('int64') with casting rule 'same_kind'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;取最大、最小、求和&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.random.random((2,3))
+&amp;gt;&amp;gt;&amp;gt; a
+array([[ 0.18626021,  0.34556073,  0.39676747],
+       [ 0.53881673,  0.41919451,  0.6852195 ]])
+&amp;gt;&amp;gt;&amp;gt; a.sum()
+2.5718191614547998
+&amp;gt;&amp;gt;&amp;gt; a.min()
+0.1862602113776709
+&amp;gt;&amp;gt;&amp;gt; a.max()
+0.6852195003967595
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;对于多维矩阵，只在其中指定轴进行操作，使用&lt;code class=&quot;highlighter-rouge&quot;&gt;axis&lt;/code&gt;参数&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; b = np.arange(12).reshape(3,4)
+&amp;gt;&amp;gt;&amp;gt; b
+array([[ 0,  1,  2,  3],
+       [ 4,  5,  6,  7],
+       [ 8,  9, 10, 11]])
+&amp;gt;&amp;gt;&amp;gt; b.sum(axis=0)   #对二维矩阵的列轴进行求和
+array([12, 15, 18, 21])
+&amp;gt;&amp;gt;&amp;gt; b.min(axis=1)  #求二维矩阵的每个横轴最小值
+array([0, 4, 8])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;通用函数（ufunc）&lt;/strong&gt;，对&lt;code class=&quot;highlighter-rouge&quot;&gt;ndarray&lt;/code&gt;中的数据执行元素级运算，比如&lt;code class=&quot;highlighter-rouge&quot;&gt;sin、cos、exp&lt;/code&gt;等：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; B = np.arange(3)
+&amp;gt;&amp;gt;&amp;gt; B
+array([0, 1, 2])
+&amp;gt;&amp;gt;&amp;gt; np.exp(B)
+array([ 1.        ,  2.71828183,  7.3890561 ])
+&amp;gt;&amp;gt;&amp;gt; np.sqrt(B)
+array([ 0.        ,  1.        ,  1.41421356])
+&amp;gt;&amp;gt;&amp;gt; C = np.array([2., -1., 4.])
+&amp;gt;&amp;gt;&amp;gt; np.add(B, C)
+array([ 2.,  0.,  6.])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;4-数组的索引切片和遍历&quot;&gt;&lt;strong&gt;4 数组的索引、切片和遍历&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;和Python的&lt;code class=&quot;highlighter-rouge&quot;&gt;list&lt;/code&gt;数据结构类似，Numpy的一维数组也可以进行索引、切片以及遍历。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.arange(10)**3
+&amp;gt;&amp;gt;&amp;gt; a
+array([  0,   1,   8,  27,  64, 125, 216, 343, 512, 729])
+&amp;gt;&amp;gt;&amp;gt; a[2]
+8
+&amp;gt;&amp;gt;&amp;gt; a[2:5]
+array([ 8, 27, 64])
+&amp;gt;&amp;gt;&amp;gt; a[:6:2] = -1000    #从0-6的元素中，每隔2个将元素值重新赋值为-1000
+&amp;gt;&amp;gt;&amp;gt; a
+array([-1000,     1, -1000,    27, -1000,   125,   216,   343,   512,   729])
+&amp;gt;&amp;gt;&amp;gt; for i in a:
+...     print(i + 1)
+-999
+2
+-999
+28
+-999
+126
+217
+344
+513
+730
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;二维数组的索引、切片：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; def f(x,y):
+...     return 10*x+y
+...
+&amp;gt;&amp;gt;&amp;gt; b = np.fromfunction(f,(5,4),dtype=int) #函数式创建数组，fromfunction第一个参数为函数f，第二个参数为数组的shape，shape第一个参数为函数f第一个参数的取值范围，第二个参数为函数f第二个参数的取值范围，dtype表示数组元素类型。
+&amp;gt;&amp;gt;&amp;gt; b
+array([[ 0,  1,  2,  3],
+       [10, 11, 12, 13],
+       [20, 21, 22, 23],
+       [30, 31, 32, 33],
+       [40, 41, 42, 43]])
+&amp;gt;&amp;gt;&amp;gt; b[2,3] #不是数组b中的第2行第三列的元素，而是索引为[2，3]的元素
+23
+&amp;gt;&amp;gt;&amp;gt; b[0:5, 1]  #取出从第0行到第5行的第2个元素组成数组
+array([ 1, 11, 21, 31, 41])
+&amp;gt;&amp;gt;&amp;gt; b[ : ,1]  #等同于前一句
+array([ 1, 11, 21, 31, 41])
+&amp;gt;&amp;gt;&amp;gt; b[1:3, : ]  #取出第2行与第3行的所有元素组成数组
+array([[10, 11, 12, 13],
+       [20, 21, 22, 23]])
+&amp;gt;&amp;gt;&amp;gt; for row in b: #遍历得到b数组的每一行元素
+...     print(row)
+...
+[0 1 2 3]
+[10 11 12 13]
+[20 21 22 23]
+[30 31 32 33]
+[40 41 42 43]
+&amp;gt;&amp;gt;&amp;gt; for element in b.flat: #遍历得到b数组的每一个元素
+...     print(element)
+...
+0
+1
+2
+3
+10
+11
+12
+13
+20
+21
+22
+23
+30
+31
+32
+33
+40
+41
+42
+43
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;多维数组的索引、切片：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; c = np.array( [[[  0,  1,  2],    
+...                 [ 10, 12, 13]],
+...                [[100,101,102],
+...                 [110,112,113]]])
+&amp;gt;&amp;gt;&amp;gt; c.shape
+(2, 2, 3)
+&amp;gt;&amp;gt;&amp;gt; c[1,…]   #等同于 c[1,:,:] or c[1]
+array([[100, 101, 102],
+       [110, 112, 113]])
+&amp;gt;&amp;gt;&amp;gt; c[...,2]   #等同于 c[:,:,2]
+array([[  2,  13],
+       [102, 113]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;5-shape变化及转置&quot;&gt;&lt;strong&gt;5 shape变化及转置&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.floor(10*np.random.random((3,4)))
+&amp;gt;&amp;gt;&amp;gt; a
+array([[ 2.,  8.,  0.,  6.],
+       [ 4.,  5.,  1.,  1.],
+       [ 8.,  9.,  3.,  6.]])
+&amp;gt;&amp;gt;&amp;gt; a.shape
+(3, 4)
+&amp;gt;&amp;gt;&amp;gt; a.ravel()  # 转化为一维数组
+array([ 2.,  8.,  0.,  6.,  4.,  5.,  1.,  1.,  8.,  9.,  3.,  6.])
+&amp;gt;&amp;gt;&amp;gt; a.reshape(6,2)  # 将数组a转化为指定shape的数组
+array([[ 2.,  8.],
+       [ 0.,  6.],
+       [ 4.,  5.],
+       [ 1.,  1.],
+       [ 8.,  9.],
+       [ 3.,  6.]])
+&amp;gt;&amp;gt;&amp;gt; a.T  # 数组的转置
+array([[ 2.,  4.,  8.],
+       [ 8.,  5.,  9.],
+       [ 0.,  1.,  3.],
+       [ 6.,  1.,  6.]])
+&amp;gt;&amp;gt;&amp;gt; a.T.shape
+(4, 3)
+&amp;gt;&amp;gt;&amp;gt; a.shape
+(3, 4)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;注意&lt;strong&gt;对数组进行reshape操作不会改变原有数组a，但resize会在原有数组a上进行改变&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a.resize((2,6))
+&amp;gt;&amp;gt;&amp;gt; a
+array([[ 2.,  8.,  0.,  6.,  4.,  5.],
+       [ 1.,  1.,  8.,  9.,  3.,  6.]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;当reshape方法中有参数为-1，则表示numpy会自己计算-1位置的维数&lt;/strong&gt;，这在很多深度学习模型中可以见到。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a.reshape(3,-1)
+array([[ 2.,  8.,  0.,  6.],
+       [ 4.,  5.,  1.,  1.],
+       [ 8.,  9.,  3.,  6.]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;6-数组的合并与拆分&quot;&gt;&lt;strong&gt;6 数组的合并与拆分&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;concatenate连接&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; x = numpy.array([[1, 2, 3], [4, 5, 6]])
+&amp;gt;&amp;gt;&amp;gt; y = numpy.array([[7, 8, 9], [10, 11, 12]])
+&amp;gt;&amp;gt;&amp;gt; numpy.concatenate([x, y], axis = 0)  # 竖直组合 
+[[ 1  2  3][ 4  5  6][ 7  8  9][10 11 12]]
+&amp;gt;&amp;gt;&amp;gt; numpy.concatenate([x, y], axis = 1)  # 水平组合
+ [[ 1  2  3  7  8  9][ 4  5  6 10 11 12]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;横向合并&lt;/strong&gt;，沿第一个轴进行堆叠，比如：&lt;code class=&quot;highlighter-rouge&quot;&gt;vstack&lt;/code&gt;或&lt;code class=&quot;highlighter-rouge&quot;&gt;row_stack&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.floor(10*np.random.random((2,2)))
+&amp;gt;&amp;gt;&amp;gt; a
+array([[ 8.,  8.],
+       [ 0.,  0.]])
+&amp;gt;&amp;gt;&amp;gt; b = np.floor(10*np.random.random((2,2)))
+&amp;gt;&amp;gt;&amp;gt; b
+array([[ 1.,  8.],
+       [ 0.,  4.]])
+&amp;gt;&amp;gt;&amp;gt; np.vstack((a,b))
+array([[ 8.,  8.],
+       [ 0.,  0.],
+       [ 1.,  8.],
+       [ 0.,  4.]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;纵向合并&lt;/strong&gt;，沿着第二个轴进行堆叠，比如&lt;code class=&quot;highlighter-rouge&quot;&gt;hstack&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;column_stack&lt;/code&gt;，两者不一样，&lt;code class=&quot;highlighter-rouge&quot;&gt;column_stack&lt;/code&gt;在对一维数组进行堆叠时会先将一维数组转化为二维数组，最终返回二维数组。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; np.hstack((a,b)) #使用hstack对二维数组进行纵向合并
+array([[ 8.,  8.,  1.,  8.],
+       [ 0.,  0.,  0.,  4.]])
+&amp;gt;&amp;gt;&amp;gt; np.column_stack((a,b)) #使用column_stack对二维数组进行纵向合并
+array([[ 8.,  8.,  1.,  8.],
+       [ 0.,  0.,  0.,  4.]])
+&amp;gt;&amp;gt;&amp;gt; a = np.array([4.,2.])
+&amp;gt;&amp;gt;&amp;gt; b = np.array([3.,8.])
+&amp;gt;&amp;gt;&amp;gt; np.column_stack((a,b)) #使用column_stack对一维数组进行纵向合并，返回二维数组
+array([[ 4., 3.],
+       [ 2., 8.]])
+&amp;gt;&amp;gt;&amp;gt; np.hstack((a,b))  #使用hstack对一维数组进行纵向合并，返回一维数组
+array([ 4., 2., 3., 8.])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;array_split ，numpy.array_split(ary, indices_or_sections, axis=0)&lt;/code&gt;，沿着第一个轴从左至右的顺序切分：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; x = np.arange(8.0)
+&amp;gt;&amp;gt;&amp;gt; np.array_split(x, 3)
+    [array([ 0.,  1.,  2.]), array([ 3.,  4.,  5.]), array([ 6.,  7.])]
+&amp;gt;&amp;gt;&amp;gt; x = np.arange(7.0)
+&amp;gt;&amp;gt;&amp;gt; np.array_split(x, 3)
+    [array([ 0.,  1.,  2.]), array([ 3.,  4.]), array([ 5.,  6.])]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;vsplit&lt;/strong&gt;，沿着第一个轴切分，相当于&lt;code class=&quot;highlighter-rouge&quot;&gt;split&lt;/code&gt;方法中参数&lt;code class=&quot;highlighter-rouge&quot;&gt;axis=0&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; x = np.arange(16.0).reshape(4, 4)
+&amp;gt;&amp;gt;&amp;gt; x
+array([[  0.,   1.,   2.,   3.],
+       [  4.,   5.,   6.,   7.],
+       [  8.,   9.,  10.,  11.],
+       [ 12.,  13.,  14.,  15.]])
+&amp;gt;&amp;gt;&amp;gt; np.vsplit(x, 2)
+[array([[ 0.,  1.,  2.,  3.],
+       [ 4.,  5.,  6.,  7.]]),
+ array([[  8.,   9.,  10.,  11.],
+       [ 12.,  13.,  14.,  15.]])]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;hsplit&lt;/strong&gt;，沿着第二个轴切分，相当于&lt;code class=&quot;highlighter-rouge&quot;&gt;split&lt;/code&gt;方法中参数&lt;code class=&quot;highlighter-rouge&quot;&gt;axis=1&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; x = np.arange(16.0).reshape(4, 4)
+&amp;gt;&amp;gt;&amp;gt; x
+array([[  0.,   1.,   2.,   3.],
+       [  4.,   5.,   6.,   7.],
+       [  8.,   9.,  10.,  11.],
+       [ 12.,  13.,  14.,  15.]])
+&amp;gt;&amp;gt;&amp;gt; np.hsplit(x, 2)
+[array([[  0.,   1.],
+       [  4.,   5.],
+       [  8.,   9.],
+       [ 12.,  13.]]),
+ array([[  2.,   3.],
+       [  6.,   7.],
+       [ 10.,  11.],
+       [ 14.,  15.]])]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;7-数组的复制&quot;&gt;&lt;strong&gt;7 数组的复制&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;完全不复制（No Copy at All）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.arange(12)
+&amp;gt;&amp;gt;&amp;gt; b = a            # no new object is created
+&amp;gt;&amp;gt;&amp;gt; b is a           # a and b are two names for the same ndarray object
+True
+&amp;gt;&amp;gt;&amp;gt; b.shape = 3,4    # changes the shape of a
+&amp;gt;&amp;gt;&amp;gt; a.shape
+(3, 4)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;这种方式的“复制”其实没有实际复制，&lt;strong&gt;只是将变量&lt;code class=&quot;highlighter-rouge&quot;&gt;b&lt;/code&gt;在内存的索引指向了变量&lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;所在的内存&lt;/strong&gt;，这样变量&lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;和变量&lt;code class=&quot;highlighter-rouge&quot;&gt;b&lt;/code&gt;均指向同一块内存，这时候改变了&lt;code class=&quot;highlighter-rouge&quot;&gt;b&lt;/code&gt;就相当于改变了&lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;浅复制&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;使用&lt;code class=&quot;highlighter-rouge&quot;&gt;view&lt;/code&gt;方法来创建一个新的数组对象，并把将被复制的数组&lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;的视图（view）复制到新的数组对象&lt;code class=&quot;highlighter-rouge&quot;&gt;c&lt;/code&gt;中&lt;/strong&gt;，这时的&lt;code class=&quot;highlighter-rouge&quot;&gt;c&lt;/code&gt;数据完全来自于&lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;，和 &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt; 保持完全一致，换句话说，&lt;code class=&quot;highlighter-rouge&quot;&gt;c&lt;/code&gt;的数据完全由&lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;保管，他们两个的数据变化是一致的：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; c = a.view()
+&amp;gt;&amp;gt;&amp;gt; c is a
+False
+&amp;gt;&amp;gt;&amp;gt; c.base is a       # c只是a的视图
+True
+&amp;gt;&amp;gt;&amp;gt; c.flags.owndata
+False
+&amp;gt;&amp;gt;&amp;gt; c.shape = 2,6   # a的shape不会变化
+&amp;gt;&amp;gt;&amp;gt; a.shape
+(3, 4)
+&amp;gt;&amp;gt;&amp;gt; c[0,4] = 1234   # a的值会相应的变化
+&amp;gt;&amp;gt;&amp;gt; a
+array([[   0,    1,    2,    3],
+       [1234,    5,    6,    7],
+       [   8,    9,   10,   11]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;切片也是一种浅复制&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; s = a[ : , 1:3]     # 将a的第2列与第三列浅复制给s
+&amp;gt;&amp;gt;&amp;gt; s[:] = 10           # 将s的所有元素重新赋值为10，也会改变a相应位置的值
+&amp;gt;&amp;gt;&amp;gt; a
+array([[   0,   10,   10,    3],
+       [1234,   10,   10,    7],
+       [   8,   10,   10,   11]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;深复制&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;使用&lt;code class=&quot;highlighter-rouge&quot;&gt;copy&lt;/code&gt;方法，&lt;strong&gt;不仅将被复制数组的索引复制到新的数组中，也将被复制数组的元素复制到新的数组中&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; d = a.copy()      # 创建一个新的数组
+&amp;gt;&amp;gt;&amp;gt; d is a
+False
+&amp;gt;&amp;gt;&amp;gt; d.base is a     
+False
+&amp;gt;&amp;gt;&amp;gt; d[0,0] = 9999
+&amp;gt;&amp;gt;&amp;gt; a
+array([[   0,   10,   10,    3],
+       [1234,   10,   10,    7],
+       [   8,   10,   10,   11]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;8-fancy-indexing与布尔索引&quot;&gt;&lt;strong&gt;8 Fancy indexing与布尔索引&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Fancy indexing&lt;/code&gt;是指传递索引数组以便一次得到多个数组元素。使用&lt;code class=&quot;highlighter-rouge&quot;&gt;Fancy indexing&lt;/code&gt;时返回数组的&lt;code class=&quot;highlighter-rouge&quot;&gt;shape&lt;/code&gt;是索引数组的&lt;code class=&quot;highlighter-rouge&quot;&gt;shape&lt;/code&gt;而不是被索引的原数组的&lt;code class=&quot;highlighter-rouge&quot;&gt;shape&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;一维数组的&lt;code class=&quot;highlighter-rouge&quot;&gt;Fancy indexing&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.arange(12)**2     
+&amp;gt;&amp;gt;&amp;gt; i = np.array( [ 1,1,3,8,5 ] )    # 索引数组
+&amp;gt;&amp;gt;&amp;gt; a[i]                                      
+array([ 1,  1,  9, 64, 25])
+&amp;gt;&amp;gt;&amp;gt; j = np.array( [ [ 3, 4], [ 9, 7 ] ] )   
+&amp;gt;&amp;gt;&amp;gt; a[j]                       
+array([[ 9, 16],
+       [81, 49]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;多维数组的&lt;code class=&quot;highlighter-rouge&quot;&gt;Fancy indexing&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.arange(12).reshape(3,4)
+&amp;gt;&amp;gt;&amp;gt; a
+array([[ 0,  1,  2,  3],
+       [ 4,  5,  6,  7],
+       [ 8,  9, 10, 11]])
+&amp;gt;&amp;gt;&amp;gt; i = np.array( [ [0,1],      # 横向索引
+...                 [1,2] ] )
+&amp;gt;&amp;gt;&amp;gt; j = np.array( [ [2,1],      # 纵向索引 
+...                 [3,3] ] )
+&amp;gt;&amp;gt;&amp;gt;
+&amp;gt;&amp;gt;&amp;gt; a[i,j]                
+array([[ 2,  5],
+       [ 7, 11]])
+&amp;gt;&amp;gt;&amp;gt; a[i,2]
+array([[ 2,  6],
+       [ 6, 10]])
+&amp;gt;&amp;gt;&amp;gt;
+&amp;gt;&amp;gt;&amp;gt; a[:,j]             
+array([[[ 2,  1],
+        [ 3,  3]],
+       [[ 6,  5],
+        [ 7,  7]],
+       [[10,  9],
+        [11, 11]]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;如果索引数组包含多个相同的索引，那么最后的索引会覆盖前面的索引。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.arange(5)
+&amp;gt;&amp;gt;&amp;gt; a[[0,0,2]]=[1,2,3]
+&amp;gt;&amp;gt;&amp;gt; a
+array([2, 1, 3, 3, 4])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;但对于类似“+=”累加的操作却不会叠加两次：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.arange(5)
+&amp;gt;&amp;gt;&amp;gt; a[[0,0,2]]+=1
+&amp;gt;&amp;gt;&amp;gt; a
+array([1, 1, 3, 3, 4])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;布尔索引&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;索引数组元素为布尔类型的值：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.arange(12).reshape(3,4)
+&amp;gt;&amp;gt;&amp;gt; b = a &amp;gt; 4
+&amp;gt;&amp;gt;&amp;gt; b                        
+array([[False, False, False, False],
+       [False,  True,  True,  True],
+       [ True,  True,  True,  True]])
+&amp;gt;&amp;gt;&amp;gt; a[b]                   
+array([ 5,  6,  7,  8,  9, 10, 11])
+&amp;gt;&amp;gt;&amp;gt; a[b] = 0                
+&amp;gt;&amp;gt;&amp;gt; a
+array([[0, 1, 2, 3],
+       [4, 0, 0, 0],
+       [0, 0, 0, 0]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;索引数组有多个&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; a = np.arange(12).reshape(3,4)
+&amp;gt;&amp;gt;&amp;gt; b1 = np.array([False,True,True])             
+&amp;gt;&amp;gt;&amp;gt; b2 = np.array([True,False,True,False])      、
+
+&amp;gt;&amp;gt;&amp;gt; a[b1,:]                                  
+array([[ 4,  5,  6,  7],
+       [ 8,  9, 10, 11]])
+
+&amp;gt;&amp;gt;&amp;gt; a[b1]                                    
+array([[ 4,  5,  6,  7],
+       [ 8,  9, 10, 11]])
+
+&amp;gt;&amp;gt;&amp;gt; a[:,b2]                                
+array([[ 0,  2],
+       [ 4,  6],
+       [ 8, 10]])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;9-numpy的线性代数linear-algebra&quot;&gt;&lt;strong&gt;9 Numpy的线性代数（Linear Algebra）&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;包含求逆、奇异值分解、生成对角矩阵、解线性方程组Ax=b、计算特征值与特征向量等&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; import numpy as np
+&amp;gt;&amp;gt;&amp;gt; a = np.array([[1.0, 2.0], [3.0, 4.0]])
+&amp;gt;&amp;gt;&amp;gt; print(a)
+[[ 1.  2.]
+ [ 3.  4.]]
+
+&amp;gt;&amp;gt;&amp;gt; a.transpose() # 转置
+array([[ 1.,  3.],
+       [ 2.,  4.]])
+
+&amp;gt;&amp;gt;&amp;gt; np.linalg.inv(a) # 求逆
+array([[-2. ,  1. ],
+       [ 1.5, -0.5]])
+
+&amp;gt;&amp;gt;&amp;gt; u = np.eye(2) # 生成对角矩阵
+&amp;gt;&amp;gt;&amp;gt; u
+array([[ 1.,  0.],
+       [ 0.,  1.]])
+&amp;gt;&amp;gt;&amp;gt; j = np.array([[0.0, -1.0], [1.0, 0.0]])
+
+&amp;gt;&amp;gt;&amp;gt; np.dot (j, j) # 矩阵乘
+array([[-1.,  0.],
+       [ 0., -1.]])
+
+&amp;gt;&amp;gt;&amp;gt; np.trace(u)  # 求对角线元素和
+2.0
+
+&amp;gt;&amp;gt;&amp;gt; y = np.array([[5.], [7.]])
+&amp;gt;&amp;gt;&amp;gt; np.linalg.solve(a, y) # 解线性方程组Ax=b
+array([[-3.],
+       [ 4.]])
+
+&amp;gt;&amp;gt;&amp;gt; np.linalg.eig(j) #计算特征值与特征向量
+(array([ 0.+1.j,  0.-1.j]), array([[ 0.70710678+0.j        ,  0.70710678-0.j        ],
+       [ 0.00000000-0.70710678j,  0.00000000+0.70710678j]]))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;参考文献&quot;&gt;&lt;strong&gt;参考文献&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;Numpy API文档：https://docs.scipy.org/doc/numpy/user/quickstart.html&lt;/p&gt;
+</description>
+        <pubDate>Sat, 26 May 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/python/2018/05/26/Python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%BA%93-Numpy-%E6%95%B0%E7%BB%84%E6%94%AF%E6%8C%81%E5%BA%93.html</link>
+        <guid isPermaLink="true">http://localhost:4000/python/2018/05/26/Python%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E5%BA%93-Numpy-%E6%95%B0%E7%BB%84%E6%94%AF%E6%8C%81%E5%BA%93.html</guid>
+        
+        <category>Python</category>
+        
+        <category>数据分析</category>
+        
+        <category>Numpy</category>
+        
+        
+        <category>Python</category>
+        
+      </item>
     
       <item>
         <title>Python函数式编程中map()、reduce()和filter()函数的用法</title>
@@ -102,7 +753,7 @@ Apply function of two arguments cumulatively to the items of sequence, from left
 
 &lt;p&gt;由图2可以看出，&lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt;函数先将可迭代集合中的前两个元素进行&lt;code class=&quot;highlighter-rouge&quot;&gt;function&lt;/code&gt;操作运算，然后将运算结果与第三个元素再进行&lt;code class=&quot;highlighter-rouge&quot;&gt;function&lt;/code&gt;操作运算，以此类推，直到迭代完集合中所有的元素，最终返回递归结果。&lt;/p&gt;
 
-&lt;h1 id=&quot;3filter函数&quot;&gt;&lt;strong&gt;3、filter()函数&lt;/strong&gt;&lt;/h1&gt;
+&lt;h1 id=&quot;4filter函数&quot;&gt;&lt;strong&gt;4、filter()函数&lt;/strong&gt;&lt;/h1&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;filter()&lt;/code&gt;函数的Python3.x API文档&lt;/p&gt;
 
@@ -123,7 +774,7 @@ See itertools.filterfalse() for the complementary function that returns elements
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;h1 id=&quot;4mapreduce和filter与for&quot;&gt;&lt;strong&gt;4、map()、reduce()和filter()与for&lt;/strong&gt;&lt;/h1&gt;
+&lt;h1 id=&quot;5mapreduce和filter与for&quot;&gt;&lt;strong&gt;5、map()、reduce()和filter()与for&lt;/strong&gt;&lt;/h1&gt;
 
 &lt;p&gt;在Python的函数式编程中的&lt;code class=&quot;highlighter-rouge&quot;&gt;map()&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;reduce()&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;filter()&lt;/code&gt;函数，均可用for循环来实现，那么&lt;strong&gt;为什么还需要map()、reduce()和filter()函数呢？&lt;/strong&gt;&lt;/p&gt;
 

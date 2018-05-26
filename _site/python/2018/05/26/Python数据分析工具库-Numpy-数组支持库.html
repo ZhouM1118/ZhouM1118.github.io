@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="Python数据分析工具库-Numpy 数组支持库" name="description">
+  
+  
+    <meta name="keywords" content="Python, 数据分析, Numpy">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|Python数据分析工具库-Numpy 数组支持库
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DataMining/">DataMining</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Python</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 26 May 2018</span>
+                        <h1>
+                            Python数据分析工具库-Numpy 数组支持库
+                        </h1>
+                    </div>
+                    	<h1 id="1-numpy数组"><strong>1 Numpy数组</strong></h1>
+
+<p>在Python中有类似数组功能的数据结构，比如<code class="highlighter-rouge">list</code>，但在数据量大时，<code class="highlighter-rouge">list</code>的运行速度便不尽如意，<strong>Numpy（Numerical Python）</strong>提供了真正的数组功能，以及对数据进行快速处理的函数，<strong>Numpy中内置函数处理数据的速度是C语言级别的</strong>。Numpy支持高级大量的维度数组与矩阵运算，此外也针对数组运算提供大量的数学函数库。Numpy中的<code class="highlighter-rouge">ndarray</code>类提供了python对多维数组对象的支持，并具备对矢量进行运算的能力，运算更为快速且节省空间。</p>
+
+<p><strong><code class="highlighter-rouge">ndarray</code>是N维数组对象（矩阵），其中所有的元素都必须是相同类型</strong>。<code class="highlighter-rouge">ndarray</code>主要包含以下几个属性：</p>
+
+<p><code class="highlighter-rouge">ndarray.ndim</code>：表示数组对象或矩阵的维度；</p>
+
+<p><code class="highlighter-rouge">ndarray.shape</code>：表示每个维度上的数组的大小；</p>
+
+<p><code class="highlighter-rouge">ndarray.size</code>：表示数组中元素的总数，等同于ndarray.shape中两个元素的乘积；</p>
+
+<p><code class="highlighter-rouge">ndarray.dtype</code>：表示数组中元素的类型；</p>
+
+<p><code class="highlighter-rouge">ndarray.itemsize</code>：表示数组中每个元素的字节大小，比如数据类型为float64的数组，其元素的字节大小为64/8=8。</p>
+
+<p>比如：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; a = np.arange(15).reshape(3, 5)
+&gt;&gt;&gt; a
+array([[ 0,  1,  2,  3,  4],
+       [ 5,  6,  7,  8,  9],
+       [10, 11, 12, 13, 14]])
+&gt;&gt;&gt; a.shape
+(3, 5)
+&gt;&gt;&gt; a.ndim
+2
+&gt;&gt;&gt; a.dtype.name
+'int64'
+&gt;&gt;&gt; a.itemsize
+8
+&gt;&gt;&gt; a.size
+15
+&gt;&gt;&gt; type(a)
+&lt;type 'numpy.ndarray'&gt;
+</code></pre>
+</div>
+
+<h1 id="2-创建numpy数组"><strong>2 创建Numpy数组</strong></h1>
+
+<p><strong>array方法</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; a = np.array([2,3,4])#创建一维数组
+&gt;&gt;&gt; b = np.array([(1.5,2,3), (4,5,6)])#创建二维数组
+&gt;&gt;&gt; c = np.array( [ [1,2], [3,4] ], dtype=float64 )#创建指定数据类型的数组
+</code></pre>
+</div>
+
+<p><strong>如果想创建指定shape的数组，并使用占位符来初始化数组，可以用以下方法</strong>：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; np.zeros( (3,4) )#创建3行4列矩阵，用0初始化矩阵中所有的元素
+array([[ 0.,  0.,  0.,  0.],
+       [ 0.,  0.,  0.,  0.],
+       [ 0.,  0.,  0.,  0.]])
+&gt;&gt;&gt; np.ones( (2,3,4), dtype=np.int16 ) #创建三维矩阵，维度分别为2，3，4，且用1来初始化矩阵中所有的元素
+array([[[ 1, 1, 1, 1],
+        [ 1, 1, 1, 1],
+        [ 1, 1, 1, 1]],
+       [[ 1, 1, 1, 1],
+        [ 1, 1, 1, 1],
+        [ 1, 1, 1, 1]]], dtype=int16)
+&gt;&gt;&gt; np.empty( (2,3) ) #创建2行3列空矩阵，矩阵中元素初始值随机，取决于内存状态，默认情况下，创建的数组的dtype为float64。
+array([[  3.73603959e-262,   6.02658058e-154,   6.55490914e-260],
+       [  5.30498948e-313,   3.14673309e-307,   1.00000000e+000]])
+</code></pre>
+</div>
+
+<p>对应的<code class="highlighter-rouge">zeros、ones、empty</code>还有<code class="highlighter-rouge">zeros_like、ones_like、empty_like</code>，它们以另一个数组为参数，根据其形状和dtype创建数组。</p>
+
+<p><strong>arange方法</strong>，与Python内置的range相似：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; numpy.arange(6)
+array([0,1,2,3,4,5,])
+&gt;&gt;&gt; np.arange( 10, 30, 5 )
+array([10, 15, 20, 25])
+</code></pre>
+</div>
+
+<h1 id="3-数组基本数学操作"><strong>3 数组基本数学操作</strong></h1>
+
+<p><strong>加、减、乘、点乘</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.array( [20,30,40,50] )
+&gt;&gt;&gt; b = np.arange( 4 )
+&gt;&gt;&gt; b
+array([0, 1, 2, 3])
+&gt;&gt;&gt; c = a-b
+&gt;&gt;&gt; c
+array([20, 29, 38, 47])
+&gt;&gt;&gt; 10*np.sin(a)
+array([ 9.12945251, -9.88031624,  7.4511316 , -2.62374854])
+&gt;&gt;&gt; a&lt;35
+array([ True, True, False, False])
+&gt;&gt;&gt; A = np.array( [[1,1],
+...             [0,1]] )
+&gt;&gt;&gt; B = np.array( [[2,0],
+...             [3,4]] )
+&gt;&gt;&gt; A*B #矩阵相乘
+array([[2, 0],
+       [0, 4]])
+&gt;&gt;&gt; A.dot(B) #矩阵点乘
+array([[5, 4],
+       [3, 4]])
+&gt;&gt;&gt; np.dot(A, B)  #矩阵点乘
+array([[5, 4],
+       [3, 4]])
+</code></pre>
+</div>
+
+<p><strong>叠加、叠乘</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.ones((2,3), dtype=int)
+&gt;&gt;&gt; b = np.random.random((2,3))
+&gt;&gt;&gt; a *= 3
+&gt;&gt;&gt; a
+array([[3, 3, 3],
+       [3, 3, 3]])
+&gt;&gt;&gt; b += a
+&gt;&gt;&gt; b
+array([[ 3.417022  ,  3.72032449,  3.00011437],
+       [ 3.30233257,  3.14675589,  3.09233859]])
+&gt;&gt;&gt; a += b  #浮点型不能转换成整型
+TypeError: Cannot cast ufunc add output from dtype('float64') to dtype('int64') with casting rule 'same_kind'
+</code></pre>
+</div>
+
+<p><strong>取最大、最小、求和</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.random.random((2,3))
+&gt;&gt;&gt; a
+array([[ 0.18626021,  0.34556073,  0.39676747],
+       [ 0.53881673,  0.41919451,  0.6852195 ]])
+&gt;&gt;&gt; a.sum()
+2.5718191614547998
+&gt;&gt;&gt; a.min()
+0.1862602113776709
+&gt;&gt;&gt; a.max()
+0.6852195003967595
+</code></pre>
+</div>
+
+<p>对于多维矩阵，只在其中指定轴进行操作，使用<code class="highlighter-rouge">axis</code>参数</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; b = np.arange(12).reshape(3,4)
+&gt;&gt;&gt; b
+array([[ 0,  1,  2,  3],
+       [ 4,  5,  6,  7],
+       [ 8,  9, 10, 11]])
+&gt;&gt;&gt; b.sum(axis=0)   #对二维矩阵的列轴进行求和
+array([12, 15, 18, 21])
+&gt;&gt;&gt; b.min(axis=1)  #求二维矩阵的每个横轴最小值
+array([0, 4, 8])
+</code></pre>
+</div>
+
+<p><strong>通用函数（ufunc）</strong>，对<code class="highlighter-rouge">ndarray</code>中的数据执行元素级运算，比如<code class="highlighter-rouge">sin、cos、exp</code>等：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; B = np.arange(3)
+&gt;&gt;&gt; B
+array([0, 1, 2])
+&gt;&gt;&gt; np.exp(B)
+array([ 1.        ,  2.71828183,  7.3890561 ])
+&gt;&gt;&gt; np.sqrt(B)
+array([ 0.        ,  1.        ,  1.41421356])
+&gt;&gt;&gt; C = np.array([2., -1., 4.])
+&gt;&gt;&gt; np.add(B, C)
+array([ 2.,  0.,  6.])
+</code></pre>
+</div>
+
+<h1 id="4-数组的索引切片和遍历"><strong>4 数组的索引、切片和遍历</strong></h1>
+
+<p>和Python的<code class="highlighter-rouge">list</code>数据结构类似，Numpy的一维数组也可以进行索引、切片以及遍历。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.arange(10)**3
+&gt;&gt;&gt; a
+array([  0,   1,   8,  27,  64, 125, 216, 343, 512, 729])
+&gt;&gt;&gt; a[2]
+8
+&gt;&gt;&gt; a[2:5]
+array([ 8, 27, 64])
+&gt;&gt;&gt; a[:6:2] = -1000    #从0-6的元素中，每隔2个将元素值重新赋值为-1000
+&gt;&gt;&gt; a
+array([-1000,     1, -1000,    27, -1000,   125,   216,   343,   512,   729])
+&gt;&gt;&gt; for i in a:
+...     print(i + 1)
+-999
+2
+-999
+28
+-999
+126
+217
+344
+513
+730
+</code></pre>
+</div>
+
+<p><strong>二维数组的索引、切片：</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; def f(x,y):
+...     return 10*x+y
+...
+&gt;&gt;&gt; b = np.fromfunction(f,(5,4),dtype=int) #函数式创建数组，fromfunction第一个参数为函数f，第二个参数为数组的shape，shape第一个参数为函数f第一个参数的取值范围，第二个参数为函数f第二个参数的取值范围，dtype表示数组元素类型。
+&gt;&gt;&gt; b
+array([[ 0,  1,  2,  3],
+       [10, 11, 12, 13],
+       [20, 21, 22, 23],
+       [30, 31, 32, 33],
+       [40, 41, 42, 43]])
+&gt;&gt;&gt; b[2,3] #不是数组b中的第2行第三列的元素，而是索引为[2，3]的元素
+23
+&gt;&gt;&gt; b[0:5, 1]  #取出从第0行到第5行的第2个元素组成数组
+array([ 1, 11, 21, 31, 41])
+&gt;&gt;&gt; b[ : ,1]  #等同于前一句
+array([ 1, 11, 21, 31, 41])
+&gt;&gt;&gt; b[1:3, : ]  #取出第2行与第3行的所有元素组成数组
+array([[10, 11, 12, 13],
+       [20, 21, 22, 23]])
+&gt;&gt;&gt; for row in b: #遍历得到b数组的每一行元素
+...     print(row)
+...
+[0 1 2 3]
+[10 11 12 13]
+[20 21 22 23]
+[30 31 32 33]
+[40 41 42 43]
+&gt;&gt;&gt; for element in b.flat: #遍历得到b数组的每一个元素
+...     print(element)
+...
+0
+1
+2
+3
+10
+11
+12
+13
+20
+21
+22
+23
+30
+31
+32
+33
+40
+41
+42
+43
+</code></pre>
+</div>
+
+<p><strong>多维数组的索引、切片：</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; c = np.array( [[[  0,  1,  2],    
+...                 [ 10, 12, 13]],
+...                [[100,101,102],
+...                 [110,112,113]]])
+&gt;&gt;&gt; c.shape
+(2, 2, 3)
+&gt;&gt;&gt; c[1,…]   #等同于 c[1,:,:] or c[1]
+array([[100, 101, 102],
+       [110, 112, 113]])
+&gt;&gt;&gt; c[...,2]   #等同于 c[:,:,2]
+array([[  2,  13],
+       [102, 113]])
+</code></pre>
+</div>
+
+<h1 id="5-shape变化及转置"><strong>5 shape变化及转置</strong></h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.floor(10*np.random.random((3,4)))
+&gt;&gt;&gt; a
+array([[ 2.,  8.,  0.,  6.],
+       [ 4.,  5.,  1.,  1.],
+       [ 8.,  9.,  3.,  6.]])
+&gt;&gt;&gt; a.shape
+(3, 4)
+&gt;&gt;&gt; a.ravel()  # 转化为一维数组
+array([ 2.,  8.,  0.,  6.,  4.,  5.,  1.,  1.,  8.,  9.,  3.,  6.])
+&gt;&gt;&gt; a.reshape(6,2)  # 将数组a转化为指定shape的数组
+array([[ 2.,  8.],
+       [ 0.,  6.],
+       [ 4.,  5.],
+       [ 1.,  1.],
+       [ 8.,  9.],
+       [ 3.,  6.]])
+&gt;&gt;&gt; a.T  # 数组的转置
+array([[ 2.,  4.,  8.],
+       [ 8.,  5.,  9.],
+       [ 0.,  1.,  3.],
+       [ 6.,  1.,  6.]])
+&gt;&gt;&gt; a.T.shape
+(4, 3)
+&gt;&gt;&gt; a.shape
+(3, 4)
+</code></pre>
+</div>
+
+<p>注意<strong>对数组进行reshape操作不会改变原有数组a，但resize会在原有数组a上进行改变</strong>：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a.resize((2,6))
+&gt;&gt;&gt; a
+array([[ 2.,  8.,  0.,  6.,  4.,  5.],
+       [ 1.,  1.,  8.,  9.,  3.,  6.]])
+</code></pre>
+</div>
+
+<p><strong>当reshape方法中有参数为-1，则表示numpy会自己计算-1位置的维数</strong>，这在很多深度学习模型中可以见到。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a.reshape(3,-1)
+array([[ 2.,  8.,  0.,  6.],
+       [ 4.,  5.,  1.,  1.],
+       [ 8.,  9.,  3.,  6.]])
+</code></pre>
+</div>
+
+<h1 id="6-数组的合并与拆分"><strong>6 数组的合并与拆分</strong></h1>
+
+<p><strong>concatenate连接</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; x = numpy.array([[1, 2, 3], [4, 5, 6]])
+&gt;&gt;&gt; y = numpy.array([[7, 8, 9], [10, 11, 12]])
+&gt;&gt;&gt; numpy.concatenate([x, y], axis = 0)  # 竖直组合 
+[[ 1  2  3][ 4  5  6][ 7  8  9][10 11 12]]
+&gt;&gt;&gt; numpy.concatenate([x, y], axis = 1)  # 水平组合
+ [[ 1  2  3  7  8  9][ 4  5  6 10 11 12]]
+</code></pre>
+</div>
+
+<p><strong>横向合并</strong>，沿第一个轴进行堆叠，比如：<code class="highlighter-rouge">vstack</code>或<code class="highlighter-rouge">row_stack</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.floor(10*np.random.random((2,2)))
+&gt;&gt;&gt; a
+array([[ 8.,  8.],
+       [ 0.,  0.]])
+&gt;&gt;&gt; b = np.floor(10*np.random.random((2,2)))
+&gt;&gt;&gt; b
+array([[ 1.,  8.],
+       [ 0.,  4.]])
+&gt;&gt;&gt; np.vstack((a,b))
+array([[ 8.,  8.],
+       [ 0.,  0.],
+       [ 1.,  8.],
+       [ 0.,  4.]])
+</code></pre>
+</div>
+
+<p><strong>纵向合并</strong>，沿着第二个轴进行堆叠，比如<code class="highlighter-rouge">hstack</code>和<code class="highlighter-rouge">column_stack</code>，两者不一样，<code class="highlighter-rouge">column_stack</code>在对一维数组进行堆叠时会先将一维数组转化为二维数组，最终返回二维数组。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; np.hstack((a,b)) #使用hstack对二维数组进行纵向合并
+array([[ 8.,  8.,  1.,  8.],
+       [ 0.,  0.,  0.,  4.]])
+&gt;&gt;&gt; np.column_stack((a,b)) #使用column_stack对二维数组进行纵向合并
+array([[ 8.,  8.,  1.,  8.],
+       [ 0.,  0.,  0.,  4.]])
+&gt;&gt;&gt; a = np.array([4.,2.])
+&gt;&gt;&gt; b = np.array([3.,8.])
+&gt;&gt;&gt; np.column_stack((a,b)) #使用column_stack对一维数组进行纵向合并，返回二维数组
+array([[ 4., 3.],
+       [ 2., 8.]])
+&gt;&gt;&gt; np.hstack((a,b))  #使用hstack对一维数组进行纵向合并，返回一维数组
+array([ 4., 2., 3., 8.])
+</code></pre>
+</div>
+
+<p><code class="highlighter-rouge">array_split ，numpy.array_split(ary, indices_or_sections, axis=0)</code>，沿着第一个轴从左至右的顺序切分：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; x = np.arange(8.0)
+&gt;&gt;&gt; np.array_split(x, 3)
+    [array([ 0.,  1.,  2.]), array([ 3.,  4.,  5.]), array([ 6.,  7.])]
+&gt;&gt;&gt; x = np.arange(7.0)
+&gt;&gt;&gt; np.array_split(x, 3)
+    [array([ 0.,  1.,  2.]), array([ 3.,  4.]), array([ 5.,  6.])]
+</code></pre>
+</div>
+
+<p><strong>vsplit</strong>，沿着第一个轴切分，相当于<code class="highlighter-rouge">split</code>方法中参数<code class="highlighter-rouge">axis=0</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; x = np.arange(16.0).reshape(4, 4)
+&gt;&gt;&gt; x
+array([[  0.,   1.,   2.,   3.],
+       [  4.,   5.,   6.,   7.],
+       [  8.,   9.,  10.,  11.],
+       [ 12.,  13.,  14.,  15.]])
+&gt;&gt;&gt; np.vsplit(x, 2)
+[array([[ 0.,  1.,  2.,  3.],
+       [ 4.,  5.,  6.,  7.]]),
+ array([[  8.,   9.,  10.,  11.],
+       [ 12.,  13.,  14.,  15.]])]
+</code></pre>
+</div>
+
+<p><strong>hsplit</strong>，沿着第二个轴切分，相当于<code class="highlighter-rouge">split</code>方法中参数<code class="highlighter-rouge">axis=1</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; x = np.arange(16.0).reshape(4, 4)
+&gt;&gt;&gt; x
+array([[  0.,   1.,   2.,   3.],
+       [  4.,   5.,   6.,   7.],
+       [  8.,   9.,  10.,  11.],
+       [ 12.,  13.,  14.,  15.]])
+&gt;&gt;&gt; np.hsplit(x, 2)
+[array([[  0.,   1.],
+       [  4.,   5.],
+       [  8.,   9.],
+       [ 12.,  13.]]),
+ array([[  2.,   3.],
+       [  6.,   7.],
+       [ 10.,  11.],
+       [ 14.,  15.]])]
+</code></pre>
+</div>
+
+<h1 id="7-数组的复制"><strong>7 数组的复制</strong></h1>
+
+<p><strong>完全不复制（No Copy at All）</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.arange(12)
+&gt;&gt;&gt; b = a            # no new object is created
+&gt;&gt;&gt; b is a           # a and b are two names for the same ndarray object
+True
+&gt;&gt;&gt; b.shape = 3,4    # changes the shape of a
+&gt;&gt;&gt; a.shape
+(3, 4)
+</code></pre>
+</div>
+
+<p>这种方式的“复制”其实没有实际复制，<strong>只是将变量<code class="highlighter-rouge">b</code>在内存的索引指向了变量<code class="highlighter-rouge">a</code>所在的内存</strong>，这样变量<code class="highlighter-rouge">a</code>和变量<code class="highlighter-rouge">b</code>均指向同一块内存，这时候改变了<code class="highlighter-rouge">b</code>就相当于改变了<code class="highlighter-rouge">a</code>。</p>
+
+<p><strong>浅复制</strong></p>
+
+<p><strong>使用<code class="highlighter-rouge">view</code>方法来创建一个新的数组对象，并把将被复制的数组<code class="highlighter-rouge">a</code>的视图（view）复制到新的数组对象<code class="highlighter-rouge">c</code>中</strong>，这时的<code class="highlighter-rouge">c</code>数据完全来自于<code class="highlighter-rouge">a</code>，和 <code class="highlighter-rouge">a</code> 保持完全一致，换句话说，<code class="highlighter-rouge">c</code>的数据完全由<code class="highlighter-rouge">a</code>保管，他们两个的数据变化是一致的：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; c = a.view()
+&gt;&gt;&gt; c is a
+False
+&gt;&gt;&gt; c.base is a       # c只是a的视图
+True
+&gt;&gt;&gt; c.flags.owndata
+False
+&gt;&gt;&gt; c.shape = 2,6   # a的shape不会变化
+&gt;&gt;&gt; a.shape
+(3, 4)
+&gt;&gt;&gt; c[0,4] = 1234   # a的值会相应的变化
+&gt;&gt;&gt; a
+array([[   0,    1,    2,    3],
+       [1234,    5,    6,    7],
+       [   8,    9,   10,   11]])
+</code></pre>
+</div>
+
+<p><strong>切片也是一种浅复制</strong>：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; s = a[ : , 1:3]     # 将a的第2列与第三列浅复制给s
+&gt;&gt;&gt; s[:] = 10           # 将s的所有元素重新赋值为10，也会改变a相应位置的值
+&gt;&gt;&gt; a
+array([[   0,   10,   10,    3],
+       [1234,   10,   10,    7],
+       [   8,   10,   10,   11]])
+</code></pre>
+</div>
+
+<p><strong>深复制</strong></p>
+
+<p>使用<code class="highlighter-rouge">copy</code>方法，<strong>不仅将被复制数组的索引复制到新的数组中，也将被复制数组的元素复制到新的数组中</strong>。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; d = a.copy()      # 创建一个新的数组
+&gt;&gt;&gt; d is a
+False
+&gt;&gt;&gt; d.base is a     
+False
+&gt;&gt;&gt; d[0,0] = 9999
+&gt;&gt;&gt; a
+array([[   0,   10,   10,    3],
+       [1234,   10,   10,    7],
+       [   8,   10,   10,   11]])
+</code></pre>
+</div>
+
+<h1 id="8-fancy-indexing与布尔索引"><strong>8 Fancy indexing与布尔索引</strong></h1>
+
+<p><code class="highlighter-rouge">Fancy indexing</code>是指传递索引数组以便一次得到多个数组元素。使用<code class="highlighter-rouge">Fancy indexing</code>时返回数组的<code class="highlighter-rouge">shape</code>是索引数组的<code class="highlighter-rouge">shape</code>而不是被索引的原数组的<code class="highlighter-rouge">shape</code>。</p>
+
+<p><strong>一维数组的<code class="highlighter-rouge">Fancy indexing</code></strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.arange(12)**2     
+&gt;&gt;&gt; i = np.array( [ 1,1,3,8,5 ] )    # 索引数组
+&gt;&gt;&gt; a[i]                                      
+array([ 1,  1,  9, 64, 25])
+&gt;&gt;&gt; j = np.array( [ [ 3, 4], [ 9, 7 ] ] )   
+&gt;&gt;&gt; a[j]                       
+array([[ 9, 16],
+       [81, 49]])
+</code></pre>
+</div>
+
+<p><strong>多维数组的<code class="highlighter-rouge">Fancy indexing</code></strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.arange(12).reshape(3,4)
+&gt;&gt;&gt; a
+array([[ 0,  1,  2,  3],
+       [ 4,  5,  6,  7],
+       [ 8,  9, 10, 11]])
+&gt;&gt;&gt; i = np.array( [ [0,1],      # 横向索引
+...                 [1,2] ] )
+&gt;&gt;&gt; j = np.array( [ [2,1],      # 纵向索引 
+...                 [3,3] ] )
+&gt;&gt;&gt;
+&gt;&gt;&gt; a[i,j]                
+array([[ 2,  5],
+       [ 7, 11]])
+&gt;&gt;&gt; a[i,2]
+array([[ 2,  6],
+       [ 6, 10]])
+&gt;&gt;&gt;
+&gt;&gt;&gt; a[:,j]             
+array([[[ 2,  1],
+        [ 3,  3]],
+       [[ 6,  5],
+        [ 7,  7]],
+       [[10,  9],
+        [11, 11]]])
+</code></pre>
+</div>
+
+<p><strong>如果索引数组包含多个相同的索引，那么最后的索引会覆盖前面的索引。</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.arange(5)
+&gt;&gt;&gt; a[[0,0,2]]=[1,2,3]
+&gt;&gt;&gt; a
+array([2, 1, 3, 3, 4])
+</code></pre>
+</div>
+
+<p><strong>但对于类似“+=”累加的操作却不会叠加两次：</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.arange(5)
+&gt;&gt;&gt; a[[0,0,2]]+=1
+&gt;&gt;&gt; a
+array([1, 1, 3, 3, 4])
+</code></pre>
+</div>
+
+<p><strong>布尔索引</strong></p>
+
+<p>索引数组元素为布尔类型的值：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.arange(12).reshape(3,4)
+&gt;&gt;&gt; b = a &gt; 4
+&gt;&gt;&gt; b                        
+array([[False, False, False, False],
+       [False,  True,  True,  True],
+       [ True,  True,  True,  True]])
+&gt;&gt;&gt; a[b]                   
+array([ 5,  6,  7,  8,  9, 10, 11])
+&gt;&gt;&gt; a[b] = 0                
+&gt;&gt;&gt; a
+array([[0, 1, 2, 3],
+       [4, 0, 0, 0],
+       [0, 0, 0, 0]])
+</code></pre>
+</div>
+
+<p>索引数组有多个</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; a = np.arange(12).reshape(3,4)
+&gt;&gt;&gt; b1 = np.array([False,True,True])             
+&gt;&gt;&gt; b2 = np.array([True,False,True,False])      、
+
+&gt;&gt;&gt; a[b1,:]                                  
+array([[ 4,  5,  6,  7],
+       [ 8,  9, 10, 11]])
+
+&gt;&gt;&gt; a[b1]                                    
+array([[ 4,  5,  6,  7],
+       [ 8,  9, 10, 11]])
+
+&gt;&gt;&gt; a[:,b2]                                
+array([[ 0,  2],
+       [ 4,  6],
+       [ 8, 10]])
+</code></pre>
+</div>
+
+<h1 id="9-numpy的线性代数linear-algebra"><strong>9 Numpy的线性代数（Linear Algebra）</strong></h1>
+
+<p>包含求逆、奇异值分解、生成对角矩阵、解线性方程组Ax=b、计算特征值与特征向量等</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; a = np.array([[1.0, 2.0], [3.0, 4.0]])
+&gt;&gt;&gt; print(a)
+[[ 1.  2.]
+ [ 3.  4.]]
+
+&gt;&gt;&gt; a.transpose() # 转置
+array([[ 1.,  3.],
+       [ 2.,  4.]])
+
+&gt;&gt;&gt; np.linalg.inv(a) # 求逆
+array([[-2. ,  1. ],
+       [ 1.5, -0.5]])
+
+&gt;&gt;&gt; u = np.eye(2) # 生成对角矩阵
+&gt;&gt;&gt; u
+array([[ 1.,  0.],
+       [ 0.,  1.]])
+&gt;&gt;&gt; j = np.array([[0.0, -1.0], [1.0, 0.0]])
+
+&gt;&gt;&gt; np.dot (j, j) # 矩阵乘
+array([[-1.,  0.],
+       [ 0., -1.]])
+
+&gt;&gt;&gt; np.trace(u)  # 求对角线元素和
+2.0
+
+&gt;&gt;&gt; y = np.array([[5.], [7.]])
+&gt;&gt;&gt; np.linalg.solve(a, y) # 解线性方程组Ax=b
+array([[-3.],
+       [ 4.]])
+
+&gt;&gt;&gt; np.linalg.eig(j) #计算特征值与特征向量
+(array([ 0.+1.j,  0.-1.j]), array([[ 0.70710678+0.j        ,  0.70710678-0.j        ],
+       [ 0.00000000-0.70710678j,  0.00000000+0.70710678j]]))
+</code></pre>
+</div>
+
+<h1 id="参考文献"><strong>参考文献</strong></h1>
+
+<p>Numpy API文档：https://docs.scipy.org/doc/numpy/user/quickstart.html</p>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">Python</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">数据分析</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">Numpy</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
