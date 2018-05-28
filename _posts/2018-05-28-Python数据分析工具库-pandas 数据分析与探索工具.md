@@ -789,3 +789,7 @@ A       0.895717
 B       0.410835
 C      -1.413681
 ```
+
+# **参考**
+
+pandas API文档：http://pandas.pydata.org/pandas-docs/stable/index.html
