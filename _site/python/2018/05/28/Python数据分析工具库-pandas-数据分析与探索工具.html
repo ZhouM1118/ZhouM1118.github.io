@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	
+	    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <meta content="Python数据分析工具库-pandas 数据分析与探索工具" name="description">
+  
+  
+    <meta name="keywords" content="Python, 数据分析, pandas">
+  
+  <meta name="author" content="周明">
+
+  <title>
+    
+        周明的技术博客|Python数据分析工具库-pandas 数据分析与探索工具
+    
+  </title>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/static/assets/img/favicon.ico">
+
+  <!-- Main CSS -->
+  <link href="/static/assets/app-20170521.min.css" rel="stylesheet">
+
+  <!-- Main Scripts -->
+  <script src="/static/assets/app-20170521.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var initial = 0;
+      var show = true;
+
+      var toggleSearch = function (visible) {
+        initial = 0;
+        show = !visible;
+        var visibility = visible ? 'block' : 'none';
+
+        $("#search-content").val("");
+        $(".search-tool").css("display", visibility);
+      };
+
+      var shouldToggle = function (time) {
+        var gap = time - initial;
+        initial = time;
+        return gap < 500;
+      };
+
+      $(document).keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        } else if (e.keyCode == 27) {
+          toggleSearch(false);
+        }
+      });
+
+      $("#search-content").keyup(function (e) {
+        var now = new Date().getTime();
+        if (e.keyCode == 17 && shouldToggle(now)) {
+          toggleSearch(show);
+        }
+      });
+
+      $("#close-btn").click(function () {
+        toggleSearch(false);
+      });
+
+      $("#search-btn").click(function() {
+        toggleSearch(true);
+      });
+
+      $.getJSON("/search/cb-search.json")
+        .done(function (data) {
+          if (data.code == 0) {
+            $("#search-content").typeahead({
+              source: data.data,
+              displayText: function (item) {
+                return item.title;
+              },
+              afterSelect: function (item) {
+                window.location.href = item.url;
+              }
+            });
+          }
+        });
+    });
+    $(function(){
+        $("pre").css('display','block');
+    });
+  </script>
+</head>
+
+	
+
+<body id="page-top" class="landing-page">
+
+	
+	    <div class="search-tool"
+      style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px; opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control search-content" id="search-content" style="position: fixed; top: 60px" placeholder="Search Blog">
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 9999;">
+        <img src="/search/img/cb-close.png" id="close-btn"/>
+    </div>
+</div>
+
+<div style="position: fixed; right: 16px; bottom: 20px; z-index: 9999;">
+    <img src="/search/img/cb-search.png"  id="search-btn"  title="Double click Ctrl"/>
+</div>
+
+<div class="navbar-wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">周明的技术博客</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a class="page-scroll" href="blog/"></a></li>
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/blog/">Blog</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/java/">Java</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/javascript/">Javascript</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/database/">Database</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/python/">Python</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/linux/">Linux</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DataMining/">DataMining</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/DeepLearning/">DeepLearning</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/life/">Life</a></li>
+                        
+                    
+                        
+                        
+                        <li>
+                        
+                        <a class="page-scroll" href="/donate/">Donate</a></li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#inSlider" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item active">
+            <div class="container">
+                <div class="carousel-caption">
+                </div>
+                <div class="carousel-image wow zoomIn">
+                    <!-- <img src="static/img/landing/laptop.png" alt="laptop"/> -->
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back one"></div>
+
+        </div>
+        <div class="item">
+            <div class="container">
+                <div class="carousel-caption blank">
+                </div>
+            </div>
+            <!-- Set background for slide in css -->
+            <div class="header-back two"></div>
+        </div>
+    </div>
+    <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+	
+
+    <div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                    	
+                        	<button class="btn btn-white btn-xs" type="button">Python</button>
+                        
+                    </div>
+                    <div class="text-center article-title">
+                    <span class="text-muted"><i class="fa fa-clock-o"></i> 28 May 2018</span>
+                        <h1>
+                            Python数据分析工具库-pandas 数据分析与探索工具
+                        </h1>
+                    </div>
+                    	<p><strong>pandas是基于numpy的一个高级数据结构和操作的数据分析与探索工具</strong>，本文基于pandas API文档对pandas的<strong>两个重要的数据结构、基本函数、函数应用、排序以及层次化索引</strong>进行分析，对于本文的示例代码做如下约定：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>import numpy as np
+from pandas import Series, DataFrame
+import pandas as pd
+</code></pre>
+</div>
+
+<h1 id="1-pandas-数据结构"><strong>1 pandas 数据结构</strong></h1>
+
+<h2 id="11-series"><strong>1.1 Series</strong></h2>
+
+<p><strong>Series是一种类似于一维数组的对象</strong>，它的索引由参数index指定，创建一个Series的语法如下：</p>
+
+<blockquote>
+  <p>s = Series(data, index=index)</p>
+</blockquote>
+
+<p>data的类型可以是：<strong>Python的dict、numpy的ndarray或标量值</strong></p>
+
+<p><strong>Python的dict</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; d = {'b' : 1, 'a' : 0, 'c' : 2}
+&gt;&gt;&gt; pd.Series(d)
+b    1
+a    0
+c    2
+dtype: int64
+</code></pre>
+</div>
+
+<p><strong>numpy的ndarray</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; s = pd.Series(np.random.randn(5), index=['a', 'b', 'c', 'd', 'e'])
+&gt;&gt;&gt; s
+a    0.4691
+b   -0.2829
+c   -1.5091
+d   -1.1356
+e    1.2121
+dtype: float64
+</code></pre>
+</div>
+
+<p><strong>标量值</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; pd.Series(5., index=['a', 'b', 'c', 'd', 'e'])
+a    5.0
+b    5.0
+c    5.0
+d    5.0
+e    5.0
+dtype: float64
+</code></pre>
+</div>
+
+<p><strong>如果不指定index的值，会自动创建一个0~N-1（N为数据的长度）的整数型索引</strong>。</p>
+
+<p>与ndarray类似，你也可以对Series进行<strong>切片、索引</strong>等操作，如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; s
+a    0.4691
+b   -0.2829
+c   -1.5091
+d   -1.1356
+e    1.2121
+
+&gt;&gt;&gt; s[0]
+0.4691
+
+&gt;&gt;&gt; s[:3]
+a    0.4691
+b   -0.2829
+c   -1.5091
+dtype: float64
+
+&gt;&gt;&gt; s[s &gt; s.median()]
+a    0.4691
+e    1.2121
+dtype: float64
+
+&gt;&gt;&gt; s[[4, 3, 1]]
+e    1.2121
+d   -1.1356
+b   -0.2829
+dtype: float64
+
+&gt;&gt;&gt; np.exp(s)
+a    1.5986
+b    0.7536
+c    0.2211
+d    0.3212
+e    3.3606
+dtype: float64
+</code></pre>
+</div>
+
+<p>同时也可以<strong>将Series看出是一个定长的有序字典</strong>，如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; s['a’]
+0.4691
+
+&gt;&gt;&gt; s['e'] = 12.
+
+&gt;&gt;&gt; s
+a     0.4691
+b    -0.2829
+c    -1.5091
+d    -1.1356
+e    12.0000
+dtype: float64
+
+&gt;&gt;&gt; 'e' in s
+True
+
+&gt;&gt;&gt; 'f' in s
+False
+</code></pre>
+</div>
+
+<p>Series和ndarray之间的一个关键区别是，<strong>Series在算术运算中会自动对齐不同索引的数据</strong>。因此，我们在操作Series时不必考虑Series是否具有相同的标签，比如：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; s[1:] + s[:-1]
+a       NaN
+b   -0.5657
+c   -3.0181
+d   -2.2713
+e       NaN
+dtype: float64
+</code></pre>
+</div>
+
+<p>在pandas中，<strong>如果一个索引在一个Series中而不存在另一个Series中，那么它们操作的结果用NaN（即非数字，not a number）来表示</strong>，在pandas中常用它来表示缺失或NA值，pandas的isnull和notnull函数可以来检测Series中的缺失数据。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; pd.isnull(s) # 等同于s.isnull()
+a   True
+b   False
+c   False
+d   False
+e   True
+
+&gt;&gt;&gt; pd.notnull(s) # 等同于s.notnull()
+a   False
+b   True
+c   True
+d   True
+e   False
+</code></pre>
+</div>
+
+<h2 id="12-dataframe"><strong>1.2 DataFrame</strong></h2>
+
+<p><strong>DataFrame是一个表格型的数据结构，它包含一组有序的列，每列可以是不同类型的值。DataFrame既有行索引也有列索引，可看成是由Series组成的字典。</strong></p>
+
+<p>创建DataFrame的方式有很多种，下图展示了可以输给DataFrame构造器的数据：</p>
+
+<p><img title="Python数据分析工具库-pandas数据分析与探索工具_" 图片1="" src="https://img.mukewang.com/5b0bfc5d0001f23c18681264.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>其中最常见的是<strong>直接传入一个由等长列表或numpy数组组成的字典</strong>：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; d = {'one' : [1., 2., 3., 4.],
+   ....:      'two' : [4., 3., 2., 1.]}
+   ....: 
+&gt;&gt;&gt; pd.DataFrame(d)
+   one  two
+0  1.0  4.0
+1  2.0  3.0
+2  3.0  2.0
+3  4.0  1.0
+</code></pre>
+</div>
+
+<p>或者<strong>由Series组成的字典</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; d = {'one' : Series([1., 2., 3.], index=['a', 'b', 'c']),
+   ....:      'two' : Series([1., 2., 3., 4.], index=['a', 'b', 'c', 'd'])}
+   ....: 
+&gt;&gt;&gt; df = DataFrame(d)
+&gt;&gt;&gt; df
+   one  two
+a  1.0  1.0
+b  2.0  2.0
+c  3.0  3.0
+d  NaN  4.0
+</code></pre>
+</div>
+
+<p>或者<strong>由字典组成的列表</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; data2 = [{'a': 1, 'b': 2}, {'a': 5, 'b': 10, 'c': 20}]
+
+&gt;&gt;&gt; DataFrame(data2)
+   a   b     c
+0  1   2   NaN
+1  5  10  20.0
+
+&gt;&gt;&gt; df = DataFrame(data2, index=['first', 'second’])
+&gt;&gt;&gt; df
+        a   b     c
+first   1   2   NaN
+second  5  10  20.0
+</code></pre>
+</div>
+
+<p><strong>处理时间序列数据</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; index = pd.date_range('1/1/2000', periods=8)
+&gt;&gt;&gt; df = pd.DataFrame(np.random.randn(8, 3), index=index, columns=list('ABC'))
+&gt;&gt;&gt; df
+                 A       B       C
+2000-01-01 -1.2268  0.7698 -1.2812
+2000-01-02 -0.7277 -0.1213 -0.0979
+2000-01-03  0.6958  0.3417  0.9597
+2000-01-04 -1.1103 -0.6200  0.1497
+2000-01-05 -0.7323  0.6877  0.1764
+2000-01-06  0.4033 -0.1550  0.3016
+2000-01-07 -2.1799 -1.3698 -0.9542
+2000-01-08  1.4627 -1.7432 -0.8266
+</code></pre>
+</div>
+
+<p><strong>创建bool类型的DataFrame</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df1 = pd.DataFrame({'a' : [1, 0, 1], 'b' : [0, 1, 1] }, dtype=bool)
+&gt;&gt;&gt; df2 = pd.DataFrame({'a' : [0, 1, 1], 'b' : [1, 1, 0] }, dtype=bool)
+&gt;&gt;&gt; df1 &amp; df2
+       a      b
+0  False  False
+1  False   True
+2   True  False
+&gt;&gt;&gt; df1 | df2
+      a     b
+0  True  True
+1  True  True
+2  True  True
+&gt;&gt;&gt; df1 ^ df2
+       a      b
+0   True   True
+1   True  False
+2  False   True
+&gt;&gt;&gt; -df1
+       a      b
+0  False   True
+1   True  False
+2  False  False
+</code></pre>
+</div>
+
+<p><strong>DaraFrame的转置</strong>：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df.T
+     first    second
+a     1            5
+b     2            10
+c     NaN      20.0
+</code></pre>
+</div>
+<p><strong>DataFrame的索引</strong></p>
+
+<p>和Series类似，<strong>DataFrame的索引方式</strong>有：</p>
+
+<p><img title="Python数据分析工具库-pandas数据分析与探索工具_" 图片1="" src="https://img.mukewang.com/5b0bfcc30001a4f410360250.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df
+   one  two
+a  1.0  1.0
+b  2.0  2.0
+c  3.0  3.0
+d  NaN  4.0
+&gt;&gt;&gt; df['one’] # 列索引，等同于df.one
+a    1.0
+b    2.0
+c    3.0
+d    NaN
+</code></pre>
+</div>
+
+<p><strong>对DataFrame进行索引其实是获取一个或多个列，但对DataFrame进行切片或布尔型数组时选取的是行</strong>：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df[:2]
+   one  two
+a  1.0  1.0
+b  2.0  2.0
+&gt;&gt;&gt; df[df[‘one’] &lt; 3]
+   one  two
+a  1.0  1.0
+b  2.0  2.0
+</code></pre>
+</div>
+
+<p><strong>在DataFrame的行上进行标签索引的方式</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df
+   one  bar   flag  foo  one_trunc
+a  1.0  1.0  False  bar        1.0
+b  2.0  2.0  False  bar        2.0
+c  3.0  3.0   True  bar        NaN
+d  NaN  NaN  False  bar        NaN 
+&gt;&gt;&gt; df.loc['b’]  # 等同于df.iloc[1]、df.ix[‘b’]、df.ix[1]
+one              2
+bar              2
+flag         False
+foo            bar
+one_trunc        2
+Name: b, dtype: object
+</code></pre>
+</div>
+
+<p><strong>通过索引方式返回的列是相应数据的视图（view），不是副本（copy），故对返回的Series所做的任何就地修改全部会反映到源DataFrame上。</strong></p>
+
+<h2 id="13-重新索引reindex"><strong>1.3 重新索引reindex</strong></h2>
+
+<blockquote>
+  <p>Series.reindex(index=None, **kwargs)</p>
+</blockquote>
+
+<p>调用reindex方法将会根据新索引对Series或DataFrame进行重新索引，<strong>reindex函数的参数</strong>如下图所示。</p>
+
+<p><img title="Python数据分析工具库-pandas数据分析与探索工具_" 图片1="" src="https://img.mukewang.com/5b0bfcd90001407b18600664.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<p>如果某个索引值在当前数据结构不存在，那么用缺失值NaN填充，当然也可以<strong>使用fill_value参数来指定填充的值</strong>，或<strong>用mothod参数来指定填充的方式</strong>（填充的方式有ffill：前向填充值；bfill：后向填充值），下图展示了mothod参数可选的参数。</p>
+
+<p><img title="Python数据分析工具库-pandas数据分析与探索工具_" 图片1="" src="https://img.mukewang.com/5b0bfce90001041507280180.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; rng = pd.date_range('1/3/2000', periods=8)
+
+&gt;&gt;&gt; ts = pd.Series(np.random.randn(8), index=rng)
+
+&gt;&gt;&gt; ts2 = ts[[0, 3, 6]]
+
+&gt;&gt;&gt; ts
+2000-01-03    0.466284
+2000-01-04   -0.457411
+2000-01-05   -0.364060
+2000-01-06    0.785367
+2000-01-07   -1.463093
+2000-01-08    1.187315
+2000-01-09   -0.493153
+2000-01-10   -1.323445
+Freq: D, dtype: float64
+
+&gt;&gt;&gt; ts2
+2000-01-03    0.466284
+2000-01-06    0.785367
+2000-01-09   -0.493153
+dtype: float64
+
+&gt;&gt;&gt; ts2.reindex(ts.index)
+2000-01-03    0.466284
+2000-01-04         NaN
+2000-01-05         NaN
+2000-01-06    0.785367
+2000-01-07         NaN
+2000-01-08         NaN
+2000-01-09   -0.493153
+2000-01-10         NaN
+Freq: D, dtype: float64
+
+&gt;&gt;&gt; ts2.reindex(ts.index, method='ffill')
+2000-01-03    0.466284
+2000-01-04    0.466284
+2000-01-05    0.466284
+2000-01-06    0.785367
+2000-01-07    0.785367
+2000-01-08    0.785367
+2000-01-09   -0.493153
+2000-01-10   -0.493153
+Freq: D, dtype: float64
+
+&gt;&gt;&gt; ts2.reindex(ts.index, method='bfill')
+2000-01-03    0.466284
+2000-01-04    0.785367
+2000-01-05    0.785367
+2000-01-06    0.785367
+2000-01-07   -0.493153
+2000-01-08   -0.493153
+2000-01-09   -0.493153
+2000-01-10         NaN
+Freq: D, dtype: float64
+
+&gt;&gt;&gt; ts2.reindex(ts.index, method='nearest')
+2000-01-03    0.466284
+2000-01-04    0.466284
+2000-01-05    0.785367
+2000-01-06    0.785367
+2000-01-07    0.785367
+2000-01-08   -0.493153
+2000-01-09   -0.493153
+2000-01-10   -0.493153
+Freq: D, dtype: float64
+</code></pre>
+</div>
+
+<p><strong>为DataFrame添加列</strong>（修改也是类似思路，将列表或数组赋值给某个列时，要求其长度必须与DataFrame的长度相匹配；而如果赋值的是一个Series，会自动精确匹配DataFrame的索引，空位将自动被填上缺失值）：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df['three'] = df['one'] * df['two’] # 添加列，列索引为“three”
+&gt;&gt;&gt; df['flag'] = df['one'] &gt; 2  # 添加列，列索引为“flag”
+&gt;&gt;&gt; df
+   one  two  three   flag
+a  1.0  1.0    1.0  False
+b  2.0  2.0    4.0  False
+c  3.0  3.0    9.0   True
+d  NaN  4.0    NaN  False
+&gt;&gt;&gt; val=Series([1.2, 1.5, 1.7], index=[‘a’, ‘c’, ‘d’])
+&gt;&gt;&gt; df[‘debt’] = val
+&gt;&gt;&gt; df
+   one  two  three   flag debt
+a  1.0  1.0    1.0  False    1.2
+b  2.0  2.0    4.0  False    NaN
+c  3.0  3.0    9.0   True    1.5
+d  NaN  4.0    NaN  False  1.7
+</code></pre>
+</div>
+
+<p>也可以<strong>在指定位置插入列</strong>：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df.insert(1, 'bar', df['one'])
+&gt;&gt;&gt; df
+   one  bar  two  three   flag                 
+a  1.0  1.0  1.0    1.0    False 
+b  2.0  2.0  2.0    4.0   False  
+c  3.0  3.0  3.0    9.0   True  
+d  NaN  NaN 4.0    NaN  False  
+</code></pre>
+</div>
+
+<p>我们也可以<strong>删除列</strong>：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; del df['two’] # 删除列索引为“two”的列
+&gt;&gt;&gt; three = df.pop('three’) # 删除列索引为“three”的列，等同于df.drop(’three’, axis=1)
+&gt;&gt;&gt; df
+   one   flag
+a  1.0  False
+b  2.0  False
+c  3.0   True
+d  NaN  False
+</code></pre>
+</div>
+
+<p><strong>删除行</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df.drop([‘c’, ‘d'])
+&gt;&gt;&gt; df
+    one   flag
+a  1.0  False
+b  2.0  False
+</code></pre>
+</div>
+
+<h2 id="14-广播broadcasting"><strong>1.4 广播（broadcasting）</strong></h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df = DataFrame({'one' : pd.Series(np.random.randn(3), index=['a', 'b', 'c']), # 构造DataFrame
+   ....:                    'two' : pd.Series(np.random.randn(4), index=['a', 'b', 'c', 'd']),
+   ....:                    'three' : pd.Series(np.random.randn(3), index=['b', 'c', 'd'])})
+
+&gt;&gt;&gt; df
+        one       two     three
+a -1.101558  1.124472       NaN
+b -0.177289  2.487104 -0.634293
+c  0.462215 -0.486066  1.931194
+d       NaN -0.456288 -1.222918
+
+&gt;&gt;&gt; row = df.iloc[1] # 取出第二行
+
+&gt;&gt;&gt; column = df['two’] #取出第二列
+
+&gt;&gt;&gt; df.sub(row, axis='columns’) #广播，每一行都减去第二行，等同于df - row
+        one       two     three
+a -0.924269 -1.362632       NaN
+b  0.000000  0.000000  0.000000
+c  0.639504 -2.973170  2.565487
+d       NaN -2.943392 -0.588625
+
+&gt;&gt;&gt; df.sub(row, axis=1) 
+        one       two     three
+a -0.924269 -1.362632       NaN
+b  0.000000  0.000000  0.000000
+c  0.639504 -2.973170  2.565487
+d       NaN -2.943392 -0.588625
+
+&gt;&gt;&gt; df.sub(column, axis='index’) # 广播，每一列都减去第二列
+        one  two     three
+a -2.226031  0.0       NaN
+b -2.664393  0.0 -3.121397
+c  0.948280  0.0  2.417260
+d       NaN  0.0 -0.766631
+
+&gt;&gt;&gt; df.sub(column, axis=0)
+        one  two     three
+a -2.226031  0.0       NaN
+b -2.664393  0.0 -3.121397
+c  0.948280  0.0  2.417260
+d       NaN  0.0 -0.766631
+</code></pre>
+</div>
+
+<h1 id="2-pandas基本函数"><strong>2 pandas基本函数</strong></h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df
+        one       two     three
+a -1.101558  1.124472       NaN
+b -0.177289  2.487104 -0.634293
+c  0.462215 -0.486066  1.931194
+d       NaN -0.456288 -1.222918
+</code></pre>
+</div>
+
+<p>pandas包含丰富的函数来对数据进行统计分析。</p>
+
+<h2 id="21-mean函数"><strong>2.1 mean函数</strong></h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df.mean(0) #对DataFrame的每列求平均数，axis=0
+one     -0.272211
+two      0.667306
+three    0.024661
+dtype: float64
+
+&gt;&gt;&gt; df.mean(1) #对DataFrame的每行求平均数，axis=1
+a    0.011457
+b    0.558507
+c    0.635781
+d   -0.839603
+dtype: float64
+</code></pre>
+</div>
+
+<p><strong>pandas中的axis</strong></p>
+
+<p>我们来分析下pandas中的axis，它究竟是代表行还是列呢？以上的mean的参数axis=1时，但在第一节中的drop函数时却删除了一列，那么到底axis=1代表的是行还是列呢？df.mean其实是在每一行上取所有列的均值，而不是保留每一列的均值。也许简单的来记就是axis=0代表往跨行（down)，而axis=1代表跨列（across)，即<strong>当axis=0时表示沿着每一列或行索引值向下执行方法；当axis=1时表示沿着每一行或列索引值模向执行对应的方法</strong>。下图形象解释了axis的含义。</p>
+
+<p><img title="Python数据分析工具库-pandas数据分析与探索工具_" 图片1="" src="https://img.mukewang.com/5b0bff9e0001f97706520341.jpg" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<h2 id="22-sum函数"><strong>2.2 sum函数</strong></h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df.sum(0, skipna=False) # 按列求和，axis=0，skipna参数表示是否排除缺失值，默认为True
+one           NaN
+two      2.669223
+three         NaN
+dtype: float64
+
+&gt;&gt;&gt; df.sum(axis=1) # 按列求和，axis=0
+a    0.022914
+b    1.675522
+c    1.907343
+d   -1.679206
+dtype: float64
+</code></pre>
+</div>
+
+<h2 id="23-pandas常见的统计分析函数"><strong>2.3 pandas常见的统计分析函数</strong></h2>
+
+<p><img title="Python数据分析工具库-pandas数据分析与探索工具_" 图片1="" src="https://img.mukewang.com/5b0bffb00001792007580776.png" alt="图片描述" style="display:block; margin:auto; width:50%" /></p>
+
+<h1 id="3函数应用"><strong>3、函数应用</strong></h1>
+
+<h2 id="31-apply函数"><strong>3.1 apply函数</strong></h2>
+
+<p>apply函数可以将一个函数应用在DataFrame的某个轴上。</p>
+
+<blockquote>
+  <p>DataFrame.apply(func, axis=0, broadcast=None, raw=False, reduce=None, result_type=None, args=(), **kwds)</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df.apply(np.mean, axis=1)# 等同于df.apply(‘mean’, axis=1)
+a    0.011457
+b    0.558507
+c    0.635781
+d   -0.839603
+dtype: float64
+
+&gt;&gt;&gt; df.apply(lambda x: x.max() - x.min())
+one      1.563773
+two      2.973170
+three    3.154112
+dtype: float64
+</code></pre>
+</div>
+
+<p><strong>元素级函数应用可以使用applymap()</strong></p>
+
+<h2 id="32-agg"><strong>3.2 agg()</strong></h2>
+
+<p>在pandas V0.20.0版本中新出现一个函数<strong>agg()</strong>（DataFrame.aggregate()的简版），<strong>agg()与apply()不同的是，其在指定的轴上可以使用一个或多个函数对数据进行聚合操作。</strong></p>
+
+<blockquote>
+  <p>DataFrame.agg(func, axis=0, *args, **kwargs)</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; tsdf = pd.DataFrame(np.random.randn(10, 3), columns=['A', 'B', 'C'],
+   .....:                     index=pd.date_range('1/1/2000', periods=10))
+
+&gt;&gt;&gt; tsdf
+                   A         B         C
+2000-01-01  0.170247 -0.916844  0.835024
+2000-01-02  1.259919  0.801111  0.445614
+2000-01-03  1.453046  2.430373  0.653093
+2000-01-04       NaN       NaN       NaN
+2000-01-05       NaN       NaN       NaN
+2000-01-06       NaN       NaN       NaN
+2000-01-07       NaN       NaN       NaN
+2000-01-08 -1.874526  0.569822 -0.609644
+2000-01-09  0.812462  0.565894 -1.461363
+2000-01-10 -0.985475  1.388154 -0.078747
+
+&gt;&gt;&gt; tsdf.agg(np.sum) # 一个函数的时候等同于tsdf.apply(np.sum)
+A    0.835673
+B    4.838510
+C   -0.216025
+dtype: float64
+
+&gt;&gt;&gt; tsdf.agg(['sum', 'mean’]) # 对多个函数进行聚合操作
+             A         B         C
+sum   0.835673  4.838510 -0.216025
+mean  0.139279  0.806418 -0.036004
+</code></pre>
+</div>
+
+<h2 id="33-transform"><strong>3.3 transform()</strong></h2>
+
+<p>transform()与agg()函数很像。</p>
+
+<blockquote>
+  <p>DataFrame.transform(func, *args, **kwargs)</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; tsdf = pd.DataFrame(np.random.randn(10, 3), columns=['A', 'B', 'C'],
+   .....:                     index=pd.date_range('1/1/2000', periods=10))
+&gt;&gt;&gt; tsdf
+                   A         B         C
+2000-01-01 -0.578465 -0.503335 -0.987140
+2000-01-02 -0.767147 -0.266046  1.083797
+2000-01-03  0.195348  0.722247 -0.894537
+2000-01-04       NaN       NaN       NaN
+2000-01-05       NaN       NaN       NaN
+2000-01-06       NaN       NaN       NaN
+2000-01-07       NaN       NaN       NaN
+2000-01-08 -0.556397  0.542165 -0.308675
+2000-01-09 -1.010924 -0.672504 -1.139222
+2000-01-10  0.354653  0.563622 -0.365106
+
+&gt;&gt;&gt; tsdf.transform([np.abs, lambda x: x+1])
+                   A                   B                   C          
+            absolute  &lt;lambda&gt;  absolute  &lt;lambda&gt;  absolute  &lt;lambda&gt;
+2000-01-01  0.578465  0.421535  0.503335  0.496665  0.987140  0.012860
+2000-01-02  0.767147  0.232853  0.266046  0.733954  1.083797  2.083797
+2000-01-03  0.195348  1.195348  0.722247  1.722247  0.894537  0.105463
+2000-01-04       NaN       NaN       NaN       NaN       NaN       NaN
+2000-01-05       NaN       NaN       NaN       NaN       NaN       NaN
+2000-01-06       NaN       NaN       NaN       NaN       NaN       NaN
+2000-01-07       NaN       NaN       NaN       NaN       NaN       NaN
+2000-01-08  0.556397  0.443603  0.542165  1.542165  0.308675  0.691325
+2000-01-09  1.010924 -0.010924  0.672504  0.327496  1.139222 -0.139222
+2000-01-10  0.354653  1.354653  0.563622  1.563622  0.365106  0.634894
+</code></pre>
+</div>
+
+<h1 id="4排序"><strong>4、排序</strong></h1>
+
+<p>根据设置的条件对数据集进行排序（sorting），是pandas的一个重要的内置运算，sort_index可以对行或列索引进行排序，并返回一个已排序的新对象。</p>
+
+<blockquote>
+  <p>Series.sort_index(axis=0, level=None, ascending=True, inplace=False, kind=’quicksort’, na_position=’last’, sort_remaining=True)
+DataFrame.sort_index(axis=0, level=None, ascending=True, inplace=False, kind=’quicksort’, na_position=’last’, sort_remaining=True, by=None)</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df = pd.DataFrame({'one' : pd.Series(np.random.randn(3), index=['a', 'b', 'c']),
+   .....:                    'two' : pd.Series(np.random.randn(4), index=['a', 'b', 'c', 'd']),
+   .....:                    'three' : pd.Series(np.random.randn(3), index=['b', 'c', 'd'])})
+
+&gt;&gt;&gt; unsorted_df = df.reindex(index=['a', 'd', 'c', 'b'],
+   .....:                          columns=['three', 'two', 'one'])
+   .....: 
+
+&gt;&gt;&gt; unsorted_df
+      three       two       one
+a       NaN  0.708543  0.036274
+d -0.540166  0.586626       NaN
+c  0.410238  1.121731  1.044630
+b -0.282532 -2.038777 -0.490032
+
+&gt;&gt;&gt; unsorted_df.sort_index() #axis=0，对行轴的索引进行排序
+      three       two       one
+a       NaN  0.708543  0.036274
+b -0.282532 -2.038777 -0.490032
+c  0.410238  1.121731  1.044630
+d -0.540166  0.586626       NaN
+
+&gt;&gt;&gt; unsorted_df.sort_index(axis=1)
+        one     three       two
+a  0.036274       NaN  0.708543
+d       NaN -0.540166  0.586626
+c  1.044630  0.410238  1.121731
+b -0.490032 -0.282532 -2.038777
+</code></pre>
+</div>
+
+<p>数据默认是按升序排序，可以通过设置参数<strong>ascending=False</strong>进行降序排序。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; unsorted_df.sort_index(ascending=False)
+      three       two       one
+d -0.540166  0.586626       NaN
+c  0.410238  1.121731  1.044630
+b -0.282532 -2.038777 -0.490032
+a       NaN  0.708543  0.036274
+</code></pre>
+</div>
+
+<p><strong>按元素值进行排序</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df1 = pd.DataFrame({'one':[2,1,1,1],'two':[1,3,2,4],'three':[5,4,3,2]})
+
+&gt;&gt;&gt; df1.sort_values(by='two')
+   one  two  three
+0    2    1      5
+2    1    2      3
+1    1    3      4
+3    1    4      2
+</code></pre>
+</div>
+
+<p><strong>对多个列进行排序</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df1[['one', 'two', 'three']].sort_values(by=['one','two’]) # 在one列有序的基础上再对two列进行排序
+   one  two  three
+2    1    2      3
+1    1    3      4
+3    1    4      2
+0    2    1      5
+</code></pre>
+</div>
+
+<h1 id="5层次化索引hierarchical-indexing"><strong>5、层次化索引（hierarchical indexing）</strong></h1>
+
+<p>层次化索引是pandas的一个重要功能，层次化索引可以在一个轴上有多个索引级别，并以低维度形式处理高纬度数据。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; arrays = [np.array(['bar', 'bar', 'baz', 'baz', 'foo', 'foo', 'qux', 'qux']),
+   ....:           np.array(['one', 'two', 'one', 'two', 'one', 'two', 'one', 'two'])]
+
+&gt;&gt;&gt; s = pd.Series(np.random.randn(8), index=arrays)
+
+&gt;&gt;&gt; s
+bar  one   -0.861849
+     two   -2.104569
+baz  one   -0.494929
+     two    1.071804
+foo  one    0.721555
+     two   -0.706771
+qux  one   -1.039575
+     two    0.271860
+dtype: float64
+
+&gt;&gt;&gt; df = pd.DataFrame(np.random.randn(3, 8), index=['A', 'B', 'C'], columns=index)
+
+&gt;&gt;&gt; df
+first                     bar                     baz                   foo                     qux          
+second       one       two       one       two       one       two       one       two
+A       0.895717  0.805244 -1.206412  2.565646  1.431256  1.340309 -1.170299 -0.226169
+B       0.410835  0.813850  0.132003 -0.827317 -0.076467 -1.187678  1.130127 -1.436737
+C      -1.413681  1.607920  1.024180  0.569605  0.875906 -2.211372  0.974466 -2.006747
+</code></pre>
+</div>
+
+<p><strong>索引方式</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt;&gt;&gt; df['bar']
+second       one       two
+A       0.895717  0.805244
+B       0.410835  0.813850
+C      -1.413681  1.607920
+
+&gt;&gt;&gt; df['bar', 'one']
+A    0.895717
+B    0.410835
+C   -1.413681
+Name: (bar, one), dtype: float64
+
+&gt;&gt;&gt; df.xs('one', level='second', axis=1)
+first       bar       baz       foo       qux
+A      0.895717 -1.206412  1.431256 -1.170299
+B      0.410835  0.132003 -0.076467  1.130127
+C     -1.413681  1.024180  0.875906  0.974466
+
+&gt;&gt;&gt; df.xs(('one', 'bar'), level=('second', 'first'), axis=1)
+first        bar
+second       one
+A       0.895717
+B       0.410835
+C      -1.413681
+</code></pre>
+</div>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h5 style="display: inline;">Tags:</h5>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">Python</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">数据分析</button>
+                                
+                                    <button class="btn btn-white btn-xs" type="button">pandas</button>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-right">
+                                <h5>Stats:</h5>
+                                <div>
+                                
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- donate -->
+                            
+                            <div class="text-center">
+<a class="btn btn-warning  dim btn-large-dim btn-outline" href="/donate/"><i class="fa fa-smile-o"></i></a>
+</div>
+
+                            
+                            <br>
+                            <!-- share -->
+                            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<!-- <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+<a class="a2a_button_google_plus"></a>
+<a class="a2a_button_linkedin"></a> -->
+<a class="a2a_button_email"></a>
+<a class="a2a_button_wechat" style="margin-left:2%"></a>
+<a class="a2a_button_sina_weibo" style="margin-left:2%"></a>
+<!-- <a class="a2a_button_pocket"></a> -->
+</div>
+<script>
+var a2a_config = a2a_config || {};
+a2a_config.color_main = "D7E5ED";
+a2a_config.color_border = "AECADB";
+a2a_config.color_link_text = "333333";
+a2a_config.color_link_text_hover = "333333";
+</script>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+                            <br>
+                            <!-- comment -->
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+	
+	    <!-- Google analytics -->
+
+
+<!-- GrowingIO -->
+
+
+
+
+
+	
+
+</body>
+</html>
