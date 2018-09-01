@@ -3,9 +3,9 @@ layout: post
 title:  "Singleton终极-枚举"
 date:   2018-08-31
 desc: "Singleton终极-枚举"
-keywords: "Singleton,静态内部类,枚举"
+keywords: "Singleton,枚举"
 categories: [Java]
-tags: [Singleton,静态内部类,枚举]
+tags: [Singleton,枚举]
 icon: icon-html
 ---
 
